@@ -1,3 +1,5 @@
+import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
+
 const posts:PostType[] = [];
 type PostType = {
     id: string,
@@ -11,15 +13,17 @@ export const posts_repositories = {
     getPost () {
         return posts;
     },
-    createPost(title: string, shortDescription: string, content: string, blogId: string,blogName:string) {
+    createPost(title: string, shortDescription: string, content: string, blogId: string) {
+        const blog = blogs_repositories.getBlog_ID(blogId)
+        if (!blog) return  null
         const time = new Date ().toISOString();
         const newPost:PostType = {
             id: time,
             title: title,
             shortDescription: shortDescription,
             content: content,
-            blogId: blogId,
-            blogName: blogName
+            blogId: blog.id,
+            blogName: blog.name
         }
         posts.push(newPost)
         return posts;
@@ -51,4 +55,8 @@ export const posts_repositories = {
             return  false;
         }
     },
+    deleteAll () {
+        posts.splice(0,posts.length)
+        return true;
+    }
 }
