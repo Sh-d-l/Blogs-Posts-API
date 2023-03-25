@@ -9,10 +9,14 @@ export const blogs_repositories = {
     getBlog () {
         return blogs;
     },
-    checkBlogByName(name: string){
-        const blog = blogs.find((elem) => elem.name == name)
-        return !!blog;
-
+    checkBlogByName(id: string){
+        const blog = blogs.find((elem) => elem.id == id)
+        if (blog) {
+            return true;
+        }
+        else {
+            return  false;
+        }
     },
     createBlog (name:string,description:string,websiteUrl:string) {
         const time = new Date ().toISOString();
