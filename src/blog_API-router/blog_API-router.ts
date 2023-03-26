@@ -4,6 +4,7 @@ import {basicAuth} from "../auth/basic_auth"
 import {createBlogValidation, updateBlogValidation} from "../middlewares/validators/blog-validation";
 
 export const blog_Router = Router({});
+export const delBlog_Router = Router({});
 
 blog_Router.get('/', (req, res) => {
     const get_Blog = blogs_repositories.getBlog
@@ -47,9 +48,4 @@ blog_Router.delete('/:id',
         }
     })
 
-blog_Router.delete("/", (req, res) => {
-    const delAllBlogs = blogs_repositories.deleteAll()
-    if (delAllBlogs) {
-        res.sendStatus(204);
-    }
-})
+

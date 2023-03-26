@@ -1,9 +1,6 @@
 import {Request, Response, Router} from "express";
 import {posts_repositories} from "../post_API-repositories/post_API-repositories";
-import {body} from 'express-validator';
-import {inputValidator} from "../middlewares/validators/input-validation.middleware";
 import {basicAuth} from "../auth/basic_auth"
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
 import {createPostValidation, updatePostValidation} from "../middlewares/validators/blog-validation";
 
 export const post_Router = Router({});
@@ -49,9 +46,3 @@ post_Router.delete('/:id',
         }
     })
 
-post_Router.delete("/", (req, res) => {
-    const delAllPosts = posts_repositories.deleteAll()
-    if (delAllPosts) {
-        res.sendStatus(204);
-    }
-})
