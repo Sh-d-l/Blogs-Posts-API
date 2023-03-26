@@ -15,6 +15,7 @@ blog_Router.post('/',
     ...createBlogValidation,
     (req, res) => {
         const post_Blog = blogs_repositories.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+        //console.log(post_Blog, "post_Blog create blog, return blog")
         res.status(201).send(post_Blog)
     })
 
@@ -26,11 +27,18 @@ blog_Router.get('/:id', (req, res) => {
         res.sendStatus(400)
     }
 })
-blog_Router.put('/',
+blog_Router.put('/:id',
     basicAuth,
     ...updateBlogValidation,
     (req, res) => {
-        const put_Blog = blogs_repositories.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
+        //console.log(req.params.id, 'id from blog update')
+        const put_Blog = blogs_repositories.updateBlog(
+            req.params.id,
+            req.body.name,
+            req.body.description,
+            req.body.websiteUrl
+        )
+        //console.log(put_Blog, ' result if we want update blog')
         if (put_Blog) {
             res.sendStatus(204)
         } else {

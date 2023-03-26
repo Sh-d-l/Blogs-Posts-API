@@ -9,7 +9,7 @@ import {delAll_Router} from "./deleteAll/deleteAll"
 
 app.use("/blogs",blog_Router)
 app.use("/posts",post_Router)
-app.use("/all-data",delAll_Router)
+app.use("/testing/all-data",delAll_Router)
 
 
 app.listen(port, () => {
