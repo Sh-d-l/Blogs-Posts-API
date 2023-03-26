@@ -11,7 +11,7 @@ app.use(express.json())
 
 app.use('/blogs',blog_Router)
 app.use('/posts',post_Router)
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
     res.send('Hello world!')
 })
 app.delete('/testing/all-data',(req,res) => {
