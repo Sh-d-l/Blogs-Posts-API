@@ -5,8 +5,10 @@
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
+    "build": "tsc",
     "dev": "nodemon --inspect dist/src/index.js",
     "debug": "nodemon --inspect dist/src/index.js",
+    "start": "node dist/src/index.js",
     "test": "jest"
   },
   "devDependencies": {
