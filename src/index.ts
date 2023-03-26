@@ -9,12 +9,12 @@ const port = 3000
 export const app = express()
 app.use(express.json())
 
-app.use("/blogs",blog_Router)
-app.use("/posts",post_Router)
+app.use('/blogs',blog_Router)
+app.use('/posts',post_Router)
 app.get('/', (req, res) => {
     res.send('Hello world!')
 })
-app.delete("/testing/all-data",(req,res) => {
+app.delete('/testing/all-data',(req,res) => {
     const delPost = posts_repositories.deleteAll()
     const delBlog = blogs_repositories.deleteAll()
 
