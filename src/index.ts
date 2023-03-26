@@ -11,6 +11,9 @@ import {blogs_repositories} from "./blog_API-repositories/blog_API-repositories"
 
 app.use("/blogs",blog_Router)
 app.use("/posts",post_Router)
+app.get('/', (req, res) => {
+    res.send('Hello world!')
+})
 app.delete("/testing/all-data",(req,res) => {
     const delPost = posts_repositories.deleteAll()
     const delBlog = blogs_repositories.deleteAll()
