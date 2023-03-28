@@ -1,4 +1,4 @@
-import express from 'express'
+import express, {Request,Response} from 'express'
 import {blog_Router} from "./blog_API-router/blog_API-router";
 import {post_Router} from "./post_API-router/post_API-router";
 import {posts_repositories} from "./post_API-repositories/post_API-repositories";
@@ -11,10 +11,8 @@ app.use(express.json())
 
 app.use('/blogs',blog_Router)
 app.use('/posts',post_Router)
-app.get('/', (req, res) => {
-    res.send('Hello world!')
-})
-app.delete('/testing/all-data',(req,res) => {
+
+app.delete('/testing/all-data',(req:Request,res:Response) => {
     const delPost = posts_repositories.deleteAll()
     const delBlog = blogs_repositories.deleteAll()
 

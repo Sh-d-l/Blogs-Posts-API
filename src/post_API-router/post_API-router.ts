@@ -24,7 +24,7 @@ post_Router.get('/:id', (req, res) => {
         res.sendStatus(400)
     }
 })
-post_Router.put('/',
+post_Router.put('/:id',
     basicAuth,
     ...updatePostValidation,
     (req, res) => {
