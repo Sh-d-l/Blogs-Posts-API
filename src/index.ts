@@ -8,7 +8,7 @@ const port = 3000
 export const app = express()
 app.use(express.json())
 app.use("/blogs",blog_Router)
-app.use('/posts',post_Router)
+app.use("/posts",post_Router)
 
 app.delete('/testing/all-data',(req,res) => {
     const delPost = posts_repositories.deleteAll()
