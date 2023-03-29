@@ -10,7 +10,7 @@ app.use(express.json())
 app.use("/blogs",blog_Router)
 app.use("/posts",post_Router)
 
-app.delete('/testing/all-data',(req,res) => {
+app.delete("/testing/all-data",(req,res) => {
     const delPost = posts_repositories.deleteAll()
     const delBlog = blogs_repositories.deleteAll()
     if(delBlog && delPost) {
