@@ -6,7 +6,7 @@ import {createBlogValidation, updateBlogValidation} from "../middlewares/validat
 export const blog_Router = Router({});
 export const delBlog_Router = Router({});
 
-blog_Router.get("/", (req, res) => {
+blog_Router.get('/', (req, res) => {
     const get_Blog = blogs_repositories.getBlog
     res.status(200).send(get_Blog())
 })
