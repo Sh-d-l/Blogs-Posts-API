@@ -26,7 +26,7 @@ const websiteUrlValidation = body("websiteUrl")
 
 const titleValidation = body('title').trim().isLength({min: 1, max: 30}).isString()
 const shortDescriptionValidation =  body('shortDescription').trim().isString().isLength({min: 1, max: 100})
-const contentValidation = body('content').trim().isString().isLength({max: 1000})
+const contentValidation = body('content').trim().isString().notEmpty().isLength({max: 1000})
 const blogIdValidation = body('blogId').isString().trim().notEmpty().custom((val, {req}) => {
         const blog = blogs_repositories.getBlog_ID(val)
         if (!blog) return false
