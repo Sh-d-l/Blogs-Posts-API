@@ -20,7 +20,7 @@ export const blogs_repositories = {
         }
         blogs.push(newBlog)
         return newBlog;
-        // change blogs /.error 1
+
 
     },
     getBlog_ID(id: string) {
@@ -39,23 +39,13 @@ export const blogs_repositories = {
         }
     },
     deleteID(id: string) {
-        for(let i = 0; i < blogs.length;i++) {
-            if(blogs[i].id === id) {
-                blogs.splice(i,1)
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        /*let found_blog_by_ID = blogs.filter((elem) => elem.id === id);
+        let found_blog_by_ID = blogs.filter((elem) => elem.id === id);
         if (found_blog_by_ID.length > 0) {
             blogs.splice(blogs.indexOf(found_blog_by_ID[0]), 1)
-            console.log(found_blog_by_ID)
             return true;
         } else {
             return false;
-        }*/
+        }
     },
     deleteAll() {
         blogs.splice(0, blogs.length)
