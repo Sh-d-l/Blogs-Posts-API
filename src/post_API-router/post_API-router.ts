@@ -21,7 +21,7 @@ post_Router.get('/:id', (req, res) => {
     if (get_PostId) {
         res.status(200).send(get_PostId)
     } else {
-        res.sendStatus(400)
+        res.sendStatus(404)
     }
 })
 post_Router.put('/:id',
