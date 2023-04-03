@@ -23,7 +23,7 @@ blog_Router.get('/:id', (req, res) => {
     if (get_BlogId) {
         res.status(200).send(get_BlogId)
     } else {
-        res.sendStatus(400)
+        res.sendStatus(404)
     }
 })
 blog_Router.put('/:id',

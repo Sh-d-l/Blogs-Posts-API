@@ -19,7 +19,8 @@ export const blogs_repositories = {
             websiteUrl: websiteUrl,
         }
         blogs.push(newBlog)
-        return blogs;
+        return newBlog;
+        // change blogs /.error 1
 
     },
     getBlog_ID(id: string) {
