@@ -2,10 +2,13 @@ import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories";
 
+const websiteUrlPattern =
+    /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
+
 
 const nameValidation = body('name').isString().trim().notEmpty().isLength({min: 1, max: 15})
 let descriptionValidation = body('description').isString().trim().notEmpty().isLength({min: 1, max: 500})
-const websiteUrlValidation =  body('websiteUrl').isString().trim().notEmpty().isLength({max: 100})
+const websiteUrlValidation =  body('websiteUrl').isString().trim().notEmpty().isLength({max: 100}).matches(websiteUrlPattern)
 
 const titleValidation = body('title').trim().isLength({min: 1, max: 30}).isString()
 const shortDescriptionValidation =  body('shortDescription').trim().isString().isLength({min: 1, max: 100})
