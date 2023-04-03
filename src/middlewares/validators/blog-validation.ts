@@ -8,7 +8,21 @@ const websiteUrlPattern =
 
 const nameValidation = body('name').isString().trim().notEmpty().isLength({min: 1, max: 15})
 let descriptionValidation = body('description').isString().trim().notEmpty().isLength({min: 1, max: 500})
-const websiteUrlValidation =  body('websiteUrl').isString().trim().notEmpty().isLength({max: 100}).matches(websiteUrlPattern)
+const websiteUrlValidation = body("websiteUrl")
+    .exists()
+    .withMessage("Website URL is required")
+    .isString()
+    .withMessage("Type of Website URL must be string")
+    .trim()
+    .isLength({
+        min: 1,
+        max: 100,
+    })
+    .withMessage(
+        "Website URL length must be more than 0 and less than or equal to 100 symbols"
+    )
+    .matches(websiteUrlPattern)
+    .withMessage("Website URL must be in correct format")
 
 const titleValidation = body('title').trim().isLength({min: 1, max: 30}).isString()
 const shortDescriptionValidation =  body('shortDescription').trim().isString().isLength({min: 1, max: 100})
