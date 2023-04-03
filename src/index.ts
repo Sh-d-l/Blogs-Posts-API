@@ -1,4 +1,4 @@
-import express, {Request,Response} from 'express'
+import express from 'express'
 import {blog_Router} from "./blog_API-router/blog_API-router";
 import {post_Router} from "./post_API-router/post_API-router";
 import {posts_repositories} from "./post_API-repositories/post_API-repositories";
