@@ -26,8 +26,7 @@ export const posts_repositories = {
             blogName: blog.name
         }
         posts.push(newPost)
-        console.log(newPost)
-        return posts;
+        return newPost;
 
     },
     getPost_ID (id:string) {
