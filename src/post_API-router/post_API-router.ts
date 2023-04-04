@@ -13,7 +13,11 @@ post_Router.post('/',
     basicAuth,
     ...createPostValidation,
     (req: Request, res: Response) => {
-        const post_Post = posts_repositories.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+        const post_Post = posts_repositories.createPost(
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.body.blogId)
         res.status(201).send(post_Post)
     })
 post_Router.get('/:id', (req, res) => {
@@ -28,7 +32,12 @@ post_Router.put('/:id',
     basicAuth,
     ...updatePostValidation,
     (req, res) => {
-        const put_Post = posts_repositories.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+        const put_Post = posts_repositories.updatePost(
+            req.params.id,
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.body.blogId)
         if (put_Post) {
             res.sendStatus(204)
         } else {

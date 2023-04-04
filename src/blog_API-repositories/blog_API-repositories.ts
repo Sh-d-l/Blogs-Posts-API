@@ -1,3 +1,5 @@
+import {randomUUID} from "crypto";
+
 const blogs: BlogType[] = [];
 
 export type BlogType = {
@@ -11,17 +13,14 @@ export const blogs_repositories = {
         return blogs;
     },
     createBlog(name: string, description: string, websiteUrl: string) {
-        const time = new Date().toISOString();
         const newBlog: BlogType = {
-            id: time,
+            id: randomUUID(),
             name: name,
             description: description,
             websiteUrl: websiteUrl,
         }
         blogs.push(newBlog)
         return newBlog;
-
-
     },
     getBlog_ID(id: string) {
         const foundID = blogs.find((elem) => elem.id === id)

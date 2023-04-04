@@ -1,4 +1,5 @@
 import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
+import {randomUUID} from "crypto";
 
 const posts:PostType[] = [];
 type PostType = {
@@ -16,9 +17,8 @@ export const posts_repositories = {
     createPost(title: string, shortDescription: string, content: string, blogId: string) {
         const blog = blogs_repositories.getBlog_ID(blogId)
         if (!blog) return  null
-        const time = new Date ().toISOString();
         const newPost:PostType = {
-            id: time,
+            id: randomUUID(),
             title: title,
             shortDescription: shortDescription,
             content: content,
@@ -26,6 +26,7 @@ export const posts_repositories = {
             blogName: blog.name
         }
         posts.push(newPost)
+        console.log(newPost)
         return posts;
 
     },
@@ -38,7 +39,7 @@ export const posts_repositories = {
             findID.title = title;
             findID.shortDescription = shortDescription;
             findID.content = content;
-            findID.blogId = blogId
+            findID.blogId = blogId;
             return true;
         }
         else {
