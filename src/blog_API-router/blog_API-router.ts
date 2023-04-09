@@ -1,25 +1,24 @@
 import {Router} from "express";
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
+import {BlogType, blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
 import {basicAuth} from "../auth/basic_auth"
 import {createBlogValidation, updateBlogValidation} from "../middlewares/validators/blog-validation";
 
 export const blog_Router = Router({});
 
-blog_Router.get('/', (req, res) => {
-    const get_Blog = blogs_repositories.getBlog
-    res.status(200).send(get_Blog())
+blog_Router.get('/', async (req, res) => {
+    const get_Blogs:BlogType[] = await blogs_repositories.getBlogs()
+    res.status(200).send(get_Blogs)
 })
 blog_Router.post("/",
     basicAuth,
     ...createBlogValidation,
-    (req, res) => {
-        const post_Blog = blogs_repositories.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
-        //console.log(post_Blog, "post_Blog create blog, return blog")
+    async (req, res) => {
+        const post_Blog:BlogType = await blogs_repositories.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(post_Blog)
     })
 
-blog_Router.get('/:id', (req, res) => {
-    const get_BlogId = blogs_repositories.getBlog_ID(req.params.id)
+blog_Router.get('/:id', async (req, res) => {
+    const get_BlogId:BlogType | undefined = await blogs_repositories.getBlog_ID(req.params.id)
     if (get_BlogId) {
         res.status(200).send(get_BlogId)
     } else {
@@ -29,9 +28,8 @@ blog_Router.get('/:id', (req, res) => {
 blog_Router.put('/:id',
     basicAuth,
     ...updateBlogValidation,
-    (req, res) => {
-        //console.log(req.params.id, 'id from blog update')
-        const put_Blog = blogs_repositories.updateBlog(
+    async (req, res) => {
+        const put_Blog:boolean = await blogs_repositories.updateBlog(
             req.params.id,
             req.body.name,
             req.body.description,
@@ -46,8 +44,8 @@ blog_Router.put('/:id',
     })
 blog_Router.delete('/:id',
     basicAuth,
-    (req, res) => {
-        const del_BlogID = blogs_repositories.deleteID(req.params.id)
+    async (req, res) => {
+        const del_BlogID:boolean = await blogs_repositories.deleteID(req.params.id)
         if (del_BlogID) {
             res.sendStatus(204)
         } else {

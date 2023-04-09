@@ -1,6 +1,6 @@
 import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
-import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories";
+import {BlogType, blogs_repositories} from "../../blog_API-repositories/blog_API-repositories";
 
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;

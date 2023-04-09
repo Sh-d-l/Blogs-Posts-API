@@ -7,26 +7,30 @@ export type BlogType = {
     name: string,
     description: string,
     websiteUrl: string,
+    createdAt: Date,
+    isMembership: boolean
 }
-export const blogs_repositories = {
-    getBlog() {
+export const  blogs_repositories = {
+    async getBlogs():Promise<BlogType[]> {
         return blogs;
     },
-    createBlog(name: string, description: string, websiteUrl: string) {
+   async createBlog(name: string, description: string, websiteUrl: string):Promise<BlogType> {
         const newBlog: BlogType = {
             id: randomUUID(),
             name: name,
             description: description,
             websiteUrl: websiteUrl,
+            createdAt: new Date(),
+            isMembership: false,
         }
         blogs.push(newBlog)
         return newBlog;
     },
-    getBlog_ID(id: string) {
+    async getBlog_ID(id: string):Promise<BlogType | undefined> {
         const foundID = blogs.find((elem) => elem.id === id)
         return foundID;
     },
-    updateBlog(id: string, name: string, description: string, websiteUrl: string,) {
+    async updateBlog(id: string, name: string, description: string, websiteUrl: string,):Promise<boolean> {
         let findID = blogs.find((elem) => elem.id == id);
         if (findID) {
             findID.name = name;
@@ -37,7 +41,7 @@ export const blogs_repositories = {
             return false;
         }
     },
-    deleteID(id: string) {
+    async deleteID(id: string):Promise<boolean> {
         let found_blog_by_ID = blogs.filter((elem) => elem.id === id);
         if (found_blog_by_ID.length > 0) {
             blogs.splice(blogs.indexOf(found_blog_by_ID[0]), 1)
@@ -46,7 +50,7 @@ export const blogs_repositories = {
             return false;
         }
     },
-    deleteAll() {
+    async deleteAll():Promise<boolean> {
         blogs.splice(0, blogs.length)
         return true;
     }

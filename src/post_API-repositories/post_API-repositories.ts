@@ -1,21 +1,22 @@
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
+import {blogs_repositories, BlogType} from "../blog_API-repositories/blog_API-repositories";
 import {randomUUID} from "crypto";
 
 const posts:PostType[] = [];
-type PostType = {
+export type PostType = {
     id: string,
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string
+    createdAt: Date,
 }
 export const posts_repositories = {
-    getPost () {
+    async getPost ():Promise<PostType[]> {
         return posts;
     },
-    createPost(title: string, shortDescription: string, content: string, blogId: string) {
-        const blog = blogs_repositories.getBlog_ID(blogId)
+    async createPost(title: string, shortDescription: string, content: string, blogId: string):Promise<PostType | null> {
+        const blog = await blogs_repositories.getBlog_ID(blogId)
         if (!blog) return  null
         const newPost:PostType = {
             id: randomUUID(),
@@ -23,16 +24,17 @@ export const posts_repositories = {
             shortDescription: shortDescription,
             content: content,
             blogId: blog.id,
-            blogName: blog.name
+            blogName: blog.name,
+            createdAt: new Date(),
         }
         posts.push(newPost)
         return newPost;
 
     },
-    getPost_ID (id:string) {
+    async getPost_ID (id:string):Promise<PostType | undefined> {
         return posts.find((elem) => elem.id === id )
     },
-    updatePost(id:string,title:string, shortDescription:string, content:string,blogId: string,) {
+    async updatePost(id:string,title:string, shortDescription:string, content:string,blogId: string,):Promise<boolean> {
         let findID = posts.find((elem) => elem.id === id );
         if(findID) {
             findID.title = title;
@@ -45,7 +47,7 @@ export const posts_repositories = {
             return false;
         }
     },
-    deleteID (id:string) {
+    async deleteID (id:string):Promise<boolean> {
         let found_blog_by_ID = posts.filter((elem) => elem.id === id );
         if(found_blog_by_ID.length > 0) {
             posts.splice(posts.indexOf(found_blog_by_ID[0]),1)
@@ -55,7 +57,7 @@ export const posts_repositories = {
             return  false;
         }
     },
-    deleteAll () {
+    async deleteAll ():Promise<boolean> {
         posts.splice(0,posts.length)
         return true;
     }
