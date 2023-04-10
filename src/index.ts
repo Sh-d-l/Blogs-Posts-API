@@ -1,9 +1,9 @@
 import express from 'express'
 import {blog_Router} from "./blog_API-router/blog_API-router";
 import {post_Router} from "./post_API-router/post_API-router";
-import {posts_repositories} from "./post_API-repositories/post_API-repositories";
-import {blogs_repositories} from "./blog_API-repositories/blog_API-repositories";
-import {runDb} from "./repositories/db"
+import {posts_repositories} from "./post_API-repositories/post_API-repositories-db";
+import {blogs_repositories} from "./blog_API-repositories/blog_API-repositories-db";
+import {runDB} from "./repositories/db"
 
 const port = process.env.PORT || 5000
 export const app = express()
@@ -20,9 +20,10 @@ app.delete("/testing/all-data"
     }
 })
 const startApp = async () => {
-    await runDb ();
+    await runDB();
     app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`)
-    })
-}
-startApp()
+        console.log(`Example app listening on port ${port}`);
+    });
+};
+
+startApp();

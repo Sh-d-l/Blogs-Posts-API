@@ -1,4 +1,4 @@
-import {blogs_repositories, BlogType} from "../blog_API-repositories/blog_API-repositories";
+import {blogs_repositories, BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
 import {randomUUID} from "crypto";
 
 const posts:PostType[] = [];

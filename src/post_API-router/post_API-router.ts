@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
-import {PostType, posts_repositories} from "../post_API-repositories/post_API-repositories";
+import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
+import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
 import {createPostValidation, updatePostValidation} from "../middlewares/validators/blog-validation";
 
@@ -23,7 +24,7 @@ post_Router.post('/',
        }
     })
 post_Router.get('/:id', async (req, res) => {
-    const get_PostId:PostType | undefined = await posts_repositories.getPost_ID(req.params.id)
+    const get_PostId:PostType | null = await posts_repositories.getPost_ID(req.params.id)
     if (get_PostId) {
         res.status(200).send(get_PostId)
     } else {

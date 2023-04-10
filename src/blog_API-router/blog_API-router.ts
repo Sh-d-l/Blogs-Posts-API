@@ -1,5 +1,6 @@
 import {Router} from "express";
-import {BlogType, blogs_repositories} from "../blog_API-repositories/blog_API-repositories";
+import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
+import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
 import {createBlogValidation, updateBlogValidation} from "../middlewares/validators/blog-validation";
 
@@ -18,7 +19,7 @@ blog_Router.post("/",
     })
 
 blog_Router.get('/:id', async (req, res) => {
-    const get_BlogId:BlogType | undefined = await blogs_repositories.getBlog_ID(req.params.id)
+    const get_BlogId:BlogType | null = await blogs_repositories.getBlog_ID(req.params.id)
     if (get_BlogId) {
         res.status(200).send(get_BlogId)
     } else {
@@ -35,7 +36,6 @@ blog_Router.put('/:id',
             req.body.description,
             req.body.websiteUrl
         )
-        //console.log(put_Blog, ' result if we want update blog')
         if (put_Blog) {
             res.sendStatus(204)
         } else {
