@@ -4,6 +4,7 @@ import {post_Router} from "./post_API-router/post_API-router";
 import {posts_repositories} from "./post_API-repositories/post_API-repositories-db";
 import {blogs_repositories} from "./blog_API-repositories/blog_API-repositories-db";
 import {runDB} from "./repositories/db"
+import {PostType} from "./post_API-repositories/post_API-repositories-memory";
 
 const port = process.env.PORT || 5000
 export const app = express()
@@ -15,9 +16,9 @@ app.delete("/testing/all-data"
     ,async (req,res) => {
     const delPost:boolean = await posts_repositories.deleteAll()
     const delBlog:boolean = await blogs_repositories.deleteAll()
-    if(delBlog && delPost) {
+    //if(delBlog && delPost) {
         res.sendStatus(204)
-    }
+    //}
 })
 const startApp = async () => {
     await runDB();
