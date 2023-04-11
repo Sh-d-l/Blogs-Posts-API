@@ -1,9 +1,9 @@
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
 
 dotenv.config()
 
-const mongoURI = process.env.MONGO_URL || "mongodb://127.0.0.1:27017" /*'mongodb://0.0.0.0:27017'*/
+const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
 export const client = new MongoClient(mongoURI)
 export async function runDB() {
     try {
@@ -17,4 +17,3 @@ export async function runDB() {
     }
 }
 console.log(process.env.MONGO_URL)
-//output - mongodb+srv://a:a@ava.epzello.mongodb.net/?retryWrites=true&w=majority
