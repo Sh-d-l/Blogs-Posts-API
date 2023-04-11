@@ -36,6 +36,7 @@ export const posts_repositories = {
         return !!found_blog_by_ID.deletedCount
     },
     async deleteAll ():Promise<boolean> {
-        return client.db("Blogs-Posts-API").collection("Posts").drop();
+        let delAllPosts = await client.db("Blogs-Posts-API").collection("Posts").deleteMany({});
+        return !!delAllPosts.deletedCount
     }
 }
