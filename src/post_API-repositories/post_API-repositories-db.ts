@@ -2,7 +2,7 @@ import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories
 import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
 import {randomUUID} from "crypto";
 import {PostType} from "./post_API-repositories-memory";
-import {client} from "../repositories/db";
+import {client, postDbRepo} from "../repositories/db";
 
 export const posts_repositories = {
     async getPost ():Promise<PostType[]> {
@@ -36,7 +36,8 @@ export const posts_repositories = {
         return !!found_blog_by_ID.deletedCount
     },
     async deleteAll ():Promise<boolean> {
-        let delAllPosts = await client.db("Blogs-Posts-API").collection("Posts").deleteMany({});
+        let delAllPosts = await postDbRepo.deleteMany();
+
         return !!delAllPosts.deletedCount
     }
 }

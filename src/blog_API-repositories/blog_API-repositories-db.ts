@@ -1,5 +1,5 @@
 import {randomUUID} from "crypto";
-import {client} from "../repositories/db";
+import {blogBdRepo, blogDbRepo, client} from "../repositories/db";
 import {BlogType} from "./blog_API-repositories-memory";
 
 export const  blogs_repositories = {
@@ -31,6 +31,8 @@ export const  blogs_repositories = {
         return !!found_blog_by_ID.deletedCount
     },
     async deleteAll():Promise<boolean> {
-        return client.db("Blogs-Posts-API").collection("Blogs").drop();
+        let delAllBlogs = await blogDbRepo.deleteMany();
+
+        return !!delAllBlogs.deletedCount
     }
 }
