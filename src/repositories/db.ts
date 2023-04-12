@@ -3,7 +3,7 @@ import {MongoClient} from "mongodb";
 
 dotenv.config()
 
-const DB_NAME = "Blogs-Posts-API";
+export const DB_NAME = "Blogs-Posts-API";
 
 const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
 export const client = new MongoClient(mongoURI)

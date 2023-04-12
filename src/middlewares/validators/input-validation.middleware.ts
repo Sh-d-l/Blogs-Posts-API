@@ -1,9 +1,8 @@
 import {Request,Response,NextFunction} from "express";
 import {validationResult} from "express-validator";
 
-
-export const inputValidator = (req:Request,res:Response,next:NextFunction) => {
-    const errors = validationResult(req);
+export const inputValidator = async (req:Request,res:Response,next:NextFunction) => {
+    const errors = await validationResult(req);
     if (!errors.isEmpty()) {
         const errorsMessages = errors.array({onlyFirstError: true}).map(el => ({
             message: el.msg,

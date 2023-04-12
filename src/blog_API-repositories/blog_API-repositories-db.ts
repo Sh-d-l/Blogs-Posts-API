@@ -2,6 +2,7 @@ import {randomUUID} from "crypto";
 import {blogDbRepo, client} from "../repositories/db";
 import {BlogType} from "./blog_API-repositories-memory";
 import {ObjectId} from "mongodb";
+import {DB_NAME} from "../repositories/db";
 
 export const  blogs_repositories = {
     async getBlogs():Promise<BlogType[]> {
@@ -16,11 +17,13 @@ export const  blogs_repositories = {
             createdAt: new Date(),
             isMembership: false,
         }
-        const result = await client.db("Blogs-Posts-API").collection <BlogType> ("Blogs").insertOne(newBlog);
+        const result = await client
+            .db("Blogs-Posts-API")
+            .collection <BlogType> ("Blogs")
+            .insertOne(newBlog);
         return newBlog;
     },
     async getBlog_ID(id: string):Promise<BlogType | null> {
-
         return client.db("Blogs-Posts-API").collection<BlogType>("Blogs").findOne({id:id},{projection:{_id:0}})
     },
     async updateBlog(id: string, name: string, description: string, websiteUrl: string,):Promise<boolean> {

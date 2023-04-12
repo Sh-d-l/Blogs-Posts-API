@@ -3,6 +3,7 @@ import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
 import {randomUUID} from "crypto";
 import {PostType} from "./post_API-repositories-memory";
 import {client, postDbRepo} from "../repositories/db";
+
 export const posts_repositories = {
     async getPost ():Promise<PostType[]> {
         return client.db("Blogs-Posts-API").collection <PostType> ("Posts").find({},{projection:{_id:0}}).toArray();
