@@ -5,7 +5,7 @@ import {PostType} from "./post_API-repositories-memory";
 import {client, postDbRepo} from "../repositories/db";
 export const posts_repositories = {
     async getPost ():Promise<PostType[]> {
-        return client.db("Blogs-Posts-API").collection <PostType> ("Posts").find({}).toArray();
+        return client.db("Blogs-Posts-API").collection <PostType> ("Posts").find({},{projection:{_id:0}}).toArray();
     },
     async createPost(title: string, shortDescription: string, content: string, blogId: string):Promise<PostType | null> {
         const blog:BlogType | null = await blogs_repositories.getBlog_ID(blogId)
@@ -23,7 +23,7 @@ export const posts_repositories = {
         return newPost;
     },
     async getPost_ID (id:string):Promise<PostType | null> {
-        return client.db("Blogs-Posts-API").collection<PostType>("Posts").findOne({id:id});
+        return client.db("Blogs-Posts-API").collection<PostType>("Posts").findOne({id:id},{projection:{_id:0}});
        },
     async updatePost(id:string,title:string, shortDescription:string, content:string,blogId: string,):Promise<boolean> {
         let updatePostId = await client.db("Blogs-Posts-API").collection<PostType>("Posts").updateOne({id:id},
