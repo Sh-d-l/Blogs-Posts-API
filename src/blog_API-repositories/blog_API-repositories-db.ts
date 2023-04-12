@@ -1,5 +1,5 @@
 import {randomUUID} from "crypto";
-import {blogBdRepo, blogDbRepo, client} from "../repositories/db";
+import {blogDbRepo, client} from "../repositories/db";
 import {BlogType} from "./blog_API-repositories-memory";
 
 export const  blogs_repositories = {
