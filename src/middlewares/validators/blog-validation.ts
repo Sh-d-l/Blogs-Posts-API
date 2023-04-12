@@ -1,7 +1,8 @@
 import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
-import {BlogType, blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-memory";
-
+import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
+import {ObjectId} from "mongodb";
+//import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
@@ -32,9 +33,11 @@ const blogIdValidation = body('blogId')
     .notEmpty()
     .custom(async  (val, {req}) => {
         const blog = await blogs_repositories.getBlog_ID(val)
-        if (!blog) return false
+        return !!blog;
+
+        /*if (!blog) return false
         req.blog = blog
-        return true
+        return true*/
     })
 
 export const createBlogValidation = [

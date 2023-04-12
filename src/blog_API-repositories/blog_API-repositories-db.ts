@@ -1,7 +1,7 @@
 import {randomUUID} from "crypto";
 import {blogDbRepo, client} from "../repositories/db";
 import {BlogType} from "./blog_API-repositories-memory";
-
+import {ObjectId} from "mongodb";
 export const  blogs_repositories = {
     async getBlogs():Promise<BlogType[]> {
         return client.db("Blogs-Posts-API").collection <BlogType> ("Blogs").find({}).toArray();
@@ -19,7 +19,13 @@ export const  blogs_repositories = {
         return newBlog;
     },
     async getBlog_ID(id: string):Promise<BlogType | null> {
-        return client.db("Blogs-Posts-API").collection<BlogType>("Blogs").findOne({id:id})
+        const options = {
+            projection: {
+                _id: 0,
+                site: 1
+            }
+        }
+        return client.db("Blogs-Posts-API").collection<BlogType>("Blogs").findOne({id:id},options)
     },
     async updateBlog(id: string, name: string, description: string, websiteUrl: string,):Promise<boolean> {
         const resultUpdate = await client.db("Blogs-Posts-API").collection<BlogType>("Blogs").updateOne({id:id},
