@@ -31,13 +31,12 @@ const contentValidation = body('content').trim().isLength({max: 1000}).isString(
 const blogIdValidation = body('blogId')
     .isString().trim()
     .notEmpty()
-    .custom(async  (val, {req}) => {
+    .custom(async  (val) => {
         const blog = await blogs_repositories.getBlog_ID(val)
-        return !!blog;
-
-        /*if (!blog) return false
-        req.blog = blog
-        return true*/
+        if(!blog){
+            throw new Error("BlogId not exist")
+        }
+        return true;
     })
 
 export const createBlogValidation = [

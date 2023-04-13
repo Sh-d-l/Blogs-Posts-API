@@ -14,7 +14,8 @@ blog_Router.post("/",
     basicAuth,
     ...createBlogValidation,
     async (req, res) => {
-        const post_Blog:BlogType = await blogs_repositories.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+        const post_Blog = await blogs_repositories
+            .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(post_Blog)
     })
 
