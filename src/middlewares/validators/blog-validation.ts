@@ -29,7 +29,7 @@ const titleValidation = body('title').trim().isLength({min: 1, max: 30}).isStrin
 const shortDescriptionValidation =  body('shortDescription').trim().isString().isLength({min: 1, max: 100})
 const contentValidation = body('content').trim().isLength({max: 1000}).isString().notEmpty()
 const blogIdValidation = body('blogId').isUUID().custom(async  (val) => {
-        const blog = await blogs_repositories.getBlog_ID(val)
+        const blog = await blogs_repositories.getBlogID(val)
         if(!blog) {
             throw new Error("BlogId not exist")
         }

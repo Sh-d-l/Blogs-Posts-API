@@ -14,19 +14,19 @@ post_Router.post('/',
     basicAuth,
     ...createPostValidation,
     async (req: Request, res: Response) => {
-        const post_Post: PostType | null = await posts_repositories.createPost(
+        const postPost: PostType | null = await posts_repositories.createPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.blogId)
-       if(post_Post !== null) {
-           res.status(201).send(post_Post)
+       if(postPost !== null) {
+           res.status(201).send(postPost)
        }
     })
 post_Router.get('/:id', async (req, res) => {
-    const get_PostId:PostType | null = await posts_repositories.getPost_ID(req.params.id)
-    if (get_PostId) {
-        res.status(200).send(get_PostId)
+    const getPostId:PostType | null = await posts_repositories.getPostID(req.params.id)
+    if (getPostId) {
+        res.status(200).send(getPostId)
     } else {
         res.sendStatus(404)
     }

@@ -1,4 +1,4 @@
-import {blogs_repositories, BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
+import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-memory";
 import {randomUUID} from "crypto";
 
 const posts:PostType[] = [];
@@ -9,14 +9,14 @@ export type PostType = {
     content: string,
     blogId: string,
     blogName: string
-    createdAt: Date,
+    createdAt: string,
 }
 export const posts_repositories = {
     async getPost ():Promise<PostType[]> {
         return posts;
     },
     async createPost(title: string, shortDescription: string, content: string, blogId: string):Promise<PostType | null> {
-        const blog = await blogs_repositories.getBlog_ID(blogId)
+        const blog = await blogs_repositories.getBlogID(blogId)
         if (!blog) return  null
         const newPost:PostType = {
             id: randomUUID(),
@@ -25,13 +25,13 @@ export const posts_repositories = {
             content: content,
             blogId: blog.id,
             blogName: blog.name,
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
         }
         posts.push(newPost)
         return newPost;
 
     },
-    async getPost_ID (id:string):Promise<PostType | undefined> {
+    async getPostID (id:string):Promise<PostType | undefined> {
         return posts.find((elem) => elem.id === id )
     },
     async updatePost(id:string,title:string, shortDescription:string, content:string,blogId: string,):Promise<boolean> {
