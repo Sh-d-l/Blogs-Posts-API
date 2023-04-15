@@ -1,43 +1,37 @@
-import {blogDbRepo, client} from "../repositories/db";
-import {BlogType} from "./blog_API-repositories-memory";
+import {blogCollection} from "../repositories/db";
+import {TBlogDb} from "./blog_API-repositories-memory";
+import {randomUUID} from "crypto";
 
-export const  blogs_repositories = {
-    async getBlogs():Promise<BlogType[]> {
-        return blogDbRepo.collection <BlogType> ("Blogs").find({},).toArray();
+export const blogs_repositories = {
+    async getBlogs(): Promise<TBlogDb[]> {
+        return blogCollection.find({}, {projection: {_id: 0}}).toArray();
     },
-    async createBlog(name: string, description: string, websiteUrl: string):Promise<BlogType> {
-        const newBlog = {
-            name: name,
-            description: description,
-            websiteUrl: websiteUrl,
-            createdAt: new Date(),
+    async createBlog(name: string, description: string, websiteUrl: string): Promise<TBlogDb> {
+        const newBlog: TBlogDb = {
+            id: randomUUID(),
+            name,
+            description,
+            websiteUrl,
+            createdAt: new Date().toISOString(),
             isMembership: false,
         }
-        const result = await blogDbRepo.collection("Blogs").insertOne({...newBlog});
-
-        return {
-            id: result.insertedId.toString(),
-            name: newBlog.name,
-            description: newBlog.description,
-            websiteUrl: newBlog.websiteUrl,
-            createdAt: newBlog.createdAt,
-            isMembership: newBlog.isMembership,
-        };
+        await blogCollection.insertOne({...newBlog});
+        return newBlog
     },
-    async getBlog_ID(id: string):Promise<BlogType | null> {
-        return blogDbRepo.collection<BlogType>("Blogs").findOne({id:id})
+    async getBlogID(id: string): Promise<TBlogDb | null> {
+        return blogCollection.findOne({id}, {projection: {_id: false}})
     },
-    async updateBlog(id: string, name: string, description: string, websiteUrl: string,):Promise<boolean> {
-        const resultUpdate = await blogDbRepo.collection<BlogType>("Blogs").updateOne({id:id},
-            {$set: {name:name,description:description,websiteUrl:websiteUrl }})
+    async updateBlog(id: string, name: string, description: string, websiteUrl: string,): Promise<boolean> {
+        const resultUpdate = await blogCollection.updateOne({id},
+            {$set: {name, description, websiteUrl}}
+        )
         return !!resultUpdate.matchedCount;
     },
-    async deleteID(id: string):Promise<boolean> {
-        const found_blog_by_ID = await blogDbRepo.collection<BlogType>("Blogs").deleteOne({id:id});
-        return !!found_blog_by_ID.deletedCount
+    async deleteID(id: string): Promise<boolean> {
+            const found_blog_by_ID = await blogCollection.deleteOne({id});
+            return !!found_blog_by_ID.deletedCount
     },
-    async deleteAll():Promise<boolean> {
-        let delAllBlogs = await blogDbRepo.collection("Blogs").deleteMany();
-        return !!delAllBlogs.deletedCount
+    async deleteAll() {
+        return blogCollection.deleteMany();
     }
 }

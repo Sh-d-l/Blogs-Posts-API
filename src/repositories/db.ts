@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
-import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
+import {BlogType, BlogTypeWithId, TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
 
 dotenv.config()
 
@@ -11,6 +11,10 @@ export const client = new MongoClient(mongoURI)
 export const blogDbRepo = client.db(DB_NAME)//.collection <BlogType> ("Blogs")
 export const postDbRepo = client.db(DB_NAME)
 
+
+export const blogCollection = blogDbRepo.collection<TBlogDb> ("Blogs")
+
+export const collections = [blogCollection]
 export async function runDB() {
     try {
         await client.connect();

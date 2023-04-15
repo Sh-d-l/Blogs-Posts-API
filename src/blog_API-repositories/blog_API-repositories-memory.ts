@@ -1,36 +1,36 @@
 import {randomUUID} from "crypto";
 
-const blogs: BlogType[] = [];
+const blogs: TBlogDb[] = [];
 
-export type BlogType = {
+export type TBlogDb = {
     id: string,
     name: string,
     description: string,
     websiteUrl: string,
-    createdAt: Date,
+    createdAt: string,
     isMembership: boolean
 }
-export const  blogs_repositories = {
-    async getBlogs():Promise<BlogType[]> {
+
+export const blogs_repositories = {
+    async getBlogs(): Promise<TBlogDb[]> {
         return blogs;
     },
-   async createBlog(name: string, description: string, websiteUrl: string):Promise<BlogType> {
-        const newBlog: BlogType = {
+    async createBlog(name: string, description: string, websiteUrl: string): Promise<TBlogDb> {
+        const newBlog: TBlogDb = {
             id: randomUUID(),
             name: name,
             description: description,
             websiteUrl: websiteUrl,
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
             isMembership: false,
         }
         blogs.push(newBlog)
         return newBlog;
     },
-    async getBlog_ID(id: string):Promise<BlogType | undefined> {
-        const foundID = blogs.find((elem) => elem.id === id)
-        return foundID;
+    async getBlogID(id: string): Promise<TBlogDb | undefined> {
+        return blogs.find((elem) => elem.id === id);
     },
-    async updateBlog(id: string, name: string, description: string, websiteUrl: string,):Promise<boolean> {
+    async updateBlog(id: string, name: string, description: string, websiteUrl: string,): Promise<boolean> {
         let findID = blogs.find((elem) => elem.id == id);
         if (findID) {
             findID.name = name;
@@ -41,7 +41,7 @@ export const  blogs_repositories = {
             return false;
         }
     },
-    async deleteID(id: string):Promise<boolean> {
+    async deleteID(id: string): Promise<boolean> {
         let found_blog_by_ID = blogs.filter((elem) => elem.id === id);
         if (found_blog_by_ID.length > 0) {
             blogs.splice(blogs.indexOf(found_blog_by_ID[0]), 1)
@@ -50,7 +50,7 @@ export const  blogs_repositories = {
             return false;
         }
     },
-    async deleteAll():Promise<boolean> {
+    async deleteAll(): Promise<boolean> {
         blogs.splice(0, blogs.length)
         return true;
     }
