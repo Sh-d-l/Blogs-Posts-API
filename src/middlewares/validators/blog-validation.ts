@@ -4,7 +4,6 @@ import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositor
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-
 const nameValidation = body('name')
     .isString()
     .trim()
@@ -28,7 +27,11 @@ const websiteUrlValidation = body("websiteUrl")
     .matches(websiteUrlPattern)
     .withMessage("Website URL must be in correct format")
 
-const titleValidation = body('title').trim().isLength({min: 1, max: 30}).isString().notEmpty()
+const titleValidation = body('title')
+    .trim()
+    .isLength({min: 1, max: 30})
+    .isString()
+    .notEmpty()
 const shortDescriptionValidation =  body('shortDescription')
     .trim()
     .isString()
@@ -38,13 +41,13 @@ const contentValidation = body('content')
     .isLength({max: 1000})
     .isString()
     .notEmpty()
-const blogIdValidation = body('blogId').isUUID()/*.custom(async  (val) => {
+const blogIdValidation = body('blogId').isUUID().custom(async  (val) => {
         const blog = await blogs_repositories.getBlogID(val)
         if(!blog) {
             throw new Error("BlogId not exist")
         }
         return true;
-    })*/
+    })
 
 export const createBlogValidation = [
     nameValidation,
