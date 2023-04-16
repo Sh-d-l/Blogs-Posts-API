@@ -22,7 +22,7 @@ export const posts_repositories = {
                 blogName: blog.name,
                 createdAt: new Date().toISOString(),
             }
-            await postCollection.insertOne(newPost);
+            await postCollection.insertOne({...newPost});
             return newPost;
         },
 
