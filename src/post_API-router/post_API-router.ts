@@ -7,8 +7,8 @@ import {createPostValidation, updatePostValidation} from "../middlewares/validat
 export const post_Router = Router({});
 
 post_Router.get('/', async (req, res) => {
-    const get_Post:PostType[] = await posts_repositories.getPost()
-    res.status(200).send(get_Post)
+    const getPost:PostType[] = await posts_repositories.getPost()
+    res.status(200).send(getPost)
 })
 post_Router.post('/',
     basicAuth,
@@ -35,13 +35,13 @@ post_Router.put('/:id',
     basicAuth,
     ...updatePostValidation,
     async (req, res) => {
-        const put_Post:boolean = await posts_repositories.updatePost(
+        const putPost:boolean = await posts_repositories.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.blogId)
-        if (put_Post) {
+        if (putPost) {
             res.sendStatus(204)
         } else {
             res.sendStatus(404)
@@ -50,8 +50,8 @@ post_Router.put('/:id',
 post_Router.delete('/:id',
     basicAuth,
     async (req, res) => {
-        const del_PostID:boolean = await posts_repositories.deleteID(req.params.id)
-        if (del_PostID) {
+        const delPostID:boolean = await posts_repositories.deleteID(req.params.id)
+        if (delPostID) {
             res.sendStatus(204)
         } else {
             res.sendStatus(404)

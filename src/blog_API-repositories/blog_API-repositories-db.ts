@@ -19,7 +19,7 @@ export const blogs_repositories = {
         return newBlog
     },
     async getBlogID(id: string): Promise<TBlogDb | null> {
-        return blogCollection.findOne({id}, {projection: {_id: false}})
+        return await blogCollection.findOne({id}, {projection: {_id: false}});
     },
     async updateBlog(id: string, name: string, description: string, websiteUrl: string,): Promise<boolean> {
         const resultUpdate = await blogCollection.updateOne({id},
