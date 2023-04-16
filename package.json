@@ -6,9 +6,9 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "dev": "nodemon dist/src/index.js",
-    "debug": "nodemon --inspect dist/src/index.js",
-    "start": "node dist/src/index.js",
+    "dev": "nodemon dist/index.js",
+    "debug": "nodemon --inspect dist/index.js",
+    "start": "node dist/index.js",
     "test": "jest"
   },
   "dependencies": {

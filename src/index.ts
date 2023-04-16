@@ -21,7 +21,8 @@ app.delete("/testing/all-data", async (req, res) => {
 
     res.sendStatus(204);
 })
-const startApp = async () => {
+
+export const startApp = async () => {
     await runDB();
     app.listen(port, () => {
         console.log(`Example app listening on port ${port}`);

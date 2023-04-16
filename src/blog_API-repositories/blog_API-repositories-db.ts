@@ -15,7 +15,9 @@ export const blogs_repositories = {
             createdAt: new Date().toISOString(),
             isMembership: false,
         }
+
         await blogCollection.insertOne({...newBlog});
+
         return newBlog
     },
     async getBlogID(id: string): Promise<TBlogDb | null> {

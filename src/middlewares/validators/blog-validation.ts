@@ -41,7 +41,7 @@ const contentValidation = body('content')
     .isLength({max: 1000})
     .isString()
     .notEmpty()
-const blogIdValidation = body('blogId').isUUID().custom(async  (val) => {
+const blogIdValidation = body('blogId').custom(async (val) => {
         const blog = await blogs_repositories.getBlogID(val)
         if(!blog) {
             throw new Error("BlogId not exist")

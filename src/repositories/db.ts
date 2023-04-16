@@ -17,6 +17,7 @@ export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb> ("Blogs")
 
 export const collections = [blogCollection,postCollection]
+
 export async function runDB() {
     try {
         await client.connect();
