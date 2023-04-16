@@ -11,7 +11,7 @@ export const posts_repositories = {
                      shortDescription: string,
                      content: string,
                      blogId: string): Promise<PostType | null> {
-            const blog: TBlogDb | null = await blogCollection.findOne({blogId},{projection: {_id: false}})
+            const blog: TBlogDb | null = await blogCollection.findOne({id: blogId},{projection: {_id: false}})
             if (!blog) return null
             const newPost: PostType = {
                 id: randomUUID(),
