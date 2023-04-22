@@ -1,24 +1,13 @@
 import {blogCollection} from "../repositories/db";
 import {TBlogDb} from "./blog_API-repositories-memory";
-import {randomUUID} from "crypto";
+import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 
 export const blogs_repositories = {
     async getBlogs(): Promise<TBlogDb[]> {
         return blogCollection.find({}, {projection: {_id: 0}}).toArray();
     },
-    async createBlog(name: string, description: string, websiteUrl: string): Promise<TBlogDb> {
-        const newBlog: TBlogDb = {
-            id: randomUUID(),
-            name,
-            description,
-            websiteUrl,
-            createdAt: new Date().toISOString(),
-            isMembership: false,
-        }
-
-        await blogCollection.insertOne({...newBlog});
-
-        return newBlog
+    async createBlog(newBlog:TBlogDb) {
+        await blogCollection.insertOne(newBlog);
     },
     async getBlogID(id: string): Promise<TBlogDb | null> {
         return await blogCollection.findOne({id}, {projection: {_id: false}});
@@ -33,7 +22,5 @@ export const blogs_repositories = {
             const found_blog_by_ID = await blogCollection.deleteOne({id});
             return !!found_blog_by_ID.deletedCount
     },
-    async deleteAll() {
-        return blogCollection.deleteMany();
-    }
+
 }

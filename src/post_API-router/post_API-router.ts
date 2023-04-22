@@ -3,18 +3,19 @@ import {posts_repositories} from "../post_API-repositories/post_API-repositories
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
 import {createPostValidation, updatePostValidation} from "../middlewares/validators/blog-validation";
+import {postService} from "../Post_API-service/post_API-service";
 
 export const post_Router = Router({});
 
 post_Router.get('/', async (req, res) => {
-    const getPost:PostType[] = await posts_repositories.getPost()
+    const getPost:PostType[] = await postService.getPostService()
     res.status(200).send(getPost)
 })
 post_Router.post('/',
     basicAuth,
     ...createPostValidation,
     async (req: Request, res: Response) => {
-        const postPost: PostType | null = await posts_repositories.createPost(
+        const postPost: PostType | null = await postService.createPostService(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -24,7 +25,7 @@ post_Router.post('/',
        }
     })
 post_Router.get('/:id', async (req, res) => {
-    const getPostId:PostType | null = await posts_repositories.getPostID(req.params.id)
+    const getPostId:PostType | null = await postService.getPostIDService(req.params.id)
     if (getPostId) {
         res.status(200).send(getPostId)
     } else {
@@ -35,7 +36,7 @@ post_Router.put('/:id',
     basicAuth,
     ...updatePostValidation,
     async (req, res) => {
-        const putPost:boolean = await posts_repositories.updatePost(
+        const putPost:boolean = await postService.updatePostService(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
@@ -50,7 +51,7 @@ post_Router.put('/:id',
 post_Router.delete('/:id',
     basicAuth,
     async (req, res) => {
-        const delPostID:boolean = await posts_repositories.deleteID(req.params.id)
+        const delPostID:boolean = await postService.deleteIDService(req.params.id)
         if (delPostID) {
             res.sendStatus(204)
         } else {

@@ -7,23 +7,11 @@ export const posts_repositories = {
     async getPost(): Promise<PostType[]> {
         return postCollection.find({}, {projection: {_id: 0}}).toArray();
     },
-    async createPost(title: string,
-                     shortDescription: string,
-                     content: string,
-                     blogId: string): Promise<PostType | null> {
-            const blog: TBlogDb | null = await blogCollection.findOne({id: blogId},{projection: {_id: false}})
-        if (!blog) return null
-            const newPost: PostType = {
-                id: randomUUID(),
-                title,
-                shortDescription,
-                content,
-                blogId: blog.id,
-                blogName: blog.name,
-                createdAt: new Date().toISOString(),
-            }
-            await postCollection.insertOne({...newPost});
-            return newPost;
+    async createPostForBlog(addPostForBlog:PostType) {
+        return await postCollection.insertOne(addPostForBlog);
+    },
+    async createPost(newPost:PostType) {
+           return await postCollection.insertOne(newPost);
         },
 
     async getPostID(id: string): Promise<PostType | null> {
@@ -44,8 +32,4 @@ export const posts_repositories = {
         let foundBlogByID = await postCollection.deleteOne({id: id});
         return !!foundBlogByID.deletedCount
     },
-    async deleteAll(): Promise<boolean> {
-        let delAllPosts = await postCollection.deleteMany();
-        return !!delAllPosts.deletedCount
-    }
 }
