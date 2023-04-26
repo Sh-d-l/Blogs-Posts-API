@@ -43,19 +43,13 @@ export const blogsRepoQuery = {
                             sortDirection: SortDirection ,
                             pageNumber:number,
                             pageSize:number):Promise<TypeGetBlogs[]> {
-       console.log(sortDirection)
-       console.log(sortBy)
+       /*console.log(sortDirection)
+       console.log(sortBy)*/
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
-       /*if(sortDirection === "desc") {
-           sortDirection = -1;
-       }
-       if(sortDirection === "asc") {
-           sortDirection = 1;
-       }*/
        const filterSearchNameTerm = {name:{}};
-       if(searchNameTerm !== null) {
+       if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
        /*console.log("skip",skip)

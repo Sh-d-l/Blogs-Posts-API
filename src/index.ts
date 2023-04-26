@@ -1,4 +1,4 @@
-import express from 'express'
+import express,{Response,Request} from 'express'
 import {blog_Router} from "./blog_API-router/blog_API-router";
 import {post_Router} from "./post_API-router/post_API-router";
 import {collections, runDB} from "./repositories/db"
@@ -13,7 +13,7 @@ app.use(express.json())
 app.use("/blogs", blog_Router)
 app.use("/posts", post_Router)
 
-app.delete("/testing/all-data", async (req, res) => {
+app.delete("/testing/all-data", async (req:Request, res:Response) => {
 
     const promises = collections.map(c => c.deleteMany())
 
