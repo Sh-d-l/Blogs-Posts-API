@@ -43,6 +43,8 @@ export const blogsRepoQuery = {
                             sortDirection: SortDirection ,
                             pageNumber:number,
                             pageSize:number):Promise<TypeGetBlogs[]> {
+       console.log(sortDirection)
+       console.log(sortBy)
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
@@ -56,11 +58,15 @@ export const blogsRepoQuery = {
        if(searchNameTerm !== null) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
+       /*console.log("skip",skip)
+       console.log("countBlogs",countBlogs)
+       console.log("countPages", countPages)
+       console.log("filter",filterSearchNameTerm)*/
        const getBlogsDB:TBlogDb[] = await blogCollection
-           .find(filterSearchNameTerm)
-           .sort({sortBy: sortDirection})
+           .find({})
            .skip(skip)
            .limit(pageSize)
+           .sort({sortBy: sortDirection})
            .toArray()
        const newArr:TypeGetBlogs[] = getBlogsDB.map((blog:TBlogDb) => {
             return {

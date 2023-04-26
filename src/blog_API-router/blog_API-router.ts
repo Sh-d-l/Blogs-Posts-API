@@ -23,6 +23,7 @@ blog_Router.get('/', async (req:Request, res:Response) => {
             )
     res.status(200).send(get_Blogs)
 })
+
 blog_Router.post("/",
     basicAuth,
     ...createBlogValidation,
@@ -50,7 +51,8 @@ blog_Router.post ("/:blogId/posts",
 })
 
 blog_Router.get('/:id', async (req, res) => {
-    const getBlogId: TBlogDb | null = await blogsService.getBlogIDService(req.params.id)
+    const getBlogId: TBlogDb | null = await blogsService
+        .getBlogIDService(req.params.id)
     if (getBlogId) {
         res.status(200).send(getBlogId)
     } else {
