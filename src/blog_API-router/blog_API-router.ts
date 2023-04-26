@@ -1,18 +1,26 @@
-import {Router} from "express";
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
+import {Request, Response, Router} from "express";
 import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
-import {createBlogValidation, updateBlogValidation} from "../middlewares/validators/blog-validation";
+import {createBlogValidation,updateBlogValidation
+} from "../middlewares/validators/blog-validation";
 import {blogsService} from "../blog_API-service/blog_API-service";
 import {TypeGetBlogs} from "../blog_API-repositories/blogRepositoriesQuery";
 import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {SortDirection} from "mongodb";
 
 export const blog_Router = Router({});
 
-blog_Router.get('/', async (req, res) => {
-    const get_Blogs: TypeGetBlogs[] = await blogsRepoQuery.getBlogsRepoQuery()
+blog_Router.get('/', async (req:Request, res:Response) => {
+    const get_Blogs: TypeGetBlogs[] = await blogsRepoQuery
+        .getBlogsRepoQuery(
+             String(req.query.searchNameTerm) || null,
+            String(req.query.sortBy) || "createdAt",
+            req.query.sortDirection as SortDirection|| "desc",
+            Number(req.query.pageNumber) || 1,
+            Number(req.query.pageSize) || 10,
+            )
     res.status(200).send(get_Blogs)
 })
 blog_Router.post("/",
@@ -20,16 +28,17 @@ blog_Router.post("/",
     ...createBlogValidation,
     async (req, res) => {
         const postBlog:TBlogDb = await blogsService
-            .createBlogService(req.body.name, req.body.description, req.body.websiteUrl)
+            .createBlogService(req.body.name,
+                req.body.description,
+                req.body.websiteUrl)
         res.status(201).send(postBlog)
     })
 
 blog_Router.post ("/:blogId/posts",
     basicAuth,
-    ...createBlogValidation,
     async (req,res) => {
-        const addPostByBlogId:Promise<PostType> | null = await  blogsService
-            .createPostByBlogId (req.params.id, req.body.title,
+        const addPostByBlogId:PostType | null  = await  blogsService
+            .createPostByBlogId (req.params.blogId, req.body.title,
             req.body.shortDescription,
             req.body.content);
         if(addPostByBlogId) {
@@ -49,8 +58,14 @@ blog_Router.get('/:id', async (req, res) => {
     }
 })
 
-blog_Router.get('/:blogId/posts', async (req,res) => {
-    const getPostsByBlogID:TypeGetPostsByBlogId[] | null = await blogsRepoQuery.getAllPostsByBlogId(req.params.blogId)
+blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
+    const getPostsByBlogID:TypeGetPostsByBlogId[] | null = await blogsRepoQuery
+        .getAllPostsByBlogId(
+            req.params.blogId,
+            req.query.sortBy as string || "createdAt",
+            req.query.sortDirection as SortDirection || "desc",
+            Number(req.query.pageNumber) || 1,
+            Number(req.query.pageSize) || 10,)
     if (getPostsByBlogID) {
         res.status(200).send(getPostsByBlogID)
     } else {

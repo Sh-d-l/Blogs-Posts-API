@@ -1,17 +1,15 @@
-import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
-import {randomUUID} from "crypto";
 import {PostType} from "./post_API-repositories-memory";
-import {blogCollection, postCollection} from "../repositories/db";
+import {postCollection} from "../repositories/db";
 
 export const posts_repositories = {
     async getPost(): Promise<PostType[]> {
         return postCollection.find({}, {projection: {_id: 0}}).toArray();
     },
     async createPostForBlog(addPostForBlog:PostType) {
-        return await postCollection.insertOne(addPostForBlog);
+        return await postCollection.insertOne({...addPostForBlog});
     },
     async createPost(newPost:PostType) {
-           return await postCollection.insertOne(newPost);
+           return await postCollection.insertOne({...newPost});
         },
 
     async getPostID(id: string): Promise<PostType | null> {

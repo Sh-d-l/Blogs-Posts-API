@@ -22,13 +22,15 @@ export const blogsService = {
         }
         await blogs_repositories.createBlog(newBlog)
         return newBlog;
+
     },
 
-    async createPostByBlogId (id:string,
+    async createPostByBlogId (blogId:string,
                               title: string,
                               shortDescription: string,
-                              content: string, ): Promise<PostType> | null {
-       const getBlogForCreatePost:TBlogDb | null = await blogs_repositories.getBlogID(id);
+                              content: string, ): Promise<PostType | null> {
+       const getBlogForCreatePost:TBlogDb | null = await blogs_repositories
+           .getBlogID(blogId);
        if (getBlogForCreatePost) {
            const addPostForBlog:PostType = {
                id: randomUUID(),

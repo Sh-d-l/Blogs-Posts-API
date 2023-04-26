@@ -41,8 +41,9 @@ const contentValidation = body('content')
     .isLength({max: 1000})
     .isString()
     .notEmpty()
-const blogIdValidation = body('blogId').custom(async (val) => {
+const blogIdBodyValidation = body('blogId').custom(async (val) => {
         const blog = await blogs_repositories.getBlogID(val)
+    console.log(blog)
         if(!blog) {
             throw new Error("BlogId not exist")
         }
@@ -67,7 +68,7 @@ export const createPostValidation = [
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    blogIdValidation,
+    blogIdBodyValidation,
     inputValidator
 ]
 
@@ -75,6 +76,6 @@ export const updatePostValidation =[
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    blogIdValidation,
+    blogIdBodyValidation,
     inputValidator
 ]

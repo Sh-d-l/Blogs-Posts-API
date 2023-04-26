@@ -1,14 +1,20 @@
 import {Request, Response, Router} from "express";
-import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
 import {createPostValidation, updatePostValidation} from "../middlewares/validators/blog-validation";
 import {postService} from "../Post_API-service/post_API-service";
+import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
+import {TypeGetPosts} from "../post_API-repositories/postRepositoriesQuery";
+import {SortDirection} from "mongodb";
 
 export const post_Router = Router({});
 
-post_Router.get('/', async (req, res) => {
-    const getPost:PostType[] = await postService.getPostService()
+post_Router.get('/', async (req:Request, res:Response) => {
+    const getPost:TypeGetPosts[] = await postsRepoQuery.getPostsRepoQuery(
+        String(req.query.sortBy) || "createdAt",
+        req.query.sortDirection as SortDirection|| "desc",
+        Number(req.query.pageNumber) || 1,
+        Number(req.query.pageSize) || 10,)
     res.status(200).send(getPost)
 })
 post_Router.post('/',

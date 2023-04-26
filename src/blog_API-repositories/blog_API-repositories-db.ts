@@ -7,10 +7,10 @@ export const blogs_repositories = {
         return blogCollection.find({}, {projection: {_id: 0}}).toArray();
     },
     async createBlog(newBlog:TBlogDb) {
-        await blogCollection.insertOne(newBlog);
+         await blogCollection.insertOne({...newBlog});
     },
     async getBlogID(id: string): Promise<TBlogDb | null> {
-        return await blogCollection.findOne({id}, {projection: {_id: false}});
+        return await blogCollection.findOne({id:id}, {projection: {_id: false}});
     },
     async updateBlog(id: string, name: string, description: string, websiteUrl: string,): Promise<boolean> {
         const resultUpdate = await blogCollection.updateOne({id},
