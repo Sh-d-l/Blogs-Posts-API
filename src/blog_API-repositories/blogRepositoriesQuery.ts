@@ -48,7 +48,7 @@ export const blogsRepoQuery = {
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
-       const filterSearchNameTerm = {name:{}};
+       let filterSearchNameTerm = {name:{}};
        if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
