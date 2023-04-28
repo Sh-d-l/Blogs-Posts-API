@@ -52,10 +52,7 @@ export const blogsRepoQuery = {
        if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
-       /*console.log("skip",skip)
-       console.log("countBlogs",countBlogs)
-       console.log("countPages", countPages)
-       console.log("filter",filterSearchNameTerm)*/
+
        const getBlogsDB:TBlogDb[] = await blogCollection
            .find({})
            .skip(skip)
