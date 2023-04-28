@@ -87,11 +87,12 @@ export const blogsRepoQuery = {
         const countAllPosts:number =  await blogCollection.countDocuments({})
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
         const getPosts:PostType[] = await postCollection
-            .find({id})
+            .find({blogId:id})
             .sort({sortBlogs: sortDirection})
             .skip(skip)
             .limit(pageSize)
             .toArray()
+        console.log(getPosts)
         const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
             .map((post:PostType) => {
             return {
