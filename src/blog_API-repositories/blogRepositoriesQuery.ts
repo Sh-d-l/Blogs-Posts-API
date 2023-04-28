@@ -43,8 +43,6 @@ export const blogsRepoQuery = {
                             sortDirection: SortDirection ,
                             pageNumber:number,
                             pageSize:number):Promise<TypeGetBlogs[]> {
-       /*console.log(sortDirection)
-       console.log(sortBy)*/
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
@@ -88,15 +86,8 @@ export const blogsRepoQuery = {
         const skip:number  = (+pageNumber - 1) * +pageSize
         const countAllPosts:number =  await blogCollection.countDocuments({})
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
-        /*let sortBlogs: SortDirection;
-        if(sortDirection === "desc") {
-            sortBlogs = -1;
-        }
-        if(sortDirection === "asc") {
-            sortBlogs = 1;
-        }*/
         const getPosts:PostType[] = await postCollection
-            .find({})
+            .find({id})
             .sort({sortBlogs: sortDirection})
             .skip(skip)
             .limit(pageSize)
