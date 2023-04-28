@@ -82,7 +82,7 @@ export const blogsRepoQuery = {
                               sortBy:string,
                               sortDirection:SortDirection,
                               pageNumber:number,
-                              pageSize:number): Promise<TypeGetPostsByBlogId[]> {
+                              pageSize:number): Promise<TypeGetPostsByBlogId[] | null> {
         const skip:number  = (+pageNumber - 1) * +pageSize
         const countAllPosts:number =  await blogCollection.countDocuments({})
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
@@ -92,28 +92,35 @@ export const blogsRepoQuery = {
             .skip(skip)
             .limit(pageSize)
             .toArray()
-        console.log(getPosts)
-        const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
-            .map((post:PostType) => {
-            return {
-                pagesCount: countPages,
-                page: pageNumber,
-                pageSize: pageSize,
-                totalCount: countAllPosts,
-                items: [
-                    {
-                        id: post.id,
-                        title: post.title,
-                        shortDescription: post.shortDescription,
-                        content: post.content,
-                        blogId: id,
-                        blogName: post.blogName,
-                        createdAt: post.createdAt,
+        console.log(getPosts.length)
+        if(getPosts.length > 0) {
+            const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
+                .map((post:PostType) => {
+                    return {
+                        pagesCount: countPages,
+                        page: pageNumber,
+                        pageSize: pageSize,
+                        totalCount: countAllPosts,
+                        items: [
+                            {
+                                id: post.id,
+                                title: post.title,
+                                shortDescription: post.shortDescription,
+                                content: post.content,
+                                blogId: id,
+                                blogName: post.blogName,
+                                createdAt: post.createdAt,
+                            }
+                        ]
                     }
-                ]
-            }
-        })
-        return arrPostsWithNewType
+                })
+            return arrPostsWithNewType
+        }
+        else {
+            return null;
+        }
+
+
 },
 
 }
