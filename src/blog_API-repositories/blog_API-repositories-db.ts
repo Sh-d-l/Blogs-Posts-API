@@ -1,6 +1,5 @@
 import {blogCollection} from "../repositories/db";
 import {TBlogDb} from "./blog_API-repositories-memory";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 
 export const blogs_repositories = {
     async getBlogs(): Promise<TBlogDb[]> {
@@ -24,3 +23,4 @@ export const blogs_repositories = {
     },
 
 }
+
