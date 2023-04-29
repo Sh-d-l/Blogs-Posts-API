@@ -50,13 +50,15 @@ export const blogsRepoQuery = {
        if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
+       //console.log(filterSearchNameTerm)
 
        const getBlogsDB:TBlogDb[] = await blogCollection
-           .find({})
+           .find(filterSearchNameTerm)
            .skip(skip)
            .limit(pageSize)
            .sort({sortBy: sortDirection})
            .toArray()
+       console.log(getBlogsDB)
        const newArr:TypeGetBlogs[] = getBlogsDB.map((blog:TBlogDb) => {
             return {
                 pagesCount: countPages,
@@ -86,16 +88,16 @@ export const blogsRepoQuery = {
         const skip:number  = (+pageNumber - 1) * +pageSize
         const countAllPosts:number =  await postCollection.countDocuments({})
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
-        console.log(skip,"skip")
-        console.log(countAllPosts,"all posts count")
-        console.log(countPages, "count pages")
+        //console.log(skip,"skip")
+        //console.log(countAllPosts,"all posts count")
+        //console.log(countPages, "count pages")
         const getPosts:PostType[] = await postCollection
             .find({blogId:id})
             .sort({sortBlogs: sortDirection})
             .skip(skip)
             .limit(pageSize)
             .toArray()
-        console.log(getPosts.length,"length array")
+        //console.log(getPosts.length,"length array")
         if(getPosts.length > 0) {
             const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
                 .map((post:PostType) => {

@@ -10,12 +10,13 @@ import {SortDirection} from "mongodb";
 export const post_Router = Router({});
 
 post_Router.get('/', async (req:Request, res:Response) => {
-    const getPost:TypeGetPosts[] = await postsRepoQuery.getPostsRepoQuery(
+    const getPosts:TypeGetPosts[] = await postsRepoQuery.getPostsRepoQuery(
         String(req.query.sortBy) || "createdAt",
         req.query.sortDirection as SortDirection|| "desc",
         Number(req.query.pageNumber) || 1,
         Number(req.query.pageSize) || 10,)
-    res.status(200).send(getPost)
+    //console.log(...getPosts, "router")
+    res.status(200).send(...getPosts)
 })
 post_Router.post('/',
     basicAuth,

@@ -29,13 +29,6 @@ export const postsRepoQuery = {
         const countTotal:number =  await postCollection.countDocuments({})
         const skipPost:number  = (+pageNumber - 1) * +pageSize
         const countPages:number = Math.ceil(countTotal / +pageSize)
-        /*let sortPosts: SortDirection;
-        if(sortDirection === "desc") {
-            sortPosts = -1;
-        }
-        if(sortDirection === "asc") {
-            sortPosts = 1;
-        }*/
         const getPostDB:PostType[] = await postCollection
             .find({})
             .sort({sortBy:sortDirection})
@@ -61,6 +54,7 @@ export const postsRepoQuery = {
                 ]
             }
         })
+        console.log(newArrPosts)
         return newArrPosts;
     }
 }

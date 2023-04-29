@@ -14,7 +14,7 @@ import {SortDirection} from "mongodb";
 export const blog_Router = Router({});
 
 blog_Router.get('/', async (req:Request, res:Response) => {
-    const get_Blogs: TypeGetBlogs[] = await blogsRepoQuery
+    const getBlogs: TypeGetBlogs[] = await blogsRepoQuery
         .getBlogsRepoQuery(
              String(req.query.searchNameTerm) || null,
             String(req.query.sortBy) || "createdAt",
@@ -22,7 +22,7 @@ blog_Router.get('/', async (req:Request, res:Response) => {
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
             )
-    res.status(200).send(get_Blogs)
+    res.status(200).send(...getBlogs)
 })
 
 blog_Router.post("/",
@@ -70,10 +70,9 @@ blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
-    //console.log(getPostsByBlogID)
-    console.log(...getPostsByBlogID)
+
     if (getPostsByBlogID) {
-        res.status(200).send(...getPostsByBlogID)
+        res.status(200).send(getPostsByBlogID)
     } else {
         res.sendStatus(404)
     }
