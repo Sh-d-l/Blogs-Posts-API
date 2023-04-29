@@ -16,7 +16,7 @@ post_Router.get('/', async (req:Request, res:Response) => {
         Number(req.query.pageNumber) || 1,
         Number(req.query.pageSize) || 10,)
     //console.log(...getPosts, "router")
-    res.status(200).send(...getPosts)
+    res.status(200).send(getPosts)
 })
 post_Router.post('/',
     basicAuth,

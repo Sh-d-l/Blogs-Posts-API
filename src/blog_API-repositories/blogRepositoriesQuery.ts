@@ -46,7 +46,7 @@ export const blogsRepoQuery = {
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
-       let filterSearchNameTerm = {name:{}};
+       let filterSearchNameTerm = {};
        if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
@@ -58,7 +58,7 @@ export const blogsRepoQuery = {
            .limit(pageSize)
            .sort({sortBy: sortDirection})
            .toArray()
-       console.log(getBlogsDB)
+       //console.log(getBlogsDB)
        const newArr:TypeGetBlogs[] = getBlogsDB.map((blog:TBlogDb) => {
             return {
                 pagesCount: countPages,

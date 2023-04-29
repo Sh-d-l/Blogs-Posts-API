@@ -54,7 +54,7 @@ export const postsRepoQuery = {
                 ]
             }
         })
-        console.log(newArrPosts)
+        //console.log(newArrPosts)
         return newArrPosts;
     }
 }

@@ -22,7 +22,7 @@ blog_Router.get('/', async (req:Request, res:Response) => {
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
             )
-    res.status(200).send(...getBlogs)
+    res.status(200).send(getBlogs)
 })
 
 blog_Router.post("/",
