@@ -17,7 +17,7 @@ blog_Router.get('/', async (req:Request, res:Response) => {
     const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
         .getBlogsRepoQuery(
              req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
-            String(req.query.sortBy) || "createdAt",
+            req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
