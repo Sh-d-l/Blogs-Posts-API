@@ -1,7 +1,8 @@
 import {Request, Response, Router} from "express";
 import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
-import {createBlogValidation,updateBlogValidation
+import {
+    createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/blog-validation";
 import {blogsService} from "../blog_API-service/blog_API-service";
 import {TypeGetBlogs} from "../blog_API-repositories/blogRepositoriesQuery";
@@ -37,6 +38,7 @@ blog_Router.post("/",
 
 blog_Router.post ("/:blogId/posts",
     basicAuth,
+    ...createPostByBlogIDValidation,
     async (req,res) => {
         const addPostByBlogId:PostType | null  = await  blogsService
             .createPostByBlogId (req.params.blogId, req.body.title,
@@ -68,7 +70,8 @@ blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
-    console.log(getPostsByBlogID)
+    //console.log(getPostsByBlogID)
+    console.log(...getPostsByBlogID)
     if (getPostsByBlogID) {
         res.status(200).send(...getPostsByBlogID)
     } else {

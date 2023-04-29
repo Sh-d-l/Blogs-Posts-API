@@ -79,3 +79,9 @@ export const updatePostValidation =[
     blogIdBodyValidation,
     inputValidator
 ]
+export const createPostByBlogIDValidation = [
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    inputValidator
+]

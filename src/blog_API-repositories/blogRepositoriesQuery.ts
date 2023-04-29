@@ -95,7 +95,7 @@ export const blogsRepoQuery = {
             .skip(skip)
             .limit(pageSize)
             .toArray()
-        console.log(getPosts.length)
+        console.log(getPosts.length,"length array")
         if(getPosts.length > 0) {
             const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
                 .map((post:PostType) => {
