@@ -6,11 +6,12 @@ import {postService} from "../Post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {TypeGetPosts} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
+import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 
 export const post_Router = Router({});
 
 post_Router.get('/', async (req:Request, res:Response) => {
-    const getPosts:TypeGetPosts[] = await postsRepoQuery.getPostsRepoQuery(
+    const getPosts:TypeGetPostsByBlogId | null = await postsRepoQuery.getPostsRepoQuery(
         String(req.query.sortBy) || "createdAt",
         req.query.sortDirection as SortDirection|| "desc",
         Number(req.query.pageNumber) || 1,

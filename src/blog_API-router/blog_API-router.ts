@@ -5,7 +5,7 @@ import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/blog-validation";
 import {blogsService} from "../blog_API-service/blog_API-service";
-import {TypeGetBlogs, TypeGetBlogsWithCount} from "../blog_API-repositories/blogRepositoriesQuery";
+import {TypeGetBlogsWithCount} from "../blog_API-repositories/blogRepositoriesQuery";
 import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
@@ -14,7 +14,7 @@ import {SortDirection} from "mongodb";
 export const blog_Router = Router({});
 
 blog_Router.get('/', async (req:Request, res:Response) => {
-    const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
+    const getBlogs: TypeGetBlogsWithCount | null = await blogsRepoQuery
         .getBlogsRepoQuery(
              String(req.query.searchNameTerm) || null,
             String(req.query.sortBy) || "createdAt",
@@ -22,6 +22,7 @@ blog_Router.get('/', async (req:Request, res:Response) => {
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
             )
+    //console.log(getBlogs)
     res.status(200).send(getBlogs)
 })
 
