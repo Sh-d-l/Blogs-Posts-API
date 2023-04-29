@@ -26,12 +26,11 @@ export const blogsRepoQuery = {
                             pageNumber: number,
                             pageSize: number): Promise<TypeGetBlogsWithCount> {
         const skip: number = (+pageNumber - 1) * +pageSize;
-        const countBlogs: number = await blogCollection.countDocuments({});
-        const countPages: number = Math.ceil(countBlogs / +pageSize);
         let filterSearchNameTerm = searchNameTerm
             ? {name: new RegExp(searchNameTerm, "i")}
             : {};
-
+        const countBlogs: number = await blogCollection.countDocuments(filterSearchNameTerm);
+        const countPages: number = Math.ceil(countBlogs / +pageSize);
         const getBlogsDB: TBlogDb[] = await blogCollection
             .find(filterSearchNameTerm, {projection: {_id: false}})
             .skip(skip)
