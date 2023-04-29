@@ -24,7 +24,7 @@ export const blogsRepoQuery = {
                             sortBy: string,
                             sortDirection: SortDirection,
                             pageNumber: number,
-                            pageSize: number): Promise<TypeGetBlogsWithCount | null> {
+                            pageSize: number): Promise<TypeGetBlogsWithCount> {
         const skip: number = (+pageNumber - 1) * +pageSize;
         const countBlogs: number = await blogCollection.countDocuments({});
         const countPages: number = Math.ceil(countBlogs / +pageSize);

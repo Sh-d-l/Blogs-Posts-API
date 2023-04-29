@@ -11,7 +11,7 @@ export const post_Router = Router({});
 
 post_Router.get('/', async (req:Request, res:Response) => {
     const getPosts:TypeGetPostsByBlogId = await postsRepoQuery.getPostsRepoQuery(
-        String(req.query.sortBy) || "createdAt",
+        req.query.sortBy ? String(req.query.sortBy) : "createdAt",
         req.query.sortDirection as SortDirection|| "desc",
         Number(req.query.pageNumber) || 1,
         Number(req.query.pageSize) || 10,)
