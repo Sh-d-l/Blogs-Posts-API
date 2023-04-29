@@ -37,7 +37,7 @@ export const blogsRepoQuery = {
            .find(filterSearchNameTerm,{projection:{_id:false}})
            .skip(skip)
            .limit(pageSize)
-           .sort({sortBy: sortDirection})
+           .sort({[sortBy]: sortDirection})
            .toArray()
        if(getBlogsDB.length !== 0) {
            const resArrBlogs:TypeGetBlogsWithCount = {
@@ -65,7 +65,7 @@ export const blogsRepoQuery = {
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
         const getPosts:PostType[] = await postCollection
             .find({blogId:id},{projection:{_id:false}})
-            .sort({sortBlogs: sortDirection})
+            .sort({[sortBy]: sortDirection})
             .skip(skip)
             .limit(pageSize)
             .toArray()

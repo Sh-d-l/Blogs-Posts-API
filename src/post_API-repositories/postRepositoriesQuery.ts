@@ -13,7 +13,7 @@ export const postsRepoQuery = {
         const countPages:number = Math.ceil(countTotal / +pageSize)
         const getPostDB:PostType[] = await postCollection
             .find({})
-            .sort({sortBy:sortDirection})
+            .sort({[sortBy]:sortDirection})
             .skip(skipPost)
             .limit(pageSize)
             .toArray()
