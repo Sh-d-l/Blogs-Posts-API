@@ -29,7 +29,7 @@ export const blogsRepoQuery = {
         const countBlogs: number = await blogCollection.countDocuments({});
         const countPages: number = Math.ceil(countBlogs / +pageSize);
         let filterSearchNameTerm = searchNameTerm
-            ? {name: {$regex: searchNameTerm, $options: "i"}}
+            ? {name: new RegExp(searchNameTerm, "i")}
             : {};
 
         const getBlogsDB: TBlogDb[] = await blogCollection
