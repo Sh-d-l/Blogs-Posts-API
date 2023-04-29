@@ -4,32 +4,26 @@ import {SortDirection} from "mongodb";
 import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 
 export const postsRepoQuery = {
-    async getPostsRepoQuery(sortBy:string,
-                            sortDirection:SortDirection,
-                            pageNumber:number,
-                            pageSize:number):Promise<TypeGetPostsByBlogId | null> {
-        const countTotal:number =  await postCollection.countDocuments({})
-        const skipPost:number  = (+pageNumber - 1) * +pageSize
-        const countPages:number = Math.ceil(countTotal / +pageSize)
-        const getPostDB:PostType[] = await postCollection
+    async getPostsRepoQuery(sortBy: string,
+                            sortDirection: SortDirection,
+                            pageNumber: number,
+                            pageSize: number): Promise<TypeGetPostsByBlogId> {
+        const countTotal: number = await postCollection.countDocuments({})
+        const skipPost: number = (+pageNumber - 1) * +pageSize
+        const countPages: number = Math.ceil(countTotal / +pageSize)
+        const getPostDB: PostType[] = await postCollection
             .find({})
-            .sort({[sortBy]:sortDirection})
+            .sort({[sortBy]: sortDirection})
             .skip(skipPost)
             .limit(pageSize)
             .toArray()
-        if(getPostDB.length != 0) {
-            const newArrPosts:TypeGetPostsByBlogId = {
-                pagesCount: countPages,
-                page: pageNumber,
-                pageSize: pageSize,
-                totalCount: countTotal,
-                items: getPostDB
-            }
-            return newArrPosts;
+        const newArrPosts: TypeGetPostsByBlogId = {
+            pagesCount: countPages,
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: countTotal,
+            items: getPostDB
         }
-        else {
-            return null
-        }
-
-        }
+        return newArrPosts;
+    }
 }

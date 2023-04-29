@@ -10,7 +10,7 @@ import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQue
 export const post_Router = Router({});
 
 post_Router.get('/', async (req:Request, res:Response) => {
-    const getPosts:TypeGetPostsByBlogId | null = await postsRepoQuery.getPostsRepoQuery(
+    const getPosts:TypeGetPostsByBlogId = await postsRepoQuery.getPostsRepoQuery(
         String(req.query.sortBy) || "createdAt",
         req.query.sortDirection as SortDirection|| "desc",
         Number(req.query.pageNumber) || 1,
