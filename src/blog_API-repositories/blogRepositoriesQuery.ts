@@ -3,38 +3,20 @@ import {blogCollection, postCollection} from "../repositories/db";
 import{PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {SortDirection} from "mongodb";
 
-export type TypeGetBlogs = {
+export type TypeGetBlogsWithCount = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items: [
-        {
-            id: string,
-            name: string,
-            description: string,
-            websiteUrl: string,
-            createdAt: string,
-            isMembership: boolean
-        }
-    ]
+    items: TBlogDb[]
 }
+
 export type TypeGetPostsByBlogId = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items: [
-        {
-            id :  string ,
-            title :  string,
-            shortDescription: string,
-            content: string,
-            blogId: string,
-            blogName: string,
-            createdAt: string,
-        }
-    ]
+    items: PostType[]
 }
 
 export const blogsRepoQuery = {
@@ -42,7 +24,7 @@ export const blogsRepoQuery = {
                             sortBy:string,
                             sortDirection: SortDirection ,
                             pageNumber:number,
-                            pageSize:number):Promise<TypeGetBlogs[]> {
+                            pageSize:number):Promise<TypeGetBlogsWithCount> {
        const skip:number  = (+pageNumber - 1) * +pageSize;
        const countBlogs:number =  await blogCollection.countDocuments({});
        const countPages:number = Math.ceil(countBlogs / +pageSize);
@@ -50,76 +32,49 @@ export const blogsRepoQuery = {
        if(searchNameTerm) {
            filterSearchNameTerm.name = {$regex:searchNameTerm, $options:"i"}
        }
-       //console.log(filterSearchNameTerm)
 
        const getBlogsDB:TBlogDb[] = await blogCollection
-           .find(filterSearchNameTerm)
+           .find(filterSearchNameTerm,{projection:{_id:false}})
            .skip(skip)
            .limit(pageSize)
            .sort({sortBy: sortDirection})
            .toArray()
-       //console.log(getBlogsDB)
-       const newArr:TypeGetBlogs[] = getBlogsDB.map((blog:TBlogDb) => {
-            return {
-                pagesCount: countPages,
-                page: pageNumber,
-                pageSize: pageSize,
-                totalCount: countBlogs,
-                items: [
-                    {
-                        id: blog.id,
-                        name: blog.name,
-                        description: blog.description,
-                        websiteUrl: blog.websiteUrl,
-                        createdAt: blog.createdAt,
-                        isMembership: blog.isMembership
-                    }
-                ]
-            }
-        })
-       return newArr;
+       const resArrBlogs:TypeGetBlogsWithCount = {
+           pagesCount: countPages,
+           page: pageNumber,
+           pageSize: pageSize,
+           totalCount: countBlogs,
+           items: getBlogsDB,
+       }
+       return resArrBlogs;
+
     },
 
     async getAllPostsByBlogId(id:string,
                               sortBy:string,
                               sortDirection:SortDirection,
                               pageNumber:number,
-                              pageSize:number): Promise<TypeGetPostsByBlogId[] | null> {
+                              pageSize:number): Promise<TypeGetPostsByBlogId | null> {
         const skip:number  = (+pageNumber - 1) * +pageSize
-        const countAllPosts:number =  await postCollection.countDocuments({})
+        const countAllPosts:number =  await postCollection.countDocuments({blogId:id})
         const countPages:number = Math.ceil(countAllPosts / +pageSize)
-        //console.log(skip,"skip")
-        //console.log(countAllPosts,"all posts count")
-        //console.log(countPages, "count pages")
         const getPosts:PostType[] = await postCollection
-            .find({blogId:id})
+            .find({blogId:id},{projection:{_id:false}})
             .sort({sortBlogs: sortDirection})
             .skip(skip)
             .limit(pageSize)
             .toArray()
-        //console.log(getPosts.length,"length array")
+        console.log(getPosts.length,"length array")
         if(getPosts.length > 0) {
-            const arrPostsWithNewType:TypeGetPostsByBlogId[] = getPosts
-                .map((post:PostType) => {
-                    return {
+            const resArrPosts:TypeGetPostsByBlogId = {
                         pagesCount: countPages,
                         page: pageNumber,
                         pageSize: pageSize,
                         totalCount: countAllPosts,
-                        items: [
-                            {
-                                id: post.id,
-                                title: post.title,
-                                shortDescription: post.shortDescription,
-                                content: post.content,
-                                blogId: id,
-                                blogName: post.blogName,
-                                createdAt: post.createdAt,
-                            }
-                        ]
+                        items: getPosts
                     }
-                })
-            return arrPostsWithNewType
+            return  resArrPosts;
+
         }
         else {
             return null;

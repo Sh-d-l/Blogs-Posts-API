@@ -5,7 +5,7 @@ import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/blog-validation";
 import {blogsService} from "../blog_API-service/blog_API-service";
-import {TypeGetBlogs} from "../blog_API-repositories/blogRepositoriesQuery";
+import {TypeGetBlogs, TypeGetBlogsWithCount} from "../blog_API-repositories/blogRepositoriesQuery";
 import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
@@ -14,7 +14,7 @@ import {SortDirection} from "mongodb";
 export const blog_Router = Router({});
 
 blog_Router.get('/', async (req:Request, res:Response) => {
-    const getBlogs: TypeGetBlogs[] = await blogsRepoQuery
+    const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
         .getBlogsRepoQuery(
              String(req.query.searchNameTerm) || null,
             String(req.query.sortBy) || "createdAt",
@@ -63,7 +63,7 @@ blog_Router.get('/:id', async (req, res) => {
 })
 
 blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
-    const getPostsByBlogID:TypeGetPostsByBlogId[] | null = await blogsRepoQuery
+    const getPostsByBlogID:TypeGetPostsByBlogId | null = await blogsRepoQuery
         .getAllPostsByBlogId(
             req.params.blogId,
             req.query.sortBy as string || "createdAt",
