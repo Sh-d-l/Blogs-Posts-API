@@ -68,8 +68,9 @@ blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
+    console.log(getPostsByBlogID)
     if (getPostsByBlogID) {
-        res.status(200).send(getPostsByBlogID)
+        res.status(200).send(...getPostsByBlogID)
     } else {
         res.sendStatus(404)
     }
