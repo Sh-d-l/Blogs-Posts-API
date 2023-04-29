@@ -64,7 +64,7 @@ blog_Router.get('/:id', async (req, res) => {
 })
 
 blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
-    const getPostsByBlogID:TypeGetPostsByBlogId | null = await blogsRepoQuery
+    const getPostsByBlogID:TypeGetPostsByBlogId = await blogsRepoQuery
         .getAllPostsByBlogId(
             req.params.blogId,
             req.query.sortBy as string || "createdAt",
