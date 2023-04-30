@@ -51,7 +51,7 @@ export const blogsRepoQuery = {
                               sortBy: string,
                               sortDirection: SortDirection,
                               pageNumber: number,
-                              pageSize: number): Promise<TypeGetPostsByBlogId> {
+                              pageSize: number): Promise<TypeGetPostsByBlogId | null> {
         const skip: number = (+pageNumber - 1) * +pageSize
         const countAllPosts: number = await postCollection.countDocuments({blogId: id})
         const countPages: number = Math.ceil(countAllPosts / +pageSize)
@@ -61,14 +61,21 @@ export const blogsRepoQuery = {
             .skip(skip)
             .limit(pageSize)
             .toArray()
-        const resArrPosts: TypeGetPostsByBlogId = {
-            pagesCount: countPages,
-            page: pageNumber,
-            pageSize: pageSize,
-            totalCount: countAllPosts,
-            items: getPosts
+        if(getPosts.length > 0) {
+            const resArrPosts: TypeGetPostsByBlogId = {
+                pagesCount: countPages,
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: countAllPosts,
+                items: getPosts
+            }
+            return resArrPosts;
         }
-        return resArrPosts;
+        else {
+            return null;
+        }
+
+
     },
 
 }

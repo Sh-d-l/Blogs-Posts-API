@@ -22,7 +22,6 @@ blog_Router.get('/', async (req:Request, res:Response) => {
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
             )
-    //console.log(getBlogs)
     res.status(200).send(getBlogs)
 })
 
@@ -64,10 +63,10 @@ blog_Router.get('/:id', async (req, res) => {
 })
 
 blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
-    const getPostsByBlogID:TypeGetPostsByBlogId = await blogsRepoQuery
+    const getPostsByBlogID:TypeGetPostsByBlogId | null = await blogsRepoQuery
         .getAllPostsByBlogId(
             req.params.blogId,
-            req.query.sortBy as string || "createdAt",
+            req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
