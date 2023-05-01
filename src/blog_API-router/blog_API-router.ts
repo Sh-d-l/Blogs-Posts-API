@@ -11,48 +11,47 @@ import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQue
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {SortDirection} from "mongodb";
 
-export const blog_Router = Router({});
+export const blogRouter = Router({});
 
-blog_Router.get('/', async (req:Request, res:Response) => {
+blogRouter.get('/', async (req: Request, res: Response) => {
     const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
         .getBlogsRepoQuery(
-             req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
+            req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
-            )
+        )
     res.status(200).send(getBlogs)
 })
 
-blog_Router.post("/",
+blogRouter.post("/",
     basicAuth,
     ...createBlogValidation,
     async (req, res) => {
-        const postBlog:TBlogDb = await blogsService
+        const postBlog: TBlogDb = await blogsService
             .createBlogService(req.body.name,
                 req.body.description,
                 req.body.websiteUrl)
         res.status(201).send(postBlog)
     })
 
-blog_Router.post ("/:blogId/posts",
+blogRouter.post("/:blogId/posts",
     basicAuth,
     ...createPostByBlogIDValidation,
-    async (req,res) => {
-        const addPostByBlogId:PostType | null  = await  blogsService
-            .createPostByBlogId (req.params.blogId, req.body.title,
-            req.body.shortDescription,
-            req.body.content);
-        if(addPostByBlogId) {
+    async (req, res) => {
+        const addPostByBlogId: PostType | null = await blogsService
+            .createPostByBlogId(req.params.blogId, req.body.title,
+                req.body.shortDescription,
+                req.body.content);
+        if (addPostByBlogId) {
             res.status(201).send(addPostByBlogId)
-        }
-        else {
+        } else {
             res.sendStatus(404)
         }
-})
+    })
 
-blog_Router.get('/:id', async (req, res) => {
+blogRouter.get('/:id', async (req, res) => {
     const getBlogId: TBlogDb | null = await blogsService
         .getBlogIDService(req.params.id)
     if (getBlogId) {
@@ -62,8 +61,8 @@ blog_Router.get('/:id', async (req, res) => {
     }
 })
 
-blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
-    const getPostsByBlogID:TypeGetPostsByBlogId | null = await blogsRepoQuery
+blogRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+    const getPostsByBlogID: TypeGetPostsByBlogId | null = await blogsRepoQuery
         .getAllPostsByBlogId(
             req.params.blogId,
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -78,7 +77,7 @@ blog_Router.get('/:blogId/posts', async (req: Request,res: Response) => {
     }
 })
 
-blog_Router.put('/:id',
+blogRouter.put('/:id',
     basicAuth,
     ...updateBlogValidation,
     async (req, res) => {
@@ -94,7 +93,7 @@ blog_Router.put('/:id',
             res.sendStatus(404)
         }
     })
-blog_Router.delete('/:id',
+blogRouter.delete('/:id',
     basicAuth,
     async (req, res) => {
         const delBlogID: boolean = await blogsService.deleteIDService(req.params.id)

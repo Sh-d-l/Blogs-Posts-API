@@ -35,7 +35,7 @@ export const blogsRepoQuery = {
             .find(filterSearchNameTerm, {projection: {_id: false}})
             .skip(skip)
             .limit(pageSize)
-            .sort({sortBy: sortDirection})
+            .sort({[sortBy]: sortDirection})
             .toArray()
         const resArrBlogs: TypeGetBlogsWithCount = {
             pagesCount: countPages,

@@ -12,7 +12,7 @@ export const postsRepoQuery = {
         const skipPost: number = (+pageNumber - 1) * +pageSize
         const countPages: number = Math.ceil(countTotal / +pageSize)
         const getPostDB: PostType[] = await postCollection
-            .find({},{projection:{_id:false}})
+            .find({}, {projection: {_id: false}})
             .sort({[sortBy]: sortDirection})
             .skip(skipPost)
             .limit(pageSize)
