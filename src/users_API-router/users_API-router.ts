@@ -12,7 +12,7 @@ export const usersRouter = Router({});
 usersRouter.get('/',
     basicAuth,
     async (req: Request, res: Response) => {
-    const getBlogs: TypeGetUsersWithCount = await usersQueryRepo
+    const getUsers: TypeGetUsersWithCount = await usersQueryRepo
         .getUsersRepoQuery(
             req.query.searchLoginTerm ? String(req.query.searchLoginTerm) : null,
             req.query.searchEmailTerm ? String(req.query.searchEmailTerm) : null,
@@ -21,7 +21,7 @@ usersRouter.get('/',
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,
         )
-    res.status(200).send(getBlogs)
+    res.status(200).send(getUsers)
 })
 
 usersRouter.post("/",
