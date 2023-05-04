@@ -1,5 +1,6 @@
 import {usersCollection} from "../repositories/db";
 import {SortDirection} from "mongodb";
+import {TUsersWithHashDb} from "./users_API-repositories-db";
 
 export type TUsersDb = {
     id: string,
@@ -30,11 +31,10 @@ export const usersQueryRepo = {
         let filterSearchEmailTerm = searchEmailTerm
             ? {email: new RegExp(searchEmailTerm, "i")}
             : {};
-        const usersCount: number = await usersCollection.countDocuments(filterSearchLoginTerm) +
-            await usersCollection.countDocuments(filterSearchEmailTerm);
+        const usersCount: number = await usersCollection.countDocuments({$and: [filterSearchLoginTerm, filterSearchEmailTerm]} )
         const pagesCount: number = Math.ceil(usersCount / +pageSize);
         const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
-            .find({$or: [filterSearchLoginTerm, {projection: {_id:false}}, filterSearchEmailTerm, {projection: {_id:false}}]})
+            .find({$or: [filterSearchLoginTerm, {projection: {_id:false, userHash:false}}, filterSearchEmailTerm, {projection: {_id:false, userHash:false}}]})
             .skip(skip)
             .limit(pageSize)
             .sort({[sortBy]: sortDirection})
@@ -44,7 +44,7 @@ export const usersQueryRepo = {
             page: pageNumber,
             pageSize: pageSize,
             totalCount: usersCount,
-            items: getUsersDbByLoginEmail,TU
+            items: getUsersDbByLoginEmail,
         }
         return resArrUsers;
     }

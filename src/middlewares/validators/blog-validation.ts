@@ -81,6 +81,7 @@ const emailValidation = body("email")
     .matches(emailPattern)
     .withMessage("Does not match pattern email")
 
+
 export const createBlogValidation = [
     nameValidation,
     descriptionValidation,
