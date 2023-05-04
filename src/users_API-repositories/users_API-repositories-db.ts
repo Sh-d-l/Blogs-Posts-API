@@ -18,8 +18,13 @@ export const usersRepoDb = {
 
     },
     async deleteUserById(id:string):Promise<boolean> {
-        const deleteResult = await usersCollection.deleteOne({id})
-        return deleteResult.deletedCount > 0;
+        const deleteResult = await usersCollection.deleteOne({id:id})
+        if(deleteResult.deletedCount > 0) {
+            return true
+        }
+        else {
+            return false
+        }
 }
  }
 

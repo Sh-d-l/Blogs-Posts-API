@@ -35,10 +35,10 @@ usersRouter.post("/",
         res.status(201).send(addUser)
     })
 
-usersRouter.delete ("/",
+usersRouter.delete ("/:id",
     basicAuth,
     async (req:Request, res:Response) => {
     const deleteUser:boolean = await usersService.deleteUserById(req.params.id)
-        deleteUser ? res.sendStatus(204) : res.sendStatus(404)
+        deleteUser  ? res.sendStatus(204) : res.sendStatus(404)
     }
     )
