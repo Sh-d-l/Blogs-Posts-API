@@ -3,7 +3,7 @@ import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
 import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
-} from "../middlewares/validators/blog-validation";
+} from "../middlewares/validators/validations";
 import {blogsService} from "../blog_API-service/blog_API-service";
 import {TypeGetBlogsWithCount} from "../blog_API-repositories/blogRepositoriesQuery";
 import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";

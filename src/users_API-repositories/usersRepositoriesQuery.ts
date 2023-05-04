@@ -34,7 +34,7 @@ export const usersQueryRepo = {
         const usersCount: number = await usersCollection.countDocuments({$and: [filterSearchLoginTerm, filterSearchEmailTerm]} )
         const pagesCount: number = Math.ceil(usersCount / +pageSize);
         const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
-            .find({$or: [filterSearchLoginTerm, {projection: {_id:false, userHash:false}}, filterSearchEmailTerm, {projection: {_id:false, userHash:false}}]})
+            .find({$or: [filterSearchLoginTerm, filterSearchEmailTerm]},{projection: {_id:false, userHash:false}})
             .skip(skip)
             .limit(pageSize)
             .sort({[sortBy]: sortDirection})

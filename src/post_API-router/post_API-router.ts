@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {basicAuth} from "../auth/basic_auth"
-import {createPostValidation, updatePostValidation} from "../middlewares/validators/blog-validation";
+import {createPostValidation, updatePostValidation} from "../middlewares/validators/validations";
 import {postService} from "../Post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";

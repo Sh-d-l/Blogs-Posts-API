@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
-import {createNewUser} from "../middlewares/validators/blog-validation";
+import {createNewUser} from "../middlewares/validators/validations";
 import {usersService} from "../users_API-service/users_API-service";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
 import {SortDirection} from "mongodb";
