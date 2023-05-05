@@ -38,7 +38,6 @@ export const getPaginationFromQuery = (query: any): IPagination => {
         pageSize: pageSize > 0 ? pageSize : 1 || 1,
         skip: (pageNumber - 1) * pageSize
     }
-
 }
 
 
