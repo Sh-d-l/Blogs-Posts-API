@@ -15,11 +15,8 @@ export const usersService = {
             createdAt: new Date().toISOString(),
         }
         const newUserWithHash: TUsersWithHashDb = {
-            id: randomUUID(),
-            login,
-            email,
+            ...newUser,
             userHash,
-            createdAt: new Date().toISOString(),
         }
         await usersRepoDb.createNewUser(newUserWithHash)
         return newUser;
