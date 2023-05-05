@@ -14,8 +14,7 @@ export const usersRepoDb = {
        await usersCollection.insertOne({...newUserWithHash})
     },
     async findUserByLoginEmail (loginOrEmail:string):Promise<TUsersWithHashDb | null>  {
-        return usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection:{_id:false}});
-
+        return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection:{_id:false}});
     },
     async deleteUserById(id:string):Promise<boolean> {
         const deleteResult = await usersCollection.deleteOne({id:id})
