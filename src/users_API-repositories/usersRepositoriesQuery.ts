@@ -27,7 +27,7 @@ export const usersQueryRepo = {
         //console.log(filterSearchLoginTerm)
         //console.log(filterSearchEmailTerm)
         const filter = {
-            $and: [{
+            $or: [{
                 login: {
                     $regex: pagination.searchLoginTerm,
                     $options: "i"

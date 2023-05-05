@@ -35,7 +35,7 @@ export const getPaginationFromQuery = (query: any): IPagination => {
         sortBy: query.sortBy ?? "createdAt",
         sortDirection: query.sortDirection === 'asc' ? 'asc' : "desc",
         pageNumber: pageNumber > 0 ? pageNumber : 1 || 1,
-        pageSize: pageSize > 0 ? pageSize : 1 || 1,
+        pageSize: pageSize > 0 ? pageSize : 10 || 10,
         skip: (pageNumber - 1) * pageSize
     }
 }
