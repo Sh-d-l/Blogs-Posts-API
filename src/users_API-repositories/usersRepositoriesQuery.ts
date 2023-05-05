@@ -30,8 +30,8 @@ export const usersQueryRepo = {
         let filterSearchEmailTerm = searchEmailTerm
             ? {email: {$regex:searchEmailTerm, $options: "i"}}
             : {};
-        console.log(filterSearchLoginTerm)
-        console.log(filterSearchEmailTerm)
+        //console.log(filterSearchLoginTerm)
+        //console.log(filterSearchEmailTerm)
         const usersCount: number = await usersCollection.countDocuments({$and: [filterSearchLoginTerm, filterSearchEmailTerm]} )
         const pagesCount: number = Math.ceil(usersCount / +pageSize);
         const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
@@ -40,7 +40,7 @@ export const usersQueryRepo = {
             .limit(pageSize)
             .sort({[sortBy]: sortDirection})
             .toArray()
-        console.log(getUsersDbByLoginEmail)
+        //console.log(getUsersDbByLoginEmail)
         const resArrUsers: TypeGetUsersWithCount = {
             pagesCount,
             page: pageNumber,

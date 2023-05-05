@@ -39,6 +39,7 @@ usersRouter.delete ("/:id",
     basicAuth,
     async (req:Request, res:Response) => {
     const deleteUser:boolean = await usersService.deleteUserById(req.params.id)
+        console.log(deleteUser)
         deleteUser  ? res.sendStatus(204) : res.sendStatus(404)
     }
     )
