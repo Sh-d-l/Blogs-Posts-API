@@ -9,25 +9,51 @@ import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 
 export const usersRouter = Router({});
 
+export interface IPagination {
+    searchLoginTerm: string,
+    searchEmailTerm: string,
+    searchNameTerm: string,
+    sortBy: string,
+    sortDirection: 'asc' | 'desc',
+    pageNumber: number,
+    pageSize: number,
+    skip: number
+}
+
+// export interface IUsersPagination extends IPagination {
+//     searchLoginTerm: string | null,
+//     searchEmailTerm: string | null,
+// }
+
+export const getPaginationFromQuery = (query: any): IPagination => {
+    const pageNumber = Number(query.pageNumber)
+    const pageSize = Number(query.pageSize)
+    return {
+        searchLoginTerm: query.searchLoginTerm ?? '',
+        searchEmailTerm: query.searchEmailTerm ?? '',
+        searchNameTerm: query.searchNameTerm ?? '',
+        sortBy: query.sortBy ?? "createdAt",
+        sortDirection: query.sortDirection === 'asc' ? 'asc' : "desc",
+        pageNumber: pageNumber > 0 ? pageNumber : 1 || 1,
+        pageSize: pageSize > 0 ? pageSize : 1 || 1,
+        skip: (pageNumber - 1) * pageSize
+    }
+
+}
+
+
 usersRouter.get('/',
     basicAuth,
     async (req: Request, res: Response) => {
-    const getUsers: TypeGetUsersWithCount = await usersQueryRepo
-        .getUsersRepoQuery(
-            req.query.searchLoginTerm ? String(req.query.searchLoginTerm) : null,
-            req.query.searchEmailTerm ? String(req.query.searchEmailTerm) : null,
-            req.query.sortBy ? String(req.query.sortBy) : "createdAt",
-            req.query.sortDirection as SortDirection || "desc",
-            Number(req.query.pageNumber) || 1,
-            Number(req.query.pageSize) || 10,
-        )
-    res.status(200).send(getUsers)
-})
+        const pagination = getPaginationFromQuery(req.query)
+        const getUsers: TypeGetUsersWithCount = await usersQueryRepo.getUsersRepoQuery(pagination)
+        res.status(200).send(getUsers)
+    })
 
 usersRouter.post("/",
     basicAuth,
     ...createNewUser,
-    async (req:Request, res:Response) => {
+    async (req: Request, res: Response) => {
         const addUser: TUsersDb = await usersService
             .createUserService(req.body.login,
                 req.body.password,
@@ -35,14 +61,15 @@ usersRouter.post("/",
         res.status(201).send(addUser)
     })
 
-usersRouter.delete ("/:id",
+usersRouter.delete("/:id",
     basicAuth,
-    async (req:Request, res:Response) => {
-        const deleteUser: boolean = await usersService.deleteUserById(req.params.id)
+    async (req: Request, res: Response) => {
+        const deleteUser: boolean =
+            await usersService.deleteUserById(req.params.id)
         if (deleteUser) {
             return res.sendStatus(204)
         } else {
             res.sendStatus(404)
         }
     }
-    )
+)

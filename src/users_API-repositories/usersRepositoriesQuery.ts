@@ -1,5 +1,5 @@
 import {usersCollection} from "../repositories/db";
-import {SortDirection} from "mongodb";
+import {IPagination} from "../users_API-router/users_API-router";
 
 export type TUsersDb = {
     id: string,
@@ -17,34 +17,36 @@ export type TypeGetUsersWithCount = {
 }
 
 export const usersQueryRepo = {
-    async getUsersRepoQuery(searchLoginTerm: string | null,
-                            searchEmailTerm: string | null,
-                            sortBy: string,
-                            sortDirection: SortDirection,
-                            pageNumber: number,
-                            pageSize: number): Promise<TypeGetUsersWithCount> {
-        const skip: number = (+pageNumber - 1) * +pageSize;
-        let filterSearchLoginTerm = searchLoginTerm
-            ? {login: {$regex: searchLoginTerm, $options: "i"}}
-            : {};
-        let filterSearchEmailTerm = searchEmailTerm
-            ? {email: {$regex:searchEmailTerm, $options: "i"}}
-            : {};
+    async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
+        // let filterSearchLoginTerm = searchLoginTerm
+        //     ? {login: {$regex: searchLoginTerm, $options: "i"}}
+        //     : {};
+        // let filterSearchEmailTerm = searchEmailTerm
+        //     ? {email: {$regex:searchEmailTerm, $options: "i"}}
+        //     : {};
         //console.log(filterSearchLoginTerm)
         //console.log(filterSearchEmailTerm)
-        const usersCount: number = await usersCollection.countDocuments({$and: [filterSearchLoginTerm, filterSearchEmailTerm]} )
-        const pagesCount: number = Math.ceil(usersCount / +pageSize);
+        const filter = {
+            $or: [{
+                login: {
+                    $regex: pagination.searchLoginTerm,
+                    $options: "i"
+                }
+            }, {email: {$regex: pagination.searchEmailTerm, $options: "i"}}]
+        }
+        const usersCount: number = await usersCollection.countDocuments(filter)
+        const pagesCount: number = Math.ceil(usersCount / pagination.pageSize);
         const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
-            .find({$or: [filterSearchLoginTerm, filterSearchEmailTerm]},{projection: {_id:false, userHash:false}})
-            .skip(skip)
-            .limit(pageSize)
-            .sort({[sortBy]: sortDirection})
+            .find(filter, {projection: {_id: false, userHash: false}})
+            .sort(pagination.sortBy, pagination.sortDirection)
+            .skip(pagination.skip)
+            .limit(pagination.pageSize)
             .toArray()
         //console.log(getUsersDbByLoginEmail)
         const resArrUsers: TypeGetUsersWithCount = {
             pagesCount,
-            page: pageNumber,
-            pageSize: pageSize,
+            page: pagination.pageNumber,
+            pageSize: pagination.pageSize,
             totalCount: usersCount,
             items: getUsersDbByLoginEmail,
         }
