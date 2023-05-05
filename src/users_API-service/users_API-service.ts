@@ -7,8 +7,7 @@ import bcrypt from "bcrypt";
 export const usersService = {
 
     async createUserService(login: string, password: string, email: string): Promise<TUsersDb> {
-        const salt = 10;
-        const userHash = await bcrypt.hash(password, salt)
+        const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
             login,
