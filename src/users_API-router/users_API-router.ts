@@ -3,7 +3,6 @@ import {basicAuth} from "../auth/basic_auth"
 import {createNewUser} from "../middlewares/validators/validations";
 import {usersService} from "../users_API-service/users_API-service";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
-import {SortDirection} from "mongodb";
 import {TypeGetUsersWithCount} from "../users_API-repositories/usersRepositoriesQuery";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 
