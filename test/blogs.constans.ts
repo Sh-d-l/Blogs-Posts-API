@@ -1,3 +1,6 @@
+import request from "supertest";
+import {app} from "../src";
+
 export const blogName = "new name";
 export const blogDescription = "new description";
 export const blogWebsiteUrl = "https://google.com"
@@ -37,3 +40,5 @@ export const postByBlogIdObject ={
     blogName: expect.any(String),
     createdAt: expect.any(String),
 }
+
+
