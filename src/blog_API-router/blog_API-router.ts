@@ -54,8 +54,10 @@ blogRouter.post("/:blogId/posts",
 blogRouter.get('/:id', async (req, res) => {
     const getBlogId: TBlogDb | null = await blogsService
         .getBlogIDService(req.params.id)
+    console.log(getBlogId)
     if (getBlogId) {
         res.status(200).send(getBlogId)
+
     } else {
         res.sendStatus(404)
     }

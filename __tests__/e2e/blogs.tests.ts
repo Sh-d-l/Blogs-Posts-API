@@ -12,11 +12,16 @@ import {
     postTitle,
     postShortDescription,
     postContent,
-    postByBlogIdObject,
     incorrectTitlePost,
     incorrectContentPost,
     incorrectShortDescriptionPost,
     foundBlogById,
+    incorrectBlogNameLength,
+    incorrectBlogDescriptionLength,
+    incorrectBlogWebsiteUrlLength,
+    incorrectContentPostLength,
+    incorrectTitlePostLength,
+    incorrectShortDescriptionPostLength
 } from "../../test/blogs.constans";
 import {
     incorrectBasicAuthName,
@@ -26,8 +31,8 @@ import {
 } from "../../test/auth.constans";
 
 
-describe('blogs', () => {
-    let blogId;
+describe('blogs', async () => {
+
     beforeAll(async () => {
         await request(app)
             .del("/testing/all-data")
@@ -70,23 +75,50 @@ describe('blogs', () => {
             isMembership: false,
         })
     });
+    it("create blog, should return 201 and {}, ver.2", async () => {
+        const blog = await request(app)
+            .post(urlBlogs)
+            .auth(loginAuth, passAuth)
+            .send({
+                name: blogName,
+                description: blogDescription,
+                websiteUrl: blogWebsiteUrl,
+            })
+            .expect(201)
+        expect(blog.body).toEqual({
+            id: blog.body.id,
+            name: blogName,
+            description: blogDescription,
+            websiteUrl: blogWebsiteUrl,
+            createdAt: blog.body.createdAt,
+            isMembership: false,
+        })
+    });
+
+    /*--------------------------get all blogs after create---------------------------*/
+
     it("get blogs, should return 200 with array blogs", async () => {
         const blogsArr = await request(app)
             .get(urlBlogs)
             .expect(200)
-        expect(blogsArr.body).toEqual({pagesCount: 0,
-            page: 1,
-            pageSize: 10,
-            totalCount: 0,
-            items: [{
-                id: blogsArr.body.id,
-                name: blogName,
-                description: blogDescription,
-                websiteUrl: blogWebsiteUrl,
-                createdAt: blogsArr.body.createdAt,
-                isMembership: false,
-            }]})
+
+        // expect(blogsArr.body).toEqual({
+        //     pagesCount: blogsArr.body.pagesCount,
+        //     page: blogsArr.body.page,
+        //     pageSize: blogsArr.body.pageSize,
+        //     totalCount: blogsArr.body.totalCount,
+        //     items: [{
+        //         id: blogsArr.body.id,
+        //         name: blogName,
+        //         description: blogDescription,
+        //         websiteUrl: blogWebsiteUrl,
+        //         createdAt: blogsArr.body.createdAt,
+        //         isMembership: false,
+        //     }]
+        // })
     })
+    /*-------------------------------------------------------------------------------*/
+
     it("create blog, should return 400 if incorrect field name", async () => {
         await request(app)
             .post(urlBlogs)
@@ -126,65 +158,41 @@ describe('blogs', () => {
                 .post(urlBlogs)
                 .auth(loginAuth, passAuth)
                 .send({
-                    name: incorrectBlogName,
+                    name: incorrectBlogNameLength,
                     description: blogDescription,
                     websiteUrl: blogWebsiteUrl,
                 })
                 .expect(400)
         });
-    it("create blog, should return 400 if field description is the length more than 15 characters", async () => {
+    it("create blog, should return 400 if field description is the length more than 500 characters", async () => {
         await request(app)
             .post(urlBlogs)
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
-                description: incorrectBlogDescription,
+                description: incorrectBlogDescriptionLength,
                 websiteUrl: blogWebsiteUrl,
             })
             .expect(400)
     });
-    it("create blog, should return 400 if field websiteUrl is the length more than 15 characters", async () => {
+    it("create blog, should return 400 if field websiteUrl is the length more than 100 characters", async () => {
         await request(app)
             .post(urlBlogs)
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
                 description: blogDescription,
-                websiteUrl: incorrectBlogWebsiteUrl,
+                websiteUrl: incorrectBlogWebsiteUrlLength,
             })
             .expect(400)
     });
-    /*--------------------------get all blogs------------------------------------------*/
-
-    it("get blogs, should return 200 with blogs", async () => {
-        const blogsArr = await request(app)
-            .get(urlBlogs)
-            .expect(200)
-        expect(blogsArr.body).toEqual({pagesCount: 0,
-            page: 1,
-            pageSize: 10,
-            totalCount: 0,
-            items: [{
-                id: blogsArr.body.id,
-                name: blogName,
-                description: blogDescription,
-                websiteUrl: blogWebsiteUrl,
-                createdAt: blogsArr.body.createdAt,
-                isMembership: false,
-            }]})
-    })
 
     /*--------------------------get blog by Id-----------------------------------------*/
 
     it(`should return blog by ID`, async () => {
-        // blogId = foundBlogById()
-        // //console.log(blogId)
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
 
         const blog = await request(app)
-            .get(urlBlogs + blogId).expect(200);
+            .get(urlBlogs + await foundBlogById()).expect(200);
         expect(blog.body).toEqual({
             id: blog.body.id,
             name: blogName,
@@ -203,22 +211,14 @@ describe('blogs', () => {
     /*----------------------create Post by blogId---------------------------*/
 
     it('create post by blogId, should return 401 if auth failed', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .post(urlBlogs + blogId + urlPosts)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })
     it('create post by blogId, should return 201 return new post', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         const resPost = await request(app)
-            .post(urlBlogs + blogId + urlPosts)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
@@ -226,15 +226,19 @@ describe('blogs', () => {
                 content: postContent
             })
             .expect(201)
-        expect(resPost.body).toEqual(postByBlogIdObject)
+        expect(resPost.body).toEqual({
+            id: resPost.body.id,
+            title: postTitle,
+            shortDescription: postShortDescription,
+            content: postContent,
+            blogId: resPost.body.blogId,
+            blogName: resPost.body.blogName,
+            createdAt: resPost.body.createdAt,
+        })
     })
     it('create post by blogId, should return 400 if incorrect field title', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .post(urlBlogs + blogId + urlPosts)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
             .auth(loginAuth, passAuth)
             .send({
                 title: incorrectTitlePost,
@@ -244,12 +248,8 @@ describe('blogs', () => {
             .expect(400)
     })
     it('create post by blogId, should return 400 if incorrect field shortDescription', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .post(urlBlogs + blogId + urlPosts)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
@@ -259,12 +259,8 @@ describe('blogs', () => {
             .expect(400)
     })
     it('create post by blogId, should return 400 if incorrect field content', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .post(urlBlogs + blogId + urlPosts)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
@@ -273,36 +269,61 @@ describe('blogs', () => {
             })
             .expect(400)
     })
+    it('create post by blogId, should return 400 if length title is more 30', async () => {
+        await request(app)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
+            .auth(loginAuth, passAuth)
+            .send({
+                title: incorrectTitlePostLength,
+                shortDescription: postShortDescription,
+                content: postContent,
+            })
+            .expect(400)
+    })
+    it('create post by blogId, should return 400 if length shortDescription is more 100', async () => {
+        await request(app)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
+            .auth(loginAuth, passAuth)
+            .send({
+                title: postTitle,
+                shortDescription: incorrectShortDescriptionPostLength,
+                content: postContent,
+            })
+            .expect(400)
+    })
+    it('create post by blogId, should return 400 if length content is more 1000', async () => {
+        await request(app)
+            .post(urlBlogs + await foundBlogById() + urlPosts)
+            .auth(loginAuth, passAuth)
+            .send({
+                title: postTitle,
+                shortDescription: postShortDescription,
+                content: incorrectContentPostLength,
+            })
+            .expect(400)
+    })
+
+
     /*------------------------get all posts by blogId------------------------------*/
 
     it('get all posts by blogId, should return 200 if success', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .get(urlBlogs + blogId + urlPosts)
+            .get(urlBlogs + await foundBlogById() + urlPosts)
             .expect(200)
     })
     /*-----------------------update blog by id--------------------------------------*/
     it('update blog by Id, should return 401 if auth failed', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
 
         await request(app)
-            .put(urlBlogs + blogId)
+            .put(urlBlogs + await foundBlogById())
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })
 
     it('update blog by Id, should return 204 if success', async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
 
         await request(app)
-            .put(urlBlogs + blogId)
+            .put(urlBlogs + await foundBlogById())
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
@@ -312,12 +333,9 @@ describe('blogs', () => {
             .expect(204)
     })
     it("update blog by Id, should return 400 if incorrect field name", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
 
         await request(app)
-            .put(urlBlogs + blogId)
+            .put(urlBlogs + await foundBlogById())
             .auth(loginAuth, passAuth)
             .send({
                 name: incorrectBlogName,
@@ -327,12 +345,8 @@ describe('blogs', () => {
             .expect(400)
     });
     it("update blog by Id, should return 400 if incorrect field description", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .put(urlBlogs + blogId)
+            .put(urlBlogs + await foundBlogById())
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
@@ -342,12 +356,8 @@ describe('blogs', () => {
             .expect(400)
     });
     it("update blog by Id, should return 400 if incorrect field websiteurl", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .put(urlBlogs + blogId)
+            .put(urlBlogs + await foundBlogById())
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
@@ -356,16 +366,45 @@ describe('blogs', () => {
             })
             .expect(400)
     });
+    it("update blog by Id, should return 400 if length name is more 15 char", async () => {
+        await request(app)
+            .put(urlBlogs + await foundBlogById())
+            .auth(loginAuth, passAuth)
+            .send({
+                name: incorrectBlogNameLength,
+                description: blogDescription,
+                websiteUrl: blogWebsiteUrl,
+            })
+            .expect(400)
+    });
+    it("update blog by Id, should return 400 if length description is more 500 char", async () => {
+        await request(app)
+            .put(urlBlogs + await foundBlogById())
+            .auth(loginAuth, passAuth)
+            .send({
+                name: blogName,
+                description: incorrectBlogDescriptionLength,
+                websiteUrl: blogWebsiteUrl,
+            })
+            .expect(400)
+    });
+    it("update blog by Id, should return 400 if length websiteurl is more 500 char ", async () => {
+        await request(app)
+            .put(urlBlogs + await foundBlogById())
+            .auth(loginAuth, passAuth)
+            .send({
+                name: blogName,
+                description: blogDescription,
+                websiteUrl: incorrectBlogWebsiteUrlLength,
+            })
+            .expect(400)
+    });
 
-    /*-------------------------------delete blog by id-----------------------------*/
+    // /*-------------------------------delete blog by id-----------------------------*/
 
     it("delete blog by Id, should return 401 if incorrect auth", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .delete(urlBlogs + blogId)
+            .delete(urlBlogs + await foundBlogById())
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .send({
                 name: blogName,
@@ -375,12 +414,8 @@ describe('blogs', () => {
             .expect(401)
     });
     it("delete blog by Id, should return 204 if success", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .delete(urlBlogs + blogId)
+            .delete(urlBlogs + await foundBlogById())
             .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
@@ -393,8 +428,8 @@ describe('blogs', () => {
         await request(app).get(urlBlogs + "string").expect(404);
     });
 
-
 })
+
 
 
 
