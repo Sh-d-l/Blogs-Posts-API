@@ -9,7 +9,7 @@
     "dev": "nodemon dist/index.js",
     "debug": "nodemon --inspect dist/index.js",
     "start": "node dist/index.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
