@@ -31,8 +31,7 @@ import {
 } from "../../test/auth.constans";
 
 
-describe('blogs', async () => {
-
+describe('blogs', () => {
     beforeAll(async () => {
         await request(app)
             .del("/testing/all-data")
@@ -98,24 +97,9 @@ describe('blogs', async () => {
     /*--------------------------get all blogs after create---------------------------*/
 
     it("get blogs, should return 200 with array blogs", async () => {
-        const blogsArr = await request(app)
+        await request(app)
             .get(urlBlogs)
             .expect(200)
-
-        // expect(blogsArr.body).toEqual({
-        //     pagesCount: blogsArr.body.pagesCount,
-        //     page: blogsArr.body.page,
-        //     pageSize: blogsArr.body.pageSize,
-        //     totalCount: blogsArr.body.totalCount,
-        //     items: [{
-        //         id: blogsArr.body.id,
-        //         name: blogName,
-        //         description: blogDescription,
-        //         websiteUrl: blogWebsiteUrl,
-        //         createdAt: blogsArr.body.createdAt,
-        //         isMembership: false,
-        //     }]
-        // })
     })
     /*-------------------------------------------------------------------------------*/
 
@@ -429,6 +413,7 @@ describe('blogs', async () => {
     });
 
 })
+
 
 
 
