@@ -11,6 +11,7 @@ import {
     blogName,
     blogDescription,
     blogWebsiteUrl,
+    foundBlogById, incorrectTitlePostLength, incorrectShortDescriptionPostLength, incorrectContentPostLength
 } from "../../test/blogs.constans";
 import {urlBlogs} from "../../test/blogs.constans";
 import {
@@ -19,6 +20,7 @@ import {
     loginAuth,
     passAuth
 } from "../../test/auth.constans";
+import {foundPostById} from "../../test/posts.constants";
 
 describe('posts', () => {
     beforeAll(async () => {
@@ -42,32 +44,33 @@ describe('posts', () => {
     /*---------------------create post by blogId-------------------------*/
 
     it("create post, should return 401 if unauthorized", async () => {
-
         await request(app)
             .post(urlPosts)
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })
     it("create post, should return 201 if success", async () => {
-        const blogs = await request(app).get(urlBlogs).expect(200)
-        const blogId = blogs.body.items[0].id;
-        console.log(blogId)
-
-        await request(app)
+        const post = await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: postContent,
-                blogId
+                blogId: await foundBlogById()
             })
             .expect(201)
+        expect(post.body).toEqual({
+            id: post.body.id,
+            title: postTitle,
+            shortDescription: postShortDescription,
+            content: postContent,
+            blogId: await foundBlogById(),
+            blogName: post.body.blogName,
+            createdAt: post.body.createdAt,
+        })
     })
     it("create post, should return 400 if incorrect field title", async () => {
-        const blogs = await request(app).get(urlBlogs).expect(200)
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
@@ -75,15 +78,12 @@ describe('posts', () => {
                 title: incorrectTitlePost,
                 shortDescription: postShortDescription,
                 content: postContent,
-                blogId
+                blogId: await foundBlogById()
             })
             .expect(400)
     });
 
     it("create post, should return 400 if incorrect field shortDescription", async () => {
-        const blogs = await request(app).get(urlBlogs).expect(200)
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
@@ -91,15 +91,12 @@ describe('posts', () => {
                 title: postTitle,
                 shortDescription: incorrectShortDescriptionPost,
                 content: postContent,
-                blogId
+                blogId: await foundBlogById()
             })
             .expect(400)
     });
 
     it("create post should return 400 if incorrect field content", async () => {
-        const blogs = await request(app).get(urlBlogs).expect(200)
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
@@ -107,14 +104,11 @@ describe('posts', () => {
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: incorrectContentPost,
-                blogId
+                blogId: await foundBlogById()
             })
             .expect(400)
     });
     it("create post, should return 400 if incorrect field blogId", async () => {
-        const blogs = await request(app).get(urlBlogs).expect(200)
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
@@ -122,20 +116,23 @@ describe('posts', () => {
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: postContent,
-                blogId: !blogId
+                blogId: !await foundBlogById()
             })
             .expect(400)
     });
 
+    /*-------------------------------get all posts---------------------------------------*/
+
+    it('get all posts, should return 200', async () => {
+        await request(app)
+            .get(urlPosts).expect(200)
+    })
+
     /*-------------------------------get post by Id--------------------------------------*/
 
     it(`get post, should return post by ID`, async () => {
-        const posts = await request(app)
-            .get(urlPosts).expect(200);
-        const postId = posts.body.items[0].id;
-
         const post = await request(app)
-            .get(urlPosts + postId).expect(200);
+            .get(urlPosts + await foundPostById()).expect(200);
     });
 
     it(`get post, should return 404 if post not found`, async () => {
@@ -145,132 +142,128 @@ describe('posts', () => {
 
     /*------------------------------put post by Id---------------------------------------*/
 
-    it("update post by Id, should return 404 if post not found", async () => {
-        const posts = await request(app)
-            .get(urlPosts + "string").expect(404);
-    })
-
     it('update post by Id, should return 401 if auth failed', async () => {
-        const posts = await request(app)
-            .get(urlPosts).expect(200);
-        const postId = posts.body.items[0].id;
-
         await request(app)
-            .put(urlPosts + postId)
+            .put(urlPosts + await foundPostById())
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })
 
     it('update post by Id, should return 204 if success', async () => {
-        const posts = await request(app)
-            .get(urlPosts).expect(200);
-        const postId = posts.body.items[0].id;
-        console.log(postId)
-
         await request(app)
-            .put(urlPosts + postId)
+            .put(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: postContent,
-                postId
+                blogId: await foundBlogById()
             })
             .expect(204)
     })
-    it("update post, should return 400 if incorrect field title", async () => {
-        const posts = await request(app).get(urlPosts).expect(200);
-        const postId = posts.body.items[0].id;
 
-        await request(app)
-            .post(urlPosts)
+    it("update post, should return 400 if incorrect field title", async () => {
+       const postUpdate =  await request(app)
+            .put(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .send({
                 title: incorrectTitlePost,
                 shortDescription: postShortDescription,
                 content: postContent,
-                postId
+                blogId: await foundBlogById(),
             })
             .expect(400)
     });
 
     it("update post, should return 400 if incorrect field shortDescription", async () => {
-        const posts = await request(app).get(urlPosts).expect(200)
-        const postId = posts.body.items[0].id;
-
         await request(app)
-            .post(urlPosts)
+            .put(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: incorrectShortDescriptionPost,
                 content: postContent,
-                postId
+                blogId: await foundBlogById(),
             })
             .expect(400)
     });
 
     it("update post, should return 400 if incorrect field content", async () => {
-        const posts = await request(app).get(urlPosts).expect(200)
-        const postId = posts.body.items[0].id;
-
         await request(app)
-            .post(urlPosts)
+            .put(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: incorrectContentPost,
-                postId
+                blogId: await foundBlogById(),
             })
             .expect(400)
     });
-    it("update post, should return 400 if incorrect field postId", async () => {
-        const posts = await request(app).get(urlPosts).expect(200)
-        const postId = posts.body.items[0].id;
-
+    it("update post, should return 400 if incorrect field blogId", async () => {
         await request(app)
-            .post(urlPosts)
+            .put(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: postContent,
-                postId: !postId
+                blogId: !await foundBlogById()
             })
             .expect(400)
     });
 
+    it('update post, should return 400 if length title is more 30', async () => {
+        await request(app)
+            .put(urlPosts + await foundPostById())
+            .auth(loginAuth, passAuth)
+            .send({
+                title: incorrectTitlePostLength,
+                shortDescription: postShortDescription,
+                content: postContent,
+            })
+            .expect(400)
+    })
+    it('update post, should return 400 if length shortDescription is more 100', async () => {
+        await request(app)
+            .put(urlPosts + await foundPostById())
+            .auth(loginAuth, passAuth)
+            .send({
+                title: postTitle,
+                shortDescription: incorrectShortDescriptionPostLength,
+                content: postContent,
+            })
+            .expect(400)
+    })
+    it('update post, should return 400 if length content is more 1000', async () => {
+        await request(app)
+            .put(urlPosts + await foundPostById())
+            .auth(loginAuth, passAuth)
+            .send({
+                title: postTitle,
+                shortDescription: postShortDescription,
+                content: incorrectContentPostLength,
+            })
+            .expect(400)
+    })
+
     /*-------------------------------delete post by id-----------------------------*/
 
     it("delete post by Id, should return 404 if post not found", async () => {
-        const posts = await request(app)
+        await request(app)
             .get(urlPosts + "string").expect(404);
     })
     it("delete post by Id, should return 401 if incorrect auth", async () => {
-        const posts = await request(app)
-            .get(urlPosts).expect(200);
-        const postId = posts.body.items[0].id;
-
         await request(app)
-            .delete(urlPosts + postId)
+            .delete(urlPosts + await foundPostById())
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     });
     it("delete post by Id, should return 204 if success", async () => {
-        const blogs = await request(app)
-            .get(urlBlogs).expect(200);
-        const blogId = blogs.body.items[0].id;
-
         await request(app)
-            .delete(urlBlogs + blogId)
+            .delete(urlPosts + await foundPostById())
             .auth(loginAuth, passAuth)
             .expect(204)
     });
-    afterAll(async () => {
-        await request(app)
-            .del("/testing/all-data")
-            .expect(204)
-    })
 
 })

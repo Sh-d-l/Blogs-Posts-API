@@ -1,4 +1,10 @@
-export const postTitle = "string string"
-export const postShortDescription = "string string"
-export const postContent = "string string"
-export const postBlogId = "string string"
+import request from "supertest";
+import {app} from "../src";
+import {urlPosts} from "./blogs.constans";
+
+export const foundPostById = async () => {
+    const post = await  request(app)
+        .get(urlPosts)
+        .expect(200)
+    return post.body.items[0].id
+}
