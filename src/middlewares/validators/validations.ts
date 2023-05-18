@@ -4,8 +4,8 @@ import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositor
 
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
-const loginPattern = /^[a-zA-Z0-9_-]*$/;
-const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+export const loginPattern = /^[a-zA-Z0-9_-]*$/;
+export const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 const nameValidation = body('name')
     .isString()
