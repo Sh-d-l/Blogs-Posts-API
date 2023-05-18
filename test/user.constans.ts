@@ -1,3 +1,7 @@
+import request from "supertest";
+import {app} from "../src";
+import {urlBlogs} from "./blogs.constans";
+
 export const urlUser = "/users";
 export  const loginUser = "1234";
 export const emailUser = "https://www.google.com/";
@@ -11,3 +15,8 @@ export const incorrectLengthPassUserLess = "2"
 export const incorrectLengthPassUserMore = "44444444444444444444444444444444444444444444444444444444444444444444444444"
 export  const incorrectPatternLoginUser = /^[acv-zA-Z0-9_-]*$/;
 export const incorrectPatternEmailUser = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4245iuy}$/
+export const foundUserById = async () => {
+    const users = await request(app)
+        .get(urlBlogs).expect(200);
+    return users.body.items[0].id;
+}
