@@ -28,7 +28,7 @@ import {
     incorrectBasicAuthPass,
     loginAuth,
     passAuth
-} from "../../test/auth.constans";
+} from "../../test/authUsers.constans";
 
 
 describe('blogs', () => {

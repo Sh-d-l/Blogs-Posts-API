@@ -18,12 +18,6 @@ export interface IPagination {
     pageSize: number,
     skip: number
 }
-
-// export interface IUsersPagination extends IPagination {
-//     searchLoginTerm: string | null,
-//     searchEmailTerm: string | null,
-// }
-
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
     const pageSize = Number(query.pageSize)
@@ -38,7 +32,6 @@ export const getPaginationFromQuery = (query: any): IPagination => {
         skip: (pageNumber - 1) * pageSize
     }
 }
-
 
 usersRouter.get('/',
     basicAuth,

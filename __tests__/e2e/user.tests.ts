@@ -14,14 +14,15 @@ import {
     incorrectLengthLoginUserLess,
     incorrectLengthLoginUserMore,
     incorrectLengthPassUserLess,
-    incorrectLengthPassUserMore, foundUserById
+    incorrectLengthPassUserMore,
+    foundUserById,
 } from "../../test/user.constans";
 import {
     incorrectBasicAuthName,
     incorrectBasicAuthPass,
     loginAuth,
     passAuth,
-} from "../../test/auth.constans";
+} from "../../test/authUsers.constans";
 
 describe('user', () => {
     beforeAll(async () => {
@@ -30,8 +31,8 @@ describe('user', () => {
             .expect(204)
     })
     /*-----------------------create new user-------------------*/
-    it("create new user, should return 401 incorrect auth", async () => {
-        const newUser = await request(app)
+    it("create new user, should return 401 if incorrect auth", async () => {
+        await request(app)
             .post(urlUser)
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
@@ -179,9 +180,10 @@ describe('user', () => {
             .expect(200)
     })
     /*------------------------delete by id--------------------*/
+
     it("delete user by id, should return 401 incorrect auth", async () => {
-        const newUser = await request(app)
-            .delete(urlUser)
+        await request(app)
+            .delete(urlUser + await foundUserById() )
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })

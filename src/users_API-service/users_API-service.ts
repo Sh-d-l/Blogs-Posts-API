@@ -22,15 +22,21 @@ export const usersService = {
         return newUser;
     },
 
-    async authUserService(loginOrEmail: string, password: string): Promise<boolean> {
+    async authUserService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
         const user: TUsersWithHashDb | null = await usersRepoDb.findUserByLoginEmail(loginOrEmail)
-        if(!user) return false;
+        if(!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if(checkUserHash) {
-            return true;
+            const newUserAuth: TUsersDb = {
+                id: randomUUID(),
+                login:user.login,
+                email:user.email,
+                createdAt: new Date().toISOString(),
+            }
+            return newUserAuth;
         }
         else {
-            return false;
+            return null;
         }
     },
 

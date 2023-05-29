@@ -19,7 +19,7 @@ import {
     incorrectBasicAuthPass,
     loginAuth,
     passAuth
-} from "../../test/auth.constans";
+} from "../../test/authUsers.constans";
 import {foundPostById} from "../../test/posts.constants";
 
 describe('posts', () => {
