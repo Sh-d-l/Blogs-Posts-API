@@ -1,4 +1,5 @@
 import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
+import {CommentType} from "../post_API-repositories/post_API-repositories-db";
 import {randomUUID} from "crypto";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {blogCollection, postCollection} from "../repositories/db";
@@ -27,7 +28,12 @@ export const postService = {
             await posts_repositories.createPost(newPost);
             return newPost;
         },
-
+    /*----------------------create comment------------------------*/
+        async createCommentService(content:string):Promise<CommentType> {
+            const
+            const
+        },
+    /*------------------------------------------------------------*/
     async getPostIDService(id: string): Promise<PostType | null> {
         return await posts_repositories.getPostID(id);
     },

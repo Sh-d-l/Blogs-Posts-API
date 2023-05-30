@@ -1,8 +1,13 @@
 import {Request, Response, Router} from "express";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {CommentType} from "../post_API-repositories/post_API-repositories-db";
 import {basicAuth} from "../auth/basic_auth"
-import {createPostValidation, updatePostValidation} from "../middlewares/validators/validations";
-import {postService} from "../Post_API-service/post_API-service";
+import {
+    createCommentValidation,
+    createPostValidation,
+    updatePostValidation
+} from "../middlewares/validators/validations";
+import {postService} from "../post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
 import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
@@ -31,7 +36,23 @@ postRouter.post('/',
             res.status(201).send(postPost)
         }
     })
-postRouter.get('/:id', async (req, res) => {
+/*-------------------------create comment by postId------------------------*/
+postRouter.post('/:postId/comments',
+    basicAuth,
+    ...createCommentValidation,
+    async (req:Request,res:Response) => {
+        const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
+        if(getPostId) {
+            const newComment:CommentType = await  postService.createCommentService(req.body.content)
+        }
+    }
+
+
+    )
+
+
+
+postRouter.get('/:id', async (req:Request, res:Response) => {
     const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
     if (getPostId) {
         res.status(200).send(getPostId)

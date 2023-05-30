@@ -1,5 +1,14 @@
 import {PostType} from "./post_API-repositories-memory";
 import {postCollection} from "../repositories/db";
+export type CommentType = {
+    id: string,
+    content: string,
+    commentatorInfo: {
+        userId: string,
+        userLogin: string
+    },
+    "createdAt": string
+}
 
 export const posts_repositories = {
     async getPost(): Promise<PostType[]> {

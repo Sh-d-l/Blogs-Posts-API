@@ -82,7 +82,19 @@ const emailValidation = body("email")
     .matches(emailPattern)
     .withMessage("Does not match pattern email")
 
+const commentValidation = body("content")
+    .exists()
+    .withMessage("Not exists")
+    .trim()
+    .isString()
+    .withMessage("Not string")
+    .isLength({min: 20, max: 300})
+    .withMessage("less 20 or more 300")
 
+export const createCommentValidation = [
+    commentValidation,
+    inputValidator
+]
 export const createBlogValidation = [
     nameValidation,
     descriptionValidation,
