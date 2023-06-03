@@ -4,6 +4,7 @@ import {randomUUID} from "crypto";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {blogCollection, postCollection} from "../repositories/db";
 import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
+import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 
 export const postService = {
     async getPostService(): Promise<PostType[]> {
@@ -28,12 +29,25 @@ export const postService = {
             await posts_repositories.createPost(newPost);
             return newPost;
         },
+
     /*----------------------create comment------------------------*/
-        async createCommentService(content:string):Promise<CommentType> {
-            const
-            const
+
+        async createCommentService(content: string, user: TUsersDb):Promise<CommentType> {
+            const newComment:CommentType = {
+                id: randomUUID(),
+                content,
+                commentatorInfo: {
+                    userId: user.id,
+                    userLogin: user.login,
+                },
+                createdAt: new Date().toISOString(),
+            }
+            await posts_repositories.createCommentByPostId(newComment)
+            return newComment;
         },
+
     /*------------------------------------------------------------*/
+
     async getPostIDService(id: string): Promise<PostType | null> {
         return await posts_repositories.getPostID(id);
     },

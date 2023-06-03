@@ -71,7 +71,7 @@ const passwordValidation = body("password")
     .isString()
     .withMessage("Not string")
     .isLength({min: 6, max: 20})
-    .withMessage("less 3 or more 10")
+    .withMessage("less 6 or more 20")
 
 const emailValidation = body("email")
     .exists()

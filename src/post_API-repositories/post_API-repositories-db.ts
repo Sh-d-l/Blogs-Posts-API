@@ -7,9 +7,8 @@ export type CommentType = {
         userId: string,
         userLogin: string
     },
-    "createdAt": string
+    createdAt: string
 }
-
 export const posts_repositories = {
     async getPost(): Promise<PostType[]> {
         return postCollection.find({}, {projection: {_id: 0}}).toArray();
@@ -20,7 +19,9 @@ export const posts_repositories = {
     async createPost(newPost: PostType) {
         return await postCollection.insertOne({...newPost});
     },
-
+    async createCommentByPostId(newComment:any) {
+        return await postCollection.insertOne({...newComment})
+    },
     async getPostID(id: string): Promise<PostType | null> {
         return postCollection.findOne({id: id}, {projection: {_id: 0}});
     },

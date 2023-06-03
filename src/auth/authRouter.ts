@@ -6,12 +6,14 @@ import {basicAuth} from "./basic_auth";
 
 export const authRouter = Router({})
 
-authRouter.post("/login", async (req: Request, res: Response) => {
+authRouter.post("/login",
+    async (req: Request, res: Response) => {
     const authUser: TUsersDb | null = await usersService
         .authUserService(req.body.loginOrEmail, req.body.password)
     if (authUser) {
         const token = await jwtService.createJwt(authUser)
         res.status(200).send(token)
+        return
     } else {
         res.status(401)
     }

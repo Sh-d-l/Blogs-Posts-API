@@ -7,6 +7,7 @@ import {
     createPostValidation,
     updatePostValidation
 } from "../middlewares/validators/validations";
+import {authMiddleware} from "../middlewares/validators/authMiddleware";
 import {postService} from "../post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
@@ -20,7 +21,6 @@ postRouter.get('/', async (req: Request, res: Response) => {
         req.query.sortDirection as SortDirection || "desc",
         Number(req.query.pageNumber) || 1,
         Number(req.query.pageSize) || 10,)
-    //console.log(...getPosts, "router")
     res.status(200).send(getPosts)
 })
 postRouter.post('/',
@@ -36,23 +36,27 @@ postRouter.post('/',
             res.status(201).send(postPost)
         }
     })
+
 /*-------------------------create comment by postId------------------------*/
+
 postRouter.post('/:postId/comments',
-    basicAuth,
+    authMiddleware,
     ...createCommentValidation,
-    async (req:Request,res:Response) => {
+    async (req: Request, res: Response) => {
         const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
-        if(getPostId) {
-            const newComment:CommentType = await  postService.createCommentService(req.body.content)
+        if (getPostId) {
+            const newComment: CommentType = await postService.createCommentService (req.body.content, req.user!)
+            res.status(201).send(newComment)
+        }
+        else {
+            res.sendStatus(404)
         }
     }
+)
 
+/*---------------------------------------------------------------------------*/
 
-    )
-
-
-
-postRouter.get('/:id', async (req:Request, res:Response) => {
+postRouter.get('/:id', async (req: Request, res: Response) => {
     const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
     if (getPostId) {
         res.status(200).send(getPostId)

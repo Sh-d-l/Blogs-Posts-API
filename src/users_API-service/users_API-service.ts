@@ -24,18 +24,31 @@ export const usersService = {
 
     async authUserService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
         const user: TUsersWithHashDb | null = await usersRepoDb.findUserByLoginEmail(loginOrEmail)
-        if(!user) return null;
+        if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
-        if(checkUserHash) {
+        if (checkUserHash) {
             const newUserAuth: TUsersDb = {
                 id: randomUUID(),
-                login:user.login,
-                email:user.email,
+                login: user.login,
+                email: user.email,
                 createdAt: new Date().toISOString(),
             }
             return newUserAuth;
+        } else {
+            return null;
         }
-        else {
+    },
+    async findUserByIdService(userId: string): Promise<TUsersDb | null> {
+        const user: TUsersWithHashDb | null = await usersRepoDb.findUserByUserId(userId)
+        if (user) {
+            const userForComment: TUsersDb = {
+                id: randomUUID(),
+                login: user.login,
+                email: user.email,
+                createdAt: new Date().toISOString(),
+            }
+            return userForComment
+        } else {
             return null;
         }
     },

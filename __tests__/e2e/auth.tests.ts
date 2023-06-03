@@ -12,14 +12,15 @@ import {
 import {urlAuth} from "../../test/auth.constans";
 
 describe('auth', () => {
-    it("auth with correct login and pass, should return 204", async () => {
-        await  request(app)
+    it("auth with correct login and pass, should return 200 with token", async () => {
+        const token = await  request(app)
             .post(urlAuth)
             .send({
                 loginOrEmail: loginUser,
                 password: passUser
             })
-            .expect(204)
+            .expect(200)
+        expect(token).toEqual(token)
     })
     it("auth with correct login and incorrect pass, should return 401", async () => {
         await  request(app)

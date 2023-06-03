@@ -9,6 +9,7 @@ process.on('unhandledRejection', function (reason, p) {
     console.error('ERROR')
     console.error(reason, p)
 })
+
 const port = process.env.PORT || 5000
 export const app = express()
 app.use(express.json())
