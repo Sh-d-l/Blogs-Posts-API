@@ -7,11 +7,30 @@ import {
     passUser,
     incorrectEmailUser,
     incorrectLoginUser,
-    incorrectPassUserString
+    incorrectPassUserString, urlUser
 } from "../../test/user.constans";
 import {urlAuth} from "../../test/auth.constans";
+import {loginAuth, passAuth} from "../../test/authUsers.constans";
 
 describe('auth', () => {
+    it("create new user, should return 201 and {}", async () => {
+        const newUser = await request(app)
+            .post(urlUser)
+            .auth(loginAuth, passAuth)
+            .send({
+                    login: loginUser,
+                    password: passUser,
+                    email: emailUser,
+                }
+            )
+            .expect(201)
+        expect(newUser.body).toEqual({
+            id: newUser.body.id,
+            login: loginUser,
+            email: emailUser,
+            createdAt: newUser.body.createdAt,
+        })
+    })
     it("auth with correct login and pass, should return 200 with token", async () => {
         const token = await  request(app)
             .post(urlAuth)
@@ -20,7 +39,6 @@ describe('auth', () => {
                 password: passUser
             })
             .expect(200)
-        expect(token).toEqual(token)
     })
     it("auth with correct login and incorrect pass, should return 401", async () => {
         await  request(app)

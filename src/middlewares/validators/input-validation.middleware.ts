@@ -8,11 +8,12 @@ export const inputValidator = (req:Request,res:Response,next:NextFunction) => {
             message: el.msg,
             field: el.param
         }))
-        return res.status(400).json({ errorsMessages });
+         res.status(400).json({ errorsMessages });
+
+        return
     }
-    else {
         next();
-    }
+
 }
 
 

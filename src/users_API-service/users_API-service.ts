@@ -27,13 +27,12 @@ export const usersService = {
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            const newUserAuth: TUsersDb = {
+            return {
                 id: randomUUID(),
                 login: user.login,
                 email: user.email,
                 createdAt: new Date().toISOString(),
             }
-            return newUserAuth;
         } else {
             return null;
         }
@@ -41,13 +40,12 @@ export const usersService = {
     async findUserByIdService(userId: string): Promise<TUsersDb | null> {
         const user: TUsersWithHashDb | null = await usersRepoDb.findUserByUserId(userId)
         if (user) {
-            const userForComment: TUsersDb = {
-                id: randomUUID(),
+           return {
+                id: user.id,
                 login: user.login,
                 email: user.email,
                 createdAt: new Date().toISOString(),
             }
-            return userForComment
         } else {
             return null;
         }

@@ -58,9 +58,9 @@ usersRouter.delete("/:id",
         const deleteUser: boolean =
             await usersService.deleteUserById(req.params.id)
         if (deleteUser) {
-            return res.sendStatus(204)
+            res.sendStatus(204)
         } else {
-            res.sendStatus(404)
+             res.sendStatus(404)
         }
     }
 )

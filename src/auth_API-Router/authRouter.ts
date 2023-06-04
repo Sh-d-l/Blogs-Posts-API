@@ -1,8 +1,9 @@
 import {Request, Response, Router} from "express";
 import {usersService} from "../users_API-service/users_API-service";
-import {jwtService} from "../../application/jwt-service";
+import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
-import {basicAuth} from "./basic_auth";
+import {basicAuth} from "../auth/basic_auth";
+import {authMiddleware} from "../middlewares/validators/authMiddleware";
 
 export const authRouter = Router({})
 
@@ -12,23 +13,15 @@ authRouter.post("/login",
         .authUserService(req.body.loginOrEmail, req.body.password)
     if (authUser) {
         const token = await jwtService.createJwt(authUser)
-        res.status(200).send(token)
+        console.log(token)
+        res.status(200).send({accessToken: token})
         return
     } else {
-        res.status(401)
+        res.sendStatus(401)
     }
 })
 authRouter.get("/me",
-    basicAuth,
+    authMiddleware,
     async (req: Request, res: Response) => {
-        const authUser: TUsersDb | null = await usersService
-            .authUserService(req.body.loginOrEmail, req.body.password)
-        if(authUser) {
-            const currentUser = {
-                email: authUser.email,
-                login: authUser.login,
-                userId:authUser.id,
-            }
-            res.status(200).send(currentUser)
-        }
+        return res.send({login: req.user?.login, email: req.user?.email})
     })

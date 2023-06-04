@@ -1,5 +1,5 @@
 import {PostType} from "./post_API-repositories-memory";
-import {postCollection} from "../repositories/db";
+import {postCollection, commentCollection} from "../repositories/db";
 export type CommentType = {
     id: string,
     content: string,
@@ -19,11 +19,11 @@ export const posts_repositories = {
     async createPost(newPost: PostType) {
         return await postCollection.insertOne({...newPost});
     },
-    async createCommentByPostId(newComment:any) {
-        return await postCollection.insertOne({...newComment})
+    async createCommentByPostId(newComment:CommentType) {
+         await commentCollection.insertOne({...newComment})
     },
     async getPostID(id: string): Promise<PostType | null> {
-        return postCollection.findOne({id: id}, {projection: {_id: 0}});
+        return await postCollection.findOne({id: id}, {projection: {_id: 0}});
     },
     async updatePost(id: string,
                      title: string,
