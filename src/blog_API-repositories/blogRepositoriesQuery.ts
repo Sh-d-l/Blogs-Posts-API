@@ -2,6 +2,7 @@ import {TBlogDb} from "./blog_API-repositories-memory";
 import {blogCollection, postCollection} from "../repositories/db";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {SortDirection} from "mongodb";
+import {CommentType} from "../post_API-repositories/post_API-repositories-db";
 
 export type TypeGetBlogsWithCount = {
     pagesCount: number,
@@ -17,6 +18,13 @@ export type TypeGetPostsByBlogId = {
     pageSize: number,
     totalCount: number,
     items: PostType[]
+}
+export type TypeGetCommentsByPostId = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: CommentType[]
 }
 
 export const blogsRepoQuery = {
@@ -37,14 +45,13 @@ export const blogsRepoQuery = {
             .limit(pageSize)
             .sort({[sortBy]: sortDirection})
             .toArray()
-        const resArrBlogs: TypeGetBlogsWithCount = {
+        return {
             pagesCount: countPages,
             page: pageNumber,
             pageSize: pageSize,
             totalCount: countBlogs,
             items: getBlogsDB,
         }
-        return resArrBlogs;
     },
 
     async getAllPostsByBlogId(id: string,
@@ -62,14 +69,13 @@ export const blogsRepoQuery = {
             .limit(pageSize)
             .toArray()
         if(getPosts.length > 0) {
-            const resArrPosts: TypeGetPostsByBlogId = {
+            return {
                 pagesCount: countPages,
                 page: pageNumber,
                 pageSize: pageSize,
                 totalCount: countAllPosts,
                 items: getPosts
             }
-            return resArrPosts;
         }
         else {
             return null;

@@ -59,14 +59,14 @@ describe('auth', () => {
             .expect(401)
     })
 
-    it("auth with correct email and pass, should return 204", async () => {
+    it("auth with correct email and pass, should return 200 with token", async () => {
         await  request(app)
             .post(urlAuth)
             .send({
                 loginOrEmail: emailUser,
                 password: passUser
             })
-            .expect(204)
+            .expect(200)
     })
     it("auth with correct email and incorrect pass, should return 401", async () => {
         await  request(app)

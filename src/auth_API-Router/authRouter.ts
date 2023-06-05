@@ -2,7 +2,6 @@ import {Request, Response, Router} from "express";
 import {usersService} from "../users_API-service/users_API-service";
 import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
-import {basicAuth} from "../auth/basic_auth";
 import {authMiddleware} from "../middlewares/validators/authMiddleware";
 
 export const authRouter = Router({})
@@ -13,7 +12,6 @@ authRouter.post("/login",
         .authUserService(req.body.loginOrEmail, req.body.password)
     if (authUser) {
         const token = await jwtService.createJwt(authUser)
-        console.log(token)
         res.status(200).send({accessToken: token})
         return
     } else {

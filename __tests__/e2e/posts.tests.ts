@@ -11,7 +11,11 @@ import {
     blogName,
     blogDescription,
     blogWebsiteUrl,
-    foundBlogById, incorrectTitlePostLength, incorrectShortDescriptionPostLength, incorrectContentPostLength
+    foundBlogById,
+    incorrectTitlePostLength,
+    incorrectShortDescriptionPostLength,
+    incorrectContentPostLength,
+    urlComments
 } from "../../test/blogs.constans";
 import {urlBlogs} from "../../test/blogs.constans";
 import {
@@ -21,6 +25,9 @@ import {
     passAuth
 } from "../../test/authUsers.constans";
 import {foundPostById} from "../../test/posts.constants";
+import {emailUser, loginUser, passUser, urlUser} from "../../test/user.constans";
+import {urlAuth} from "../../test/auth.constans";
+import it from "node:test";
 
 describe('posts', () => {
     beforeAll(async () => {
@@ -70,6 +77,57 @@ describe('posts', () => {
             createdAt: post.body.createdAt,
         })
     })
+    /*------------------------create comment by PostId------------------------------*/
+
+    it("create new user, should return 201 and newUser", async () => {
+        const newUser = await request(app)
+            .post(urlUser)
+            .auth(loginAuth, passAuth)
+            .send({
+                    login: loginUser,
+                    password: passUser,
+                    email: emailUser,
+                }
+            )
+            .expect(201)
+        expect(newUser.body).toEqual({
+            id: newUser.body.id,
+            login: loginUser,
+            email: emailUser,
+            createdAt: newUser.body.createdAt,
+        })
+    })
+    it("auth with correct login and pass, should return 200 with token", async () => {
+        const token = await  request(app)
+            .post(urlAuth)
+            .send({
+                loginOrEmail: loginUser,
+                password: passUser
+            })
+            .expect(200)
+    })
+    it("create comment by postId, should return 201 and object", async ()=> {
+        const token = await  request(app)
+            .post(urlAuth)
+            .send({
+                loginOrEmail: loginUser,
+                password: passUser
+            })
+            .expect(200)
+        const postId = await request(app)
+            .get(urlPosts).expect(200)
+            postId.body.items[0].id
+        await request(app)
+            .post(urlPosts + postId + urlComments)
+            .auth(token.body, { type: 'bearer' })
+            .send({
+                "content": "stringstringstringst"
+            })
+            .expect(201)
+
+    })
+    /*-------------------------------------------------------------------------------*/
+
     it("create post, should return 400 if incorrect field title", async () => {
         await request(app)
             .post(urlPosts)

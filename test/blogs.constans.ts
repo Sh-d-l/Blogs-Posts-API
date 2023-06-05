@@ -16,6 +16,7 @@ export const blogWebsiteUrl = "https://google.com"
 
 export const urlBlogs = "/blogs/"
 export const urlPosts = "/posts/"
+export const urlComments = "/comments"
 
 
 export const incorrectBlogName = 123

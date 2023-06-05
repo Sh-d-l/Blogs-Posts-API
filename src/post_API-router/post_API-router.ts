@@ -11,7 +11,7 @@ import {authMiddleware} from "../middlewares/validators/authMiddleware";
 import {postService} from "../post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
-import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
+import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
 
 export const postRouter = Router({});
 
@@ -54,20 +54,36 @@ postRouter.post('/:postId/comments',
     }
 )
 
-/*---------------------------------------------------------------------------*/
+/*------------------------get comments by PostID---------------------------*/
+
+postRouter.get('/:postId/comments', async (req: Request, res: Response) => {
+    const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
+    if (getPostId) {
+        const getCommentsByPostId: TypeGetCommentsByPostId = await postsRepoQuery.getCommentsRepoQuery(
+            req.query.sortBy ? String(req.query.sortBy) : "createdAt",
+            req.query.sortDirection as SortDirection || "desc",
+            Number(req.query.pageNumber) || 1,
+            Number(req.query.pageSize) || 10,)
+        res.status(200).send(getCommentsByPostId)
+    }
+    else {
+        res.sendStatus(404)
+    }
+
+})
+
+/*-------------------------------------------------------------------------*/
 
 postRouter.get('/:id', async (req: Request, res: Response) => {
     const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
     if (getPostId) {
         res.status(200).send(getPostId)
-    } else {
-        res.sendStatus(404)
     }
 })
 postRouter.put('/:id',
     basicAuth,
     ...updatePostValidation,
-    async (req, res) => {
+    async (req:Request, res:Response) => {
         const putPost: boolean = await postService.updatePostService(
             req.params.id,
             req.body.title,
