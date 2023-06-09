@@ -17,15 +17,16 @@ commentsRouter.get("/:id", async (req: Request, res: Response) => {
 commentsRouter.put("/:commentId",
     authMiddleware,
     ...createCommentValidation,
-    async (req: Request, res: Response) => {
+    async (req: Request<{commentId: string}, {content: string}>, res: Response) => {
         // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
         // if (req.user?.id !== getCommentById?.commentatorInfo.userId) {
         //     res.sendStatus(403)
         // }
-        const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.comment)
+        const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.content)
         if (commentUpdate) {
             res.sendStatus(204)
-        } else {
+        }
+        else {
             res.sendStatus(404)
         }
     })
