@@ -22,7 +22,7 @@ export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 export const usersCollection = usersDbRepo.collection<TUsersWithHashDb>("Users")
 
-export const collections = [blogCollection, postCollection, usersCollection]
+export const collections = [blogCollection, postCollection, usersCollection,commentCollection]
 
 export async function runDB() {
     try {

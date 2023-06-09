@@ -7,9 +7,7 @@ export const commentsRepo = {
         return commentCollection.findOne({id}, {projection: {_id: 0}})
     },
     async commentUpdateRepo(id: string, content: string): Promise<boolean> {
-        console.log(id,content)
         const updateCommentDB = await commentCollection.updateOne({id}, {$set:{content}})
-        console.log(updateCommentDB)
         return !!updateCommentDB.matchedCount
     },
     async commentDeleteDB(id: string): Promise<boolean> {
