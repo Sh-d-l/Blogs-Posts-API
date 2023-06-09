@@ -18,10 +18,10 @@ commentsRouter.put("/:commentId",
     authMiddleware,
     ...createCommentValidation,
     async (req: Request, res: Response) => {
-        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        if (req.user?.id !== getCommentById?.commentatorInfo.userId) {
-            res.sendStatus(403)
-        }
+        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
+        // if (req.user?.id !== getCommentById?.commentatorInfo.userId) {
+        //     res.sendStatus(403)
+        // }
         const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.comment)
         if (commentUpdate) {
             res.sendStatus(204)
@@ -32,10 +32,10 @@ commentsRouter.put("/:commentId",
 commentsRouter.delete("/:commentId",
     authMiddleware,
     async (req: Request, res: Response) => {
-        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        if (req.user?.id !== getCommentById?.commentatorInfo.userId) {
-            res.sendStatus(403)
-        }
+        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
+        // if (req.user?.id !== getCommentById?.commentatorInfo.userId) {
+        //     res.sendStatus(403)
+        // }
         const delComment: boolean = await commentsService.commentDelete(req.params.commentId)
         if (delComment) {
             res.sendStatus(204)

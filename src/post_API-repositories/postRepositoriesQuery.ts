@@ -31,9 +31,9 @@ export const postsRepoQuery = {
                                sortDirection: SortDirection,
                                pageNumber: number,
                                pageSize: number): Promise<TypeGetCommentsByPostId> {
-        const countTotal: number = await commentCollection.countDocuments({})
+        const commentsTotal: number = await commentCollection.countDocuments({})
         const skipComments: number = (+pageNumber - 1) * +pageSize
-        const countPages: number = Math.ceil(countTotal / +pageSize)
+        const countPages: number = Math.ceil(commentsTotal / +pageSize)
         const getCommentsDB: CommentType[] = await commentCollection
             .find({}, {projection: {_id: false}})
             .sort({[sortBy]: sortDirection})
@@ -45,7 +45,7 @@ export const postsRepoQuery = {
             pagesCount: countPages,
             page: pageNumber,
             pageSize: pageSize,
-            totalCount: countTotal,
+            totalCount: commentsTotal,
             items: getCommentsDB
         }
 
