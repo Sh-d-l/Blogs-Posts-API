@@ -28,10 +28,10 @@ export const usersService = {
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
-                id: randomUUID(),
+                id: user.id,
                 login: user.login,
                 email: user.email,
-                createdAt: new Date().toISOString(),
+                createdAt: user.createdAt
             }
         } else {
             return null;

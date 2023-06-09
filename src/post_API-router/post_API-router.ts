@@ -43,12 +43,12 @@ postRouter.post('/:postId/comments',
     authMiddleware,
     ...createCommentValidation,
     async (req: Request, res: Response) => {
-        const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
+        const getPostId: PostType | null = await postService.getPostIDService(req.params.postId)
         if (getPostId) {
-            const newComment: CommentType = await postService.createCommentService (req.body.content, req.user!)
+            const newComment: CommentType = await postService
+                .createCommentService(req.body.content, req.user!)
             res.status(201).send(newComment)
-        }
-        else {
+        } else {
             res.sendStatus(404)
         }
     }
@@ -57,7 +57,7 @@ postRouter.post('/:postId/comments',
 /*------------------------get comments by PostID---------------------------*/
 
 postRouter.get('/:postId/comments', async (req: Request, res: Response) => {
-    const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
+    const getPostId: PostType | null = await postService.getPostIDService(req.params.postId)
     if (getPostId) {
         const getCommentsByPostId: TypeGetCommentsByPostId = await postsRepoQuery.getCommentsRepoQuery(
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -65,8 +65,7 @@ postRouter.get('/:postId/comments', async (req: Request, res: Response) => {
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
         res.status(200).send(getCommentsByPostId)
-    }
-    else {
+    } else {
         res.sendStatus(404)
     }
 
@@ -78,12 +77,14 @@ postRouter.get('/:id', async (req: Request, res: Response) => {
     const getPostId: PostType | null = await postService.getPostIDService(req.params.id)
     if (getPostId) {
         res.status(200).send(getPostId)
+    } else {
+        res.sendStatus(404)
     }
 })
 postRouter.put('/:id',
     basicAuth,
     ...updatePostValidation,
-    async (req:Request, res:Response) => {
+    async (req: Request, res: Response) => {
         const putPost: boolean = await postService.updatePostService(
             req.params.id,
             req.body.title,

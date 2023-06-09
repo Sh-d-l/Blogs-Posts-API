@@ -23,7 +23,7 @@ export const posts_repositories = {
          await commentCollection.insertOne({...newComment})
     },
     async getPostID(id: string): Promise<PostType | null> {
-        return await postCollection.findOne({id: id}, {projection: {_id: 0}});
+        return await postCollection.findOne({id}, {projection: {_id: 0}});
     },
     async updatePost(id: string,
                      title: string,

@@ -27,7 +27,7 @@ import {
 import {foundPostById} from "../../test/posts.constants";
 import {emailUser, loginUser, passUser, urlUser} from "../../test/user.constans";
 import {urlAuth} from "../../test/auth.constans";
-import it from "node:test";
+//import it from "node:test";
 
 describe('posts', () => {
     beforeAll(async () => {
@@ -57,6 +57,7 @@ describe('posts', () => {
             .expect(401)
     })
     it("create post, should return 201 if success", async () => {
+        const blogId = await foundBlogById()
         const post = await request(app)
             .post(urlPosts)
             .auth(loginAuth, passAuth)
@@ -64,18 +65,19 @@ describe('posts', () => {
                 title: postTitle,
                 shortDescription: postShortDescription,
                 content: postContent,
-                blogId: await foundBlogById()
+                blogId
             })
             .expect(201)
         expect(post.body).toEqual({
-            id: post.body.id,
+            id: expect.any(String),
             title: postTitle,
             shortDescription: postShortDescription,
             content: postContent,
-            blogId: await foundBlogById(),
-            blogName: post.body.blogName,
-            createdAt: post.body.createdAt,
+            blogId,
+            blogName: expect.any(String),
+            createdAt: expect.any(String),
         })
+        expect.setState({post: post.body})
     })
     /*------------------------create comment by PostId------------------------------*/
 
@@ -91,35 +93,36 @@ describe('posts', () => {
             )
             .expect(201)
         expect(newUser.body).toEqual({
-            id: newUser.body.id,
+            id: expect.any(String),
             login: loginUser,
             email: emailUser,
-            createdAt: newUser.body.createdAt,
+            createdAt: expect.any(String),
         })
+        expect.setState({user: {...newUser.body, password: passUser}})
     })
     it("auth with correct login and pass, should return 200 with token", async () => {
+        const {user} = expect.getState()
         const token = await  request(app)
             .post(urlAuth)
             .send({
-                loginOrEmail: loginUser,
-                password: passUser
+                loginOrEmail: user.login,
+                password: user.password
             })
             .expect(200)
+
+        expect(token.body.accessToken).toBeDefined()
+        expect(token.body.accessToken).toEqual(expect.any(String))
+        expect.setState({token: token.body.accessToken})
     })
     it("create comment by postId, should return 201 and object", async ()=> {
-        const token = await  request(app)
-            .post(urlAuth)
-            .send({
-                loginOrEmail: loginUser,
-                password: passUser
-            })
-            .expect(200)
-        const postId = await request(app)
-            .get(urlPosts).expect(200)
-            postId.body.items[0].id
+        const {post, token} = expect.getState()
+        const postId = post.id
+
+        const url = urlPosts + postId + urlComments
+
         await request(app)
-            .post(urlPosts + postId + urlComments)
-            .auth(token.body, { type: 'bearer' })
+            .post(url)
+            .auth(token, { type: 'bearer' })
             .send({
                 "content": "stringstringstringst"
             })
@@ -307,16 +310,24 @@ describe('posts', () => {
 
     /*-------------------------------delete post by id-----------------------------*/
 
-    it("delete post by Id, should return 404 if post not found", async () => {
+    it("delete post by Id, should return 401 if incorrect auth", async () => {
         await request(app)
-            .get(urlPosts + "string").expect(404);
-    })
+            .delete(urlPosts + await foundPostById())
+            .expect(401)
+    });
+
+
     it("delete post by Id, should return 401 if incorrect auth", async () => {
         await request(app)
             .delete(urlPosts + await foundPostById())
             .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     });
+    it("delete post by Id, should return 404 if post not found", async () => {
+        await request(app)
+            .delete(urlPosts + "string").auth(loginAuth, passAuth).expect(404);
+    })
+
     it("delete post by Id, should return 204 if success", async () => {
         await request(app)
             .delete(urlPosts + await foundPostById())

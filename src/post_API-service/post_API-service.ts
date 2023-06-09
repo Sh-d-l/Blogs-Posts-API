@@ -7,9 +7,6 @@ import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
 
 export const postService = {
-    async getPostService(): Promise<PostType[]> {
-        return posts_repositories.getPost();
-    },
     async createPostService(title: string,
                      shortDescription: string,
                      content: string,

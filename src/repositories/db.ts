@@ -17,7 +17,7 @@ export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
 export const usersDbRepo = client.db(DB_NAME)
 
-export const commentCollection = commentDbRepo.collection<CommentType>("Posts")
+export const commentCollection = commentDbRepo.collection<CommentType>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 export const usersCollection = usersDbRepo.collection<TUsersWithHashDb>("Users")
