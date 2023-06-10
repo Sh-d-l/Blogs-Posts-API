@@ -115,6 +115,10 @@ describe('posts', () => {
         expect.setState({token: token.body.accessToken})
     })
     it("create comment by postId, should return 201 and object", async ()=> {
+       // const posts = await request(app)
+       //          .get(urlPosts).expect(200);
+       // const postId = posts.body.items[0].id;
+
         const {post, token} = expect.getState()
         const postId = post.id
 
