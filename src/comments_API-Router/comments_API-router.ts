@@ -19,11 +19,6 @@ commentsRouter.put("/:commentId",
     checkUserIdMiddleware,
     ...createCommentValidation,
     async (req: Request<{commentId: string}, {content: string}>, res: Response) => {
-        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        // const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
-        // if (userId !== getCommentById?.commentatorInfo.userId & req.params.commentId !==  ) {
-        //     res.sendStatus(403)
-        // }
         const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.content)
         if (commentUpdate) {
             res.sendStatus(204)
@@ -36,11 +31,6 @@ commentsRouter.delete("/:commentId",
     authMiddleware,
     checkUserIdMiddleware,
     async (req: Request, res: Response) => {
-        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        // const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
-        // if (userId !== getCommentById?.commentatorInfo.userId) {
-        //     res.sendStatus(403)
-        // }
         const delComment: boolean = await commentsService.commentDelete(req.params.commentId)
         if (delComment) {
             res.sendStatus(204)
