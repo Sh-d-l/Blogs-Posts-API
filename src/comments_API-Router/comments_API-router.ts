@@ -1,9 +1,8 @@
 import {Response, Request, Router} from "express";
-import {authMiddleware} from "../middlewares/validators/authMiddleware";
+import {authMiddleware} from "../middlewares/authMiddleware";
 import {commentsService} from "../comments_API-service/comments_API-service";
 import {createCommentValidation} from "../middlewares/validators/validations";
-import {CommentType} from "../post_API-repositories/post_API-repositories-db";
-import {jwtService} from "../application/jwt-service";
+import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 
 export const commentsRouter = Router({})
 
@@ -17,13 +16,14 @@ commentsRouter.get("/:id", async (req: Request, res: Response) => {
 })
 commentsRouter.put("/:commentId",
     authMiddleware,
+    checkUserIdMiddleware,
     ...createCommentValidation,
     async (req: Request<{commentId: string}, {content: string}>, res: Response) => {
-        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
-        if (userId !== getCommentById?.commentatorInfo.userId) {
-            res.sendStatus(403)
-        }
+        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
+        // const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
+        // if (userId !== getCommentById?.commentatorInfo.userId & req.params.commentId !==  ) {
+        //     res.sendStatus(403)
+        // }
         const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.content)
         if (commentUpdate) {
             res.sendStatus(204)
@@ -34,12 +34,13 @@ commentsRouter.put("/:commentId",
     })
 commentsRouter.delete("/:commentId",
     authMiddleware,
+    checkUserIdMiddleware,
     async (req: Request, res: Response) => {
-        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
-        const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
-        if (userId !== getCommentById?.commentatorInfo.userId) {
-            res.sendStatus(403)
-        }
+        // const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
+        // const userId = await jwtService.getUserIdByToken(req.headers.authorization!.split(" ")[1])
+        // if (userId !== getCommentById?.commentatorInfo.userId) {
+        //     res.sendStatus(403)
+        // }
         const delComment: boolean = await commentsService.commentDelete(req.params.commentId)
         if (delComment) {
             res.sendStatus(204)

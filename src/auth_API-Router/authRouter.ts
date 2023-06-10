@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {usersService} from "../users_API-service/users_API-service";
 import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
-import {authMiddleware} from "../middlewares/validators/authMiddleware";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 export const authRouter = Router({})
 
