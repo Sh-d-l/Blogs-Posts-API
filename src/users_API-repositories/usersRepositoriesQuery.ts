@@ -18,14 +18,6 @@ export type TypeGetUsersWithCount = {
 
 export const usersQueryRepo = {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
-        // let filterSearchLoginTerm = searchLoginTerm
-        //     ? {login: {$regex: searchLoginTerm, $options: "i"}}
-        //     : {};
-        // let filterSearchEmailTerm = searchEmailTerm
-        //     ? {email: {$regex:searchEmailTerm, $options: "i"}}
-        //     : {};
-        //console.log(filterSearchLoginTerm)
-        //console.log(filterSearchEmailTerm)
         const filter = {
             $or: [{
                 login: {
@@ -42,7 +34,6 @@ export const usersQueryRepo = {
             .skip(pagination.skip)
             .limit(pagination.pageSize)
             .toArray()
-        //console.log(getUsersDbByLoginEmail)
         const resArrUsers: TypeGetUsersWithCount = {
             pagesCount,
             page: pagination.pageNumber,

@@ -16,11 +16,11 @@ export const blogRouter = Router({});
 blogRouter.get('/', async (req: Request, res: Response) => {
     const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
         .getBlogsRepoQuery(
-            req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
-            req.query.sortBy ? String(req.query.sortBy) : "createdAt",
-            req.query.sortDirection as SortDirection || "desc",
-            Number(req.query.pageNumber) || 1,
-            Number(req.query.pageSize) || 10,
+             req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
+             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
+             req.query.sortDirection as SortDirection || "desc",
+             Number(req.query.pageNumber) || 1,
+             Number(req.query.pageSize) || 10,
         )
     res.status(200).send(getBlogs)
 })

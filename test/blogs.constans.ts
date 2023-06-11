@@ -10,13 +10,22 @@ export const foundBlogById = async () => {
         .get(urlBlogs).expect(200);
     return blogs.body.items[0].id;
 }
+export const foundPostById = async () => {
+    const posts = await request(app)
+        .get(urlPosts).expect(200);
+    return posts.body.items[0].id;
+}
 export const blogName = "new name";
 export const blogDescription = "new description";
 export const blogWebsiteUrl = "https://google.com"
 
+export const loginOrEmail = "ZZZ"
+export const password = "87654321"
+
 export const urlBlogs = "/blogs/"
 export const urlPosts = "/posts/"
 export const urlComments = "/comments"
+export const urlAuth = "/auth/login"
 
 
 export const incorrectBlogName = 123

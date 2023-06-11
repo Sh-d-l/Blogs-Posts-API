@@ -9,21 +9,21 @@ export const postsRepoQuery = {
                             sortDirection: SortDirection,
                             pageNumber: number,
                             pageSize: number): Promise<TypeGetPostsByBlogId> {
-        const countTotal: number = await postCollection.countDocuments({})
-        const skipPost: number = (+pageNumber - 1) * +pageSize
-        const countPages: number = Math.ceil(countTotal / +pageSize)
+        const totalCount: number = await postCollection.countDocuments({})
+        const postSkip: number = (+pageNumber - 1) * +pageSize
+        const pagesCount: number = Math.ceil(totalCount / +pageSize)
         const getPostDB: PostType[] = await postCollection
             .find({}, {projection: {_id: false}})
             .sort({[sortBy]: sortDirection})
-            .skip(skipPost)
+            .skip(postSkip)
             .limit(pageSize)
             .toArray()
 
         return {
-            pagesCount: countPages,
+            pagesCount,
             page: pageNumber,
             pageSize: pageSize,
-            totalCount: countTotal,
+            totalCount: totalCount,
             items: getPostDB
         }
         },
@@ -32,17 +32,17 @@ export const postsRepoQuery = {
                                pageNumber: number,
                                pageSize: number): Promise<TypeGetCommentsByPostId> {
         const commentsTotal: number = await commentCollection.countDocuments({})
-        const skipComments: number = (+pageNumber - 1) * +pageSize
-        const countPages: number = Math.ceil(commentsTotal / +pageSize)
+        const commentsSkip: number = (+pageNumber - 1) * +pageSize
+        const pagesCount: number = Math.ceil(commentsTotal / +pageSize)
         const getCommentsDB: CommentType[] = await commentCollection
             .find({}, {projection: {_id: false}})
             .sort({[sortBy]: sortDirection})
-            .skip(skipComments)
+            .skip(commentsSkip)
             .limit(pageSize)
             .toArray()
 
         return {
-            pagesCount: countPages,
+            pagesCount,
             page: pageNumber,
             pageSize: pageSize,
             totalCount: commentsTotal,

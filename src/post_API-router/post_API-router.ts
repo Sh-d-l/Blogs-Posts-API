@@ -16,7 +16,7 @@ import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../blog_API-reposit
 export const postRouter = Router({});
 
 postRouter.get('/', async (req: Request, res: Response) => {
-    const getPosts: TypeGetPostsByBlogId = await postsRepoQuery.getPostsRepoQuery(
+    const getPosts = await postsRepoQuery.getPostsRepoQuery(
         req.query.sortBy ? String(req.query.sortBy) : "createdAt",
         req.query.sortDirection as SortDirection || "desc",
         Number(req.query.pageNumber) || 1,
@@ -43,7 +43,8 @@ postRouter.post('/:postId/comments',
     authMiddleware,
     ...createCommentValidation,
     async (req: Request, res: Response) => {
-        const getPostId: PostType | null = await postService.getPostIDService(req.params.postId)
+        const getPostId: PostType | null = await postService
+            .getPostIDService(req.params.postId)
         if (getPostId) {
             const newComment: CommentType = await postService
                 .createCommentService(req.body.content, req.user!)

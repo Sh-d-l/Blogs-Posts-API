@@ -15,7 +15,7 @@ import {
     incorrectTitlePostLength,
     incorrectShortDescriptionPostLength,
     incorrectContentPostLength,
-    urlComments
+    urlComments, loginOrEmail, password
 } from "../../test/blogs.constans";
 import {urlBlogs} from "../../test/blogs.constans";
 import {
@@ -27,7 +27,6 @@ import {
 import {foundPostById} from "../../test/posts.constants";
 import {emailUser, loginUser, passUser, urlUser} from "../../test/user.constans";
 import {urlAuth} from "../../test/auth.constans";
-//import it from "node:test";
 
 describe('posts', () => {
     beforeAll(async () => {
@@ -115,13 +114,8 @@ describe('posts', () => {
         expect.setState({token: token.body.accessToken})
     })
     it("create comment by postId, should return 201 and object", async ()=> {
-       // const posts = await request(app)
-       //          .get(urlPosts).expect(200);
-       // const postId = posts.body.items[0].id;
-
         const {post, token} = expect.getState()
         const postId = post.id
-
         const url = urlPosts + postId + urlComments
 
         await request(app)
