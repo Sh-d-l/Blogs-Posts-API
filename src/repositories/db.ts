@@ -3,7 +3,7 @@ import {MongoClient} from "mongodb";
 import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
 import {PostType} from "../post_API-repositories/post_API-repositories-memory";
 import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories-db";
-import {CommentType} from "../post_API-repositories/post_API-repositories-db";
+import {CommentType, CommentTypeWithPostId} from "../post_API-repositories/post_API-repositories-db";
 
 dotenv.config()
 
@@ -17,7 +17,7 @@ export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
 export const usersDbRepo = client.db(DB_NAME)
 
-export const commentCollection = commentDbRepo.collection<CommentType>("Comments")
+export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 export const usersCollection = usersDbRepo.collection<TUsersWithHashDb>("Users")

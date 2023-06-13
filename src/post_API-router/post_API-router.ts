@@ -47,7 +47,7 @@ postRouter.post('/:postId/comments',
             .getPostIDService(req.params.postId)
         if (getPostId) {
             const newComment: CommentType = await postService
-                .createCommentService(req.body.content, req.user!)
+                .createCommentService(req.body.content,req.params.postId, req.user!)
             res.status(201).send(newComment)
         } else {
             res.sendStatus(404)
@@ -58,13 +58,13 @@ postRouter.post('/:postId/comments',
 /*------------------------get comments by PostID---------------------------*/
 
 postRouter.get('/:postId/comments', async (req: Request, res: Response) => {
-    const getPostId: PostType | null = await postService.getPostIDService(req.params.postId)
-    if (getPostId) {
-        const getCommentsByPostId: TypeGetCommentsByPostId = await postsRepoQuery.getCommentsRepoQuery(
+        const getCommentsByPostId: TypeGetCommentsByPostId | null = await postsRepoQuery.getCommentsRepoQuery(
+            req.params.postId,
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
             Number(req.query.pageSize) || 10,)
+    if(getCommentsByPostId) {
         res.status(200).send(getCommentsByPostId)
     } else {
         res.sendStatus(404)

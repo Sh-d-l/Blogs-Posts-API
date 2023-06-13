@@ -27,26 +27,31 @@ export const postsRepoQuery = {
             items: getPostDB
         }
         },
-    async getCommentsRepoQuery(sortBy: string,
+    async getCommentsRepoQuery(postId:string,
+                               sortBy: string,
                                sortDirection: SortDirection,
                                pageNumber: number,
-                               pageSize: number): Promise<TypeGetCommentsByPostId> {
-        const commentsTotal: number = await commentCollection.countDocuments({})
+                               pageSize: number): Promise<TypeGetCommentsByPostId | null> {
+        const commentsTotal: number = await commentCollection.countDocuments({postId})
         const commentsSkip: number = (+pageNumber - 1) * +pageSize
         const pagesCount: number = Math.ceil(commentsTotal / +pageSize)
         const getCommentsDB: CommentType[] = await commentCollection
-            .find({}, {projection: {_id: false}})
+            .find({postId}, {projection: {_id: false, postId:false}})
             .sort({[sortBy]: sortDirection})
             .skip(commentsSkip)
             .limit(pageSize)
             .toArray()
-
-        return {
-            pagesCount,
-            page: pageNumber,
-            pageSize: pageSize,
-            totalCount: commentsTotal,
-            items: getCommentsDB
+        if(getCommentsDB.length > 0) {
+            return {
+                pagesCount,
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: commentsTotal,
+                items: getCommentsDB
+            }
+        }
+        else {
+            return null;
         }
 
     }
