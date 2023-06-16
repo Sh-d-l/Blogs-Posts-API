@@ -1,5 +1,5 @@
 import {usersCollection} from "../repositories/db";
-import {v4 as uuidv4} from "uuid";
+import {uuid} from "uuidv4";
 
 export type TUsersWithHashDb = {
     id: string,

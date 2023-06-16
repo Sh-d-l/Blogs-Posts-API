@@ -3,9 +3,9 @@ import {randomUUID} from "crypto";
 import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories-db";
 import bcrypt from "bcrypt";
-import { uuid } from 'uuidv4'
+import {uuid} from "uuidv4";
 import add from 'date-fns/add'
-
+import {emailService} from "../domain/emailService";
 
 export const usersService = {
 
@@ -29,7 +29,8 @@ export const usersService = {
                 isConfirmed:false,
             }
         }
-        await usersRepoDb.createNewUser(newUserWithHash)
+        const await usersRepoDb.createNewUser(newUserWithHash)
+        const emailSuccess = await emailService.transportEmailService(email)
         return newUser;
     },
 
