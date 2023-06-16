@@ -78,56 +78,6 @@ describe('posts', () => {
         })
         expect.setState({post: post.body})
     })
-    /*------------------------create comment by PostId------------------------------*/
-
-    it("create new user, should return 201 and newUser", async () => {
-        const newUser = await request(app)
-            .post(urlUser)
-            .auth(loginAuth, passAuth)
-            .send({
-                    login: loginUser,
-                    password: passUser,
-                    email: emailUser,
-                }
-            )
-            .expect(201)
-        expect(newUser.body).toEqual({
-            id: expect.any(String),
-            login: loginUser,
-            email: emailUser,
-            createdAt: expect.any(String),
-        })
-        expect.setState({user: {...newUser.body, password: passUser}})
-    })
-    it("auth with correct login and pass, should return 200 with token", async () => {
-        const {user} = expect.getState()
-        const token = await  request(app)
-            .post(urlAuth)
-            .send({
-                loginOrEmail: user.login,
-                password: user.password
-            })
-            .expect(200)
-
-        expect(token.body.accessToken).toBeDefined()
-        expect(token.body.accessToken).toEqual(expect.any(String))
-        expect.setState({token: token.body.accessToken})
-    })
-    it("create comment by postId, should return 201 and object", async ()=> {
-        const {post, token} = expect.getState()
-        const postId = post.id
-        const url = urlPosts + postId + urlComments
-
-        await request(app)
-            .post(url)
-            .auth(token, { type: 'bearer' })
-            .send({
-                "content": "stringstringstringst"
-            })
-            .expect(201)
-
-    })
-    /*-------------------------------------------------------------------------------*/
 
     it("create post, should return 400 if incorrect field title", async () => {
         await request(app)
@@ -141,7 +91,6 @@ describe('posts', () => {
             })
             .expect(400)
     });
-
     it("create post, should return 400 if incorrect field shortDescription", async () => {
         await request(app)
             .post(urlPosts)

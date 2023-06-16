@@ -3,6 +3,9 @@ import {randomUUID} from "crypto";
 import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories-db";
 import bcrypt from "bcrypt";
+import { uuid } from 'uuidv4'
+import add from 'date-fns/add'
+
 
 export const usersService = {
 
@@ -17,6 +20,14 @@ export const usersService = {
         const newUserWithHash: TUsersWithHashDb = {
             ...newUser,
             userHash,
+            emailConfirmation: {
+                confirmationCode:uuid(),
+                expirationTime: add (new Date(), {
+                    hours:3,
+                    minutes:3,
+                }),
+                isConfirmed:false,
+            }
         }
         await usersRepoDb.createNewUser(newUserWithHash)
         return newUser;

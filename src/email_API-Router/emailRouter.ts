@@ -2,14 +2,10 @@ import {Request, Response, Router} from "express";
 import {authRouter} from "../auth_API-Router/authRouter";
 import nodemailer from "nodemailer"
 
-authRouter.post("/:registration", async (req:Request,res:Response) => {
-    const mail = await emailAdapters.sendEmail(req.)
-
-
+authRouter.post("/send", async (req:Request,res:Response) => {
     let transporter = nodemailer.createTransport({
-        host: "gmail",
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        service: 'gmail',
+        host: 'smtp.gmail.com',
         auth: {
             user: "incubatorBack@gmail.com",
             pass: "Roger4000"
@@ -18,10 +14,10 @@ authRouter.post("/:registration", async (req:Request,res:Response) => {
     console.log(transporter)
 
     let info = await transporter.sendMail({
-        from: '"student>', // sender address
+        from: "incubatorBack@gmail.com", // sender address
         to: req.body.mail, // list of receivers
         subject: "Hello ✔", // Subject line
-        text: req.body.text, // plain text body
+        text: "babuka", // plain text body
         html: "<b>Hello world?</b>", // html body
     });
     console.log(info)
