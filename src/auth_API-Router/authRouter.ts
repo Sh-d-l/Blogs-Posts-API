@@ -4,6 +4,7 @@ import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {createNewUser} from "../middlewares/validators/validations";
+import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 
 export const authRouter = Router({})
 
@@ -22,8 +23,12 @@ authRouter.post("/login",
 authRouter.post("/registration",
     ...createNewUser,
     async(req:Request,res:Response) => {
+        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email)
+        if(previouslyRegisteredUser) {
+            res.sendStatus(400)
+        }
     const userRegWithMail = await usersService
-        .createUserService(req.body.login,
+        .createUserServiceWithEmail(req.body.login,
         req.body.password,
         req.body.email)
         if(userRegWithMail) {

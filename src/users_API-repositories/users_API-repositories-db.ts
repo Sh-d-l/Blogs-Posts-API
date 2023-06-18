@@ -1,7 +1,6 @@
 import {usersCollection} from "../repositories/db";
-import {uuid} from "uuidv4";
 
-export type TUsersWithHashDb = {
+export type TUsersWithHashEmailDb = {
     id: string,
     login: string,
     email: string,
@@ -12,6 +11,13 @@ export type TUsersWithHashDb = {
         expirationTime: Date,
         isConfirmed: boolean,
     }
+}
+export type TUsersWithHashDb = {
+    id: string,
+    login: string,
+    email: string,
+    userHash: string,
+    createdAt: string;
 }
 
 export const usersRepoDb = {

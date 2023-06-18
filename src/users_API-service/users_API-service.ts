@@ -1,13 +1,39 @@
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 import {randomUUID} from "crypto";
-import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
+import {TUsersWithHashEmailDb, usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories-db";
 import bcrypt from "bcrypt";
-import {uuid} from "uuidv4";
+import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add'
 import {emailService} from "../domain/emailService";
 
 export const usersService = {
+
+    async createUserServiceWithEmail(login: string, password: string, email: string): Promise<TUsersDb> {
+        const userHash = await bcrypt.hash(password, 10)
+        const newUser: TUsersDb = {
+            id: randomUUID(),
+            login,
+            email,
+            createdAt: new Date().toISOString(),
+        }
+        const newUserWithHash: TUsersWithHashEmailDb = {
+            ...newUser,
+            userHash,
+            emailConfirmation: {
+                confirmationCode:uuidv4(),
+                expirationTime: add (new Date(), {
+                    hours:3,
+                    minutes:3,
+                }),
+                isConfirmed:false,
+            }
+        }
+        await usersRepoDb.createNewUser(newUserWithHash)
+        const mail = await emailService.transportEmailService(email)
+        //console.log(mail)
+        return newUser;
+    },
 
     async createUserService(login: string, password: string, email: string): Promise<TUsersDb> {
         const userHash = await bcrypt.hash(password, 10)
@@ -20,17 +46,8 @@ export const usersService = {
         const newUserWithHash: TUsersWithHashDb = {
             ...newUser,
             userHash,
-            emailConfirmation: {
-                confirmationCode:uuid(),
-                expirationTime: add (new Date(), {
-                    hours:3,
-                    minutes:3,
-                }),
-                isConfirmed:false,
-            }
         }
-        const await usersRepoDb.createNewUser(newUserWithHash)
-        const emailSuccess = await emailService.transportEmailService(email)
+        await usersRepoDb.createNewUser(newUserWithHash)
         return newUser;
     },
 

@@ -14,9 +14,19 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "express": "^4.18.2",
-    "uuidv4": "^6.2.13"
-  },
-  "devDependencies": {
+    "uuidv4": "^6.2.13",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.0.3",
+    "express-validator": "^6.15.0",
+    "jest": "^29.5.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.2.0",
+    "nodemailer": "^6.9.3",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
@@ -24,19 +34,10 @@
     "@types/node": "^18.15.11",
     "@types/nodemailer": "^6.4.8",
     "@types/supertest": "^2.0.12",
-    "@types/uuid": "^9.0.2",
-    "data-fns": "^1.1.0",
-    "date-fns": "^2.30.0",
-    "dotenv": "^16.0.3",
-    "express-validator": "^6.15.0",
-    "jest": "^29.5.0",
-    "jsonwebtoken": "^9.0.0",
-    "mongodb": "^5.2.0",
-    "nodemon": "^2.0.22",
-    "supertest": "^6.3.3",
-    "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.3"
+    "@types/uuid": "^9.0.2"
+  },
+  "devDependencies": {
+
   },
   "repository": "https://github.com/Sh-d-l/Blogs-Posts-API.git",
   "author": "sh-d-l <sh_d_l@mail.ru>"

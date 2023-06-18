@@ -6,10 +6,10 @@ export const emailAdapter = {
             service: 'gmail',
             auth: {
                 user: "incubatorBack@gmail.com",
-                pass: "Roger4000"
+                pass: "zpmltkbzcrkpfgsu"
             },
         });
-        console.log(transporter)
+        //console.log(transporter,"transporter")
 
         let info = await transporter.sendMail({
             from: "student",
@@ -18,7 +18,7 @@ export const emailAdapter = {
             text: "babuka",
             html: "<b>Hello world?</b>",
         });
-        console.log(info)
+        console.log(info,"info")
         return !!info;
 
     }
