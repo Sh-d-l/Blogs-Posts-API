@@ -1324,13 +1324,6 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-data-fns@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/data-fns/-/data-fns-1.1.0.tgz#6d8ce54401dfcff8016b9556718ca2268484c06b"
-  integrity sha512-/rJzdbnuY3DVgzqsfEfc+tJLuAKYaHzkUxSMRIU3dxKFeWGD/MGhrgAfuwSOmgfJ8enygztp9DeuvoSxauppIg==
-  dependencies:
-    unit-fns "^0.1.6"
-
 date-fns@^2.30.0:
   version "2.30.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
@@ -3286,11 +3279,6 @@ undefsafe@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.5.tgz#38733b9327bdcd226db889fb723a6efd162e6e2c"
   integrity sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==
-
-unit-fns@^0.1.6:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/unit-fns/-/unit-fns-0.1.9.tgz#975f20a779cbd7a0ec9eeb3efde5c572534f7edb"
-  integrity sha512-bxceIkc7n2icQmgQx8u3vX98ZBIcpL2YJDKIsWDFK7ZX1TTuLvtNWVNd9/oARCDHd7QQRzwc+zxabO0HSK8X0w==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"

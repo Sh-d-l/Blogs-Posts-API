@@ -26,6 +26,7 @@ authRouter.post("/registration",
         const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email)
         if(previouslyRegisteredUser) {
             res.sendStatus(400)
+            return
         }
     const userRegWithMail = await usersService
         .createUserServiceWithEmail(req.body.login,
@@ -33,8 +34,8 @@ authRouter.post("/registration",
         req.body.email)
         if(userRegWithMail) {
             res.sendStatus(204)
+            return
         }
-
 })
 authRouter.get("/me",
     authMiddleware,

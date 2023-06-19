@@ -3,7 +3,7 @@ import {randomUUID} from "crypto";
 import {TUsersWithHashEmailDb, usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories-db";
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailService} from "../domain/emailService";
 
@@ -21,17 +21,16 @@ export const usersService = {
             ...newUser,
             userHash,
             emailConfirmation: {
-                confirmationCode:uuidv4(),
-                expirationTime: add (new Date(), {
-                    hours:3,
-                    minutes:3,
+                confirmationCode: uuidv4(),
+                expirationTime: add(new Date(), {
+                    hours: 3,
+                    minutes: 3,
                 }),
-                isConfirmed:false,
+                isConfirmed: false,
             }
         }
         await usersRepoDb.createNewUser(newUserWithHash)
-        const mail = await emailService.transportEmailService(email)
-        //console.log(mail)
+        await emailService.transportEmailService(email)
         return newUser;
     },
 
@@ -69,7 +68,7 @@ export const usersService = {
     async findUserByIdService(userId: string): Promise<TUsersDb | null> {
         const user: TUsersWithHashDb | null = await usersRepoDb.findUserByUserId(userId)
         if (user) {
-           return {
+            return {
                 id: user.id,
                 login: user.login,
                 email: user.email,

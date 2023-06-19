@@ -1,29 +1,27 @@
 import nodemailer from "nodemailer"
 
 export const emailAdapter = {
-    async transportEmailAdapter(mail:string):Promise<boolean> {
+    async transportEmailAdapter(mail: string) {
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
             auth: {
                 user: "incubatorBack@gmail.com",
                 pass: "zpmltkbzcrkpfgsu"
             },
         });
-        //console.log(transporter,"transporter")
-
-        let info = await transporter.sendMail({
-            from: "student",
-            to: mail,
-            subject: "Hello ✔",
-            text: "babuka",
-            html: "<b>Hello world?</b>",
-        });
-        console.log(info,"info")
-        return !!info;
-
+        let info = await transporter.sendMail(
+            {
+                from: "incubatorBack@gmail.com",
+                to: mail,
+                subject: "Testing Message Message",
+                text: "I hope this message gets delivered!",
+                html: "<b>Hello world?</b>",
+            },
+        );
     }
-
-
-
-
 }
+
+
+
