@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer"
 
 export const emailAdapter = {
-    async transportEmailAdapter(mail: string) {
+    async transportEmailAdapter(mail: string):Promise<boolean> {
         let transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
+            //host: "smtp.gmail.com",
             port: 465,
             secure: true,
             auth: {
@@ -20,6 +20,7 @@ export const emailAdapter = {
                 html: "<b>Hello world?</b>",
             },
         );
+        return !!info;
     }
 }
 

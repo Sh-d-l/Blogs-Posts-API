@@ -29,8 +29,11 @@ export const usersRepoDb = {
         return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
     },
     async findUserByUserId(id: string): Promise<TUsersWithHashDb | null> {
-        const userDB = await usersCollection.findOne({id}, {projection: {_id: 0}});
-        return userDB;
+        return await usersCollection.findOne({id}, {projection: {_id: 0}});
+    },
+    async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
+       return await usersCollection.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+
     },
     async deleteUserById(id: string): Promise<boolean> {
         const deleteResult = await usersCollection.deleteOne({id: id})

@@ -92,6 +92,13 @@ const commentValidation = body("content")
     .isLength({min: 20, max: 300})
     .withMessage("less 20 or more 300")
 
+const confirmationCodeValidation = body ("code")
+    .exists()
+    .withMessage("Not exists")
+    .trim()
+    .isString()
+    .withMessage("Not string")
+
 export const createCommentValidation = [
     commentValidation,
     inputValidator
@@ -135,6 +142,10 @@ export const createNewUser = [
     loginValidation,
     passwordValidation,
     emailValidation,
+    inputValidator
+]
+export const confirmationCode = [
+    confirmationCodeValidation,
     inputValidator
 ]
 

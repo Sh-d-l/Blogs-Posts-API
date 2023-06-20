@@ -30,7 +30,12 @@ export const usersService = {
             }
         }
         await usersRepoDb.createNewUser(newUserWithHash)
-        await emailService.transportEmailService(email)
+        try {
+            const emailSuccess: boolean = await emailService.transportEmailService(email)
+        } catch (error) {
+            console.log(error)
+            await usersRepoDb.deleteUserById(newUserWithHash.id)
+        }
         return newUser;
     },
 
@@ -77,6 +82,13 @@ export const usersService = {
         } else {
             return null;
         }
+    },
+
+    async confirmationCodeService(code: string): Promise<boolean> {
+        const user =  await usersRepoDb.findUserByCode(code)
+        if(!user) {return false}
+        if(user.emailConfirmation.confirmationCode )
+
     },
 
     async deleteUserById(id: string): Promise<boolean> {
