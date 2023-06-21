@@ -31,10 +31,10 @@ export const usersRepoDb = {
     async findUserByUserId(id: string): Promise<TUsersWithHashDb | null> {
         return await usersCollection.findOne({id}, {projection: {_id: 0}});
     },
-    async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
-       return await usersCollection.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
-
-    },
+    // async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
+    //    return await usersCollection.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+    //
+    // },
     async deleteUserById(id: string): Promise<boolean> {
         const deleteResult = await usersCollection.deleteOne({id: id})
         if (deleteResult.deletedCount > 0) {

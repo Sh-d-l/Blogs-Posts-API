@@ -5,7 +5,7 @@ import {TUsersWithHashDb} from "../users_API-repositories/users_API-repositories
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
-import {emailService} from "../domain/emailService";
+import {emailManager} from "../domain/emailManager";
 
 export const usersService = {
 
@@ -17,7 +17,7 @@ export const usersService = {
             email,
             createdAt: new Date().toISOString(),
         }
-        const newUserWithHash: TUsersWithHashEmailDb = {
+        const newUserWithHashMail: TUsersWithHashEmailDb = {
             ...newUser,
             userHash,
             emailConfirmation: {
@@ -29,12 +29,12 @@ export const usersService = {
                 isConfirmed: false,
             }
         }
-        await usersRepoDb.createNewUser(newUserWithHash)
+        await usersRepoDb.createNewUser(newUserWithHashMail)
         try {
-            const emailSuccess: boolean = await emailService.transportEmailService(email)
+            await emailManager.transportEmailManager(email,newUserWithHashMail)
         } catch (error) {
             console.log(error)
-            await usersRepoDb.deleteUserById(newUserWithHash.id)
+            await usersRepoDb.deleteUserById(newUserWithHashMail.id)
         }
         return newUser;
     },
@@ -84,12 +84,14 @@ export const usersService = {
         }
     },
 
-    async confirmationCodeService(code: string): Promise<boolean> {
-        const user =  await usersRepoDb.findUserByCode(code)
-        if(!user) {return false}
-        if(user.emailConfirmation.confirmationCode )
-
-    },
+    // async confirmationCodeService(code: string): Promise<boolean> {
+    //     const user = await usersRepoDb.findUserByCode(code)
+    //     // if (!user) {
+    //     //     return false
+    //     // }
+    //     // // if (user.emailConfirmation.confirmationCode)
+    //     // //
+    //         },
 
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)

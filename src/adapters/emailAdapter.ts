@@ -1,9 +1,11 @@
 import nodemailer from "nodemailer"
+import {TUsersWithHashEmailDb} from "../users_API-repositories/users_API-repositories-db";
+
 
 export const emailAdapter = {
-    async transportEmailAdapter(mail: string):Promise<boolean> {
+    async transportEmailAdapter(mail: string, user:TUsersWithHashEmailDb):Promise<boolean> {
         let transporter = nodemailer.createTransport({
-            //host: "smtp.gmail.com",
+            host: "smtp.gmail.com",
             port: 465,
             secure: true,
             auth: {
@@ -16,8 +18,8 @@ export const emailAdapter = {
                 from: "incubatorBack@gmail.com",
                 to: mail,
                 subject: "Testing Message Message",
-                text: "I hope this message gets delivered!",
-                html: "<b>Hello world?</b>",
+                text: user.emailConfirmation.confirmationCode,
+                html: <a> "https://some-front.com/confirm-registration?code=${user.emailConfirmation.confirmationCode}"</a>,
             },
         );
         return !!info;

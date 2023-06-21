@@ -37,15 +37,15 @@ authRouter.post("/registration",
             return
         }
     })
-authRouter.post("/registration-confirmation",
-    ...confirmationCode,
-    async (req: Request, res: Response) => {
-        const foundUserWithCode = usersService.confirmationCodeService(req.body.code)
-
-
-
-            }
-)
+// authRouter.post("/registration-confirmation",
+//     ...confirmationCode,
+//     async (req: Request, res: Response) => {
+//         const foundUserWithCode = usersService.confirmationCodeService(req.body.code)
+//
+//
+//
+//             }
+// )
 authRouter.get("/me",
     authMiddleware,
     async (req: Request, res: Response) => {
