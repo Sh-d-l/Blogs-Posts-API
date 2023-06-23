@@ -9,8 +9,11 @@ import {emailManager} from "../domain/emailManager";
 
 export const usersService = {
 
-    async createUserServiceWithEmail(login: string, password: string, email: string): Promise<TUsersDb> {
-
+    async createUserServiceWithEmail(login: string, password: string, email: string): Promise<TUsersDb | null> {
+        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(email)
+        if (previouslyRegisteredUser) {
+            return null
+        }
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -108,11 +111,7 @@ export const usersService = {
             return false
         }
         if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
-            try {
-                await emailManager.transportEmailManager(email, previouslyRegisteredUserWithMail)
-            } catch (error) {
-                console.log(error)
-            }
+            await emailManager.transportEmailManager(email, previouslyRegisteredUserWithMail)
         }
         return true
     },

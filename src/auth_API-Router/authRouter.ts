@@ -27,11 +27,6 @@ authRouter.post("/login",
 authRouter.post("/registration",
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
-        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email,req.body.login)
-        if (previouslyRegisteredUser) {
-            res.sendStatus(400)
-            return
-        }
         const userRegWithMail: TUsersDb | null = await usersService
             .createUserServiceWithEmail(req.body.login,
                 req.body.password,
@@ -39,6 +34,9 @@ authRouter.post("/registration",
         if (userRegWithMail) {
             res.sendStatus(204)
             return
+        }
+        else {
+            res.sendStatus(400)
         }
     })
 authRouter.post("/registration-confirmation",

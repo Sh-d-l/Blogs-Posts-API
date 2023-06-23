@@ -28,8 +28,8 @@ export const usersRepoDb = {
     async createNewUserEmail(newUserWithHashEmail: TUsersWithHashEmailDb) {
         await usersConfirmMailCollection.insertOne({...newUserWithHashEmail})
     },
-    async findUserByLoginEmail(email: string,login:string): Promise<TUsersWithHashDb | null> {
-        return await usersSuperAdminCollection.findOne({$or: [{login: login}, {email: email}]}, {projection: {_id: 0}});
+    async findUserByLoginEmail(loginOrEmail: string): Promise<TUsersWithHashDb | null> {
+        return await usersSuperAdminCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
     },
     async findUserByEmail(email: string): Promise<TUsersWithHashEmailDb | null> {
         return await usersConfirmMailCollection.findOne({email}, {projection: {_id: 0}});
