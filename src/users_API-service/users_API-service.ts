@@ -10,6 +10,7 @@ import {emailManager} from "../domain/emailManager";
 export const usersService = {
 
     async createUserServiceWithEmail(login: string, password: string, email: string): Promise<TUsersDb> {
+
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),

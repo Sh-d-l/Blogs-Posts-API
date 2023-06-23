@@ -27,7 +27,7 @@ authRouter.post("/login",
 authRouter.post("/registration",
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
-        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email)
+        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email,req.body.login)
         if (previouslyRegisteredUser) {
             res.sendStatus(400)
             return
