@@ -10,7 +10,7 @@ import {emailManager} from "../domain/emailManager";
 export const usersService = {
 
     async createUserServiceWithEmail(login: string, password: string, email: string): Promise<TUsersDb | null> {
-        const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(email)
+        const previouslyRegisteredUser = await usersRepoDb.findUserByEmail(email)
         if (previouslyRegisteredUser) {
             return null
         }
