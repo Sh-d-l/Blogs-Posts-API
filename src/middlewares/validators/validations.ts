@@ -138,14 +138,18 @@ export const createPostByBlogIDValidation = [
     contentValidation,
     inputValidator
 ]
-export const createNewUser = [
+export const createNewUserValidation = [
     loginValidation,
     passwordValidation,
     emailValidation,
     inputValidator
 ]
-export const confirmationCode = [
+export const confirmCodeValidation = [
     confirmationCodeValidation,
+    inputValidator
+]
+export const userEmailValidation = [
+    emailValidation,
     inputValidator
 ]
 

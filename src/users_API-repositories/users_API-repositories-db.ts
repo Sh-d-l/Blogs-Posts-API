@@ -1,4 +1,4 @@
-import {usersCollection} from "../repositories/db";
+import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
 
 export type TUsersWithHashEmailDb = {
     id: string,
@@ -23,20 +23,28 @@ export type TUsersWithHashDb = {
 export const usersRepoDb = {
 
     async createNewUser(newUserWithHash: TUsersWithHashDb) {
-        await usersCollection.insertOne({...newUserWithHash})
+        await usersSuperAdminCollection.insertOne({...newUserWithHash})
+    },
+    async createNewUserEmail(newUserWithHashEmail: TUsersWithHashEmailDb) {
+        await usersConfirmMailCollection.insertOne({...newUserWithHashEmail})
     },
     async findUserByLoginEmail(loginOrEmail: string): Promise<TUsersWithHashDb | null> {
-        return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
+        return await usersSuperAdminCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
+    },
+    async findUserByEmail(email: string): Promise<TUsersWithHashEmailDb | null> {
+        return await usersConfirmMailCollection.findOne({email}, {projection: {_id: 0}});
     },
     async findUserByUserId(id: string): Promise<TUsersWithHashDb | null> {
-        return await usersCollection.findOne({id}, {projection: {_id: 0}});
+        return await usersSuperAdminCollection.findOne({id}, {projection: {_id: 0}});
     },
-    // async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
-    //    return await usersCollection.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
-    //
-    // },
+    async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
+       return await usersConfirmMailCollection.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+    },
+    async changeIsConfirmed(id: string) {
+        await usersConfirmMailCollection.updateOne({id}, {$set: {"emailConfirmation.isConfirmed":true}})
+    },
     async deleteUserById(id: string): Promise<boolean> {
-        const deleteResult = await usersCollection.deleteOne({id: id})
+        const deleteResult = await usersSuperAdminCollection.deleteOne({id: id})
         if (deleteResult.deletedCount > 0) {
             return true
         } else {

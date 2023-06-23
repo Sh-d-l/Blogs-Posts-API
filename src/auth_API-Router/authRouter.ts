@@ -3,7 +3,11 @@ import {usersService} from "../users_API-service/users_API-service";
 import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
 import {authMiddleware} from "../middlewares/authMiddleware";
-import {confirmationCode, createNewUser} from "../middlewares/validators/validations";
+import {
+    confirmCodeValidation,
+    createNewUserValidation,
+    userEmailValidation
+} from "../middlewares/validators/validations";
 import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
 
 export const authRouter = Router({})
@@ -21,7 +25,7 @@ authRouter.post("/login",
         }
     })
 authRouter.post("/registration",
-    ...createNewUser,
+    ...createNewUserValidation,
     async (req: Request, res: Response) => {
         const previouslyRegisteredUser = await usersRepoDb.findUserByLoginEmail(req.body.email)
         if (previouslyRegisteredUser) {
@@ -37,15 +41,30 @@ authRouter.post("/registration",
             return
         }
     })
-// authRouter.post("/registration-confirmation",
-//     ...confirmationCode,
-//     async (req: Request, res: Response) => {
-//         const foundUserWithCode = usersService.confirmationCodeService(req.body.code)
-//
-//
-//
-//             }
-// )
+authRouter.post("/registration-confirmation",
+    ...confirmCodeValidation,
+    async (req: Request, res: Response) => {
+        const updateIsConfirmed = await usersService.confirmationCodeService(req.body.code)
+        if (updateIsConfirmed) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(400)
+        }
+    }
+)
+authRouter.post("/registration-email-resending",
+    ...userEmailValidation,
+    async (req: Request, res: Response) => {
+        const resendingEmail = await usersService.resendingEmailService(req.body.email)
+        if (resendingEmail) {
+            res.sendStatus(204)
+            return
+        } else {
+            res.sendStatus(400)
+            return
+        }
+    }
+)
 authRouter.get("/me",
     authMiddleware,
     async (req: Request, res: Response) => {

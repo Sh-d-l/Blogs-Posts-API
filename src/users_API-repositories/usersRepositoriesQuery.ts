@@ -1,4 +1,4 @@
-import {usersCollection} from "../repositories/db";
+import {usersSuperAdminCollection} from "../repositories/db";
 import {IPagination} from "../users_API-router/users_API-router";
 
 export type TUsersDb = {
@@ -26,9 +26,9 @@ export const usersQueryRepo = {
                 }
             }, {email: {$regex: pagination.searchEmailTerm, $options: "i"}}]
         }
-        const usersCount: number = await usersCollection.countDocuments(filter)
+        const usersCount: number = await usersSuperAdminCollection.countDocuments(filter)
         const pagesCount: number = Math.ceil(usersCount / pagination.pageSize);
-        const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
+        const getUsersDbByLoginEmail: TUsersDb[] = await usersSuperAdminCollection
             .find(filter, {projection: {_id: false, userHash: false}})
             .sort(pagination.sortBy, pagination.sortDirection)
             .skip(pagination.skip)

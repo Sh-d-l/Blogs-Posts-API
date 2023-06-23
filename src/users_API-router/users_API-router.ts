@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
-import {createNewUser} from "../middlewares/validators/validations";
+import {createNewUserValidation} from "../middlewares/validators/validations";
 import {usersService} from "../users_API-service/users_API-service";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../users_API-repositories/usersRepositoriesQuery";
@@ -43,7 +43,7 @@ usersRouter.get('/',
 
 usersRouter.post("/",
     basicAuth,
-    ...createNewUser,
+    ...createNewUserValidation,
     async (req: Request, res: Response) => {
         const addUser: TUsersDb = await usersService
             .createUserService(req.body.login,

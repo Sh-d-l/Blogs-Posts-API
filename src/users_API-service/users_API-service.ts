@@ -23,15 +23,15 @@ export const usersService = {
             emailConfirmation: {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {
-                    hours: 3,
+                    hours: 0,
                     minutes: 3,
                 }),
                 isConfirmed: false,
             }
         }
-        await usersRepoDb.createNewUser(newUserWithHashMail)
+        await usersRepoDb.createNewUserEmail(newUserWithHashMail)
         try {
-            await emailManager.transportEmailManager(email,newUserWithHashMail)
+            await emailManager.transportEmailManager(email, newUserWithHashMail)
         } catch (error) {
             console.log(error)
             await usersRepoDb.deleteUserById(newUserWithHashMail.id)
@@ -84,14 +84,37 @@ export const usersService = {
         }
     },
 
-    // async confirmationCodeService(code: string): Promise<boolean> {
-    //     const user = await usersRepoDb.findUserByCode(code)
-    //     // if (!user) {
-    //     //     return false
-    //     // }
-    //     // // if (user.emailConfirmation.confirmationCode)
-    //     // //
-    //         },
+    async confirmationCodeService(code: string): Promise<boolean> {
+        const user = await usersRepoDb.findUserByCode(code)
+        if (!user) {
+            return false
+        }
+        if (user.emailConfirmation.confirmationCode !== code) {
+            return false
+        }
+        if (user.emailConfirmation.expirationTime < new Date()) {
+            return false
+        }
+        await usersRepoDb.changeIsConfirmed(user.id)
+        return true
+    },
+    async resendingEmailService(email: string): Promise<boolean> {
+        const previouslyRegisteredUserWithMail = await usersRepoDb.findUserByEmail(email)
+        if (previouslyRegisteredUserWithMail && previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
+            return false
+        }
+        if (previouslyRegisteredUserWithMail && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime < new Date()) {
+            return false
+        }
+        if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
+            try {
+                await emailManager.transportEmailManager(email, previouslyRegisteredUserWithMail)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        return true
+    },
 
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)
