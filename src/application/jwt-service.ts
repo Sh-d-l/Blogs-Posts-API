@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
+import {TUsersDb} from "../types/types";
 
 export const jwtService = {
     async createJwt(authUser: TUsersDb) {

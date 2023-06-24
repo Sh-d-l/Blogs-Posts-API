@@ -1,9 +1,9 @@
 import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
-import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
-import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../users_API-repositories/users_API-repositories-db";
-import {CommentType, CommentTypeWithPostId} from "../post_API-repositories/post_API-repositories-db";
+import {TBlogDb} from "../types/types";
+import {PostType} from "../types/types";
+import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
+import {CommentTypeWithPostId} from "../types/types";
 
 dotenv.config()
 

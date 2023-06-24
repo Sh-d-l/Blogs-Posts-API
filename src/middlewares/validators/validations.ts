@@ -1,8 +1,7 @@
 import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
-import {usersRepoDb} from "../../users_API-repositories/users_API-repositories-db";
-
+import {authRepoDB} from "../../auth_API-repositories/authRepoDB";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
@@ -47,11 +46,17 @@ const contentValidation = body('content')
     .notEmpty()
 const blogIdBodyValidation = body('blogId').custom(async (val) => {
     const blog = await blogs_repositories.getBlogID(val)
-    console.log(blog)
     if (!blog) {
         throw new Error("BlogId not exist")
     }
     return true;
+})
+const previouslyRegisteredUser = body("email").custom(async (val) => {
+    const user = await authRepoDB.findUserByEmail(val)
+    if(user) {
+        throw new Error("User already registered")
+    }
+    return true
 })
 
 const loginValidation = body("login")
@@ -139,6 +144,7 @@ export const createPostByBlogIDValidation = [
     inputValidator
 ]
 export const createNewUserValidation = [
+    previouslyRegisteredUser,
     loginValidation,
     passwordValidation,
     emailValidation,

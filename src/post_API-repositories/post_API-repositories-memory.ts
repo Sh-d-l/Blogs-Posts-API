@@ -1,16 +1,9 @@
 import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-memory";
 import {randomUUID} from "crypto";
+import {PostType} from "../types/types";
 
 const posts:PostType[] = [];
-export type PostType = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string
-    createdAt: string,
-}
+
 export const posts_repositories = {
     async getPost ():Promise<PostType[]> {
         return posts;

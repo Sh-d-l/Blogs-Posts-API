@@ -1,21 +1,20 @@
 import {Request, Response, Router} from "express";
-import {usersService} from "../users_API-service/users_API-service";
 import {jwtService} from "../application/jwt-service";
-import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
+import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {
     confirmCodeValidation,
     createNewUserValidation,
     userEmailValidation
 } from "../middlewares/validators/validations";
-import {usersRepoDb} from "../users_API-repositories/users_API-repositories-db";
+import {authWithMailService} from "../auth_API-service/authService";
 
 export const authRouter = Router({})
 
 authRouter.post("/login",
     async (req: Request, res: Response) => {
-        const authUser: TUsersDb | null = await usersService
-            .authUserService(req.body.loginOrEmail, req.body.password)
+        const authUser: TUsersDb | null = await authWithMailService
+            .authUserWithEmailService(req.body.loginOrEmail, req.body.password)
         if (authUser) {
             const token = await jwtService.createJwt(authUser)
             res.status(200).send({accessToken: token})
@@ -27,8 +26,8 @@ authRouter.post("/login",
 authRouter.post("/registration",
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
-        const userRegWithMail: TUsersDb | null = await usersService
-            .createUserServiceWithEmail(req.body.login,
+        const userRegWithMail: TUsersDb | null = await authWithMailService
+            .createUserWithEmailService(req.body.login,
                 req.body.password,
                 req.body.email)
         if (userRegWithMail) {
@@ -42,7 +41,7 @@ authRouter.post("/registration",
 authRouter.post("/registration-confirmation",
     ...confirmCodeValidation,
     async (req: Request, res: Response) => {
-        const updateIsConfirmed = await usersService.confirmationCodeService(req.body.code)
+        const updateIsConfirmed = await authWithMailService.confirmationCodeService(req.body.code)
         if (updateIsConfirmed) {
             res.sendStatus(204)
         } else {
@@ -53,13 +52,11 @@ authRouter.post("/registration-confirmation",
 authRouter.post("/registration-email-resending",
     ...userEmailValidation,
     async (req: Request, res: Response) => {
-        const resendingEmail = await usersService.resendingEmailService(req.body.email)
+        const resendingEmail = await authWithMailService.resendingEmailService(req.body.email)
         if (resendingEmail) {
             res.sendStatus(204)
-            return
         } else {
             res.sendStatus(400)
-            return
         }
     }
 )

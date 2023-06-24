@@ -1,20 +1,6 @@
 import {usersSuperAdminCollection} from "../repositories/db";
 import {IPagination} from "../users_API-router/users_API-router";
-
-export type TUsersDb = {
-    id: string,
-    login: string,
-    email: string,
-    createdAt: string;
-}
-
-export type TypeGetUsersWithCount = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: TUsersDb[]
-}
+import {TUsersDb, TypeGetUsersWithCount} from "../types/types";
 
 export const usersQueryRepo = {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {

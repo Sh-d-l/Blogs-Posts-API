@@ -1,32 +1,8 @@
-import {TBlogDb} from "./blog_API-repositories-memory";
+import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/types";
 import {blogCollection, postCollection} from "../repositories/db";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
-import {CommentType} from "../post_API-repositories/post_API-repositories-db";
-
-export type TypeGetBlogsWithCount = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: TBlogDb[]
-}
-
-export type TypeGetPostsByBlogId = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: PostType[]
-}
-export type TypeGetCommentsByPostId = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: CommentType[]
-}
-
+import {CommentType} from "../types/types";
 export const blogsRepoQuery = {
     async getBlogsRepoQuery(searchNameTerm: string | null,
                             sortBy: string,

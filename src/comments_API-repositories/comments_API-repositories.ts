@@ -1,5 +1,5 @@
 
-import {CommentType} from "../post_API-repositories/post_API-repositories-db";
+import {CommentType} from "../types/types";
 import {commentCollection} from "../repositories/db";
 
 export const commentsRepo = {

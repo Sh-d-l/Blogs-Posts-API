@@ -1,15 +1,7 @@
 import {randomUUID} from "crypto";
+import {TBlogDb} from "../types/types";
 
 const blogs: TBlogDb[] = [];
-
-export type TBlogDb = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-    isMembership: boolean
-}
 
 export const blogs_repositories = {
     async getBlogs(): Promise<TBlogDb[]> {

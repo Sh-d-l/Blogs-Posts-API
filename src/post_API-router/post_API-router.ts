@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
-import {CommentType} from "../post_API-repositories/post_API-repositories-db";
+import {PostType} from "../types/types";
+import {CommentType} from "../types/types";
 import {basicAuth} from "../auth/basic_auth"
 import {
     createCommentValidation,
@@ -11,7 +11,7 @@ import {authMiddleware} from "../middlewares/authMiddleware";
 import {postService} from "../post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
-import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
+import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
 
 export const postRouter = Router({});
 

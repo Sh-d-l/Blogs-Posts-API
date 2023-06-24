@@ -1,50 +1,50 @@
-import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
-import {CommentType, CommentTypeWithPostId} from "../post_API-repositories/post_API-repositories-db";
+import {TBlogDb} from "../types/types";
+import {CommentType, CommentTypeWithPostId} from "../types/types";
 import {randomUUID} from "crypto";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {PostType} from "../types/types";
 import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
-import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
+import {TUsersDb} from "../types/types";
 import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
 
 export const postService = {
     async createPostService(title: string,
-                     shortDescription: string,
-                     content: string,
-                     blogId: string): Promise<PostType | null> {
-            const blog: TBlogDb | null = await blogs_repositories.getBlogID(blogId)
+                            shortDescription: string,
+                            content: string,
+                            blogId: string): Promise<PostType | null> {
+        const blog: TBlogDb | null = await blogs_repositories.getBlogID(blogId)
         if (!blog) return null
-            const newPost: PostType = {
-                id: randomUUID(),
-                title,
-                shortDescription,
-                content,
-                blogId: blog.id,
-                blogName: blog.name,
-                createdAt: new Date().toISOString(),
-            }
-            await posts_repositories.createPost(newPost);
-            return newPost;
-        },
+        const newPost: PostType = {
+            id: randomUUID(),
+            title,
+            shortDescription,
+            content,
+            blogId: blog.id,
+            blogName: blog.name,
+            createdAt: new Date().toISOString(),
+        }
+        await posts_repositories.createPost(newPost);
+        return newPost;
+    },
 
-    /*----------------------create comment------------------------*/
+      /*----------------------create comment------------------------*/
 
-        async createCommentService(content: string,postId:string,user: TUsersDb):Promise<CommentType> {
-            const newComment:CommentType = {
-                id: randomUUID(),
-                content,
-                commentatorInfo: {
-                    userId: user.id,
-                    userLogin: user.login,
-                },
-                createdAt: new Date().toISOString(),
-            }
-            const newCommentWithPostId: CommentTypeWithPostId = {
-                postId,
-                ...newComment,
-            }
-            await posts_repositories.createCommentByPostId(newCommentWithPostId)
-            return newComment;
-        },
+    async createCommentService(content: string,postId:string,user: TUsersDb):Promise<CommentType> {
+        const newComment:CommentType = {
+            id: randomUUID(),
+            content,
+            commentatorInfo: {
+                userId: user.id,
+                userLogin: user.login,
+            },
+            createdAt: new Date().toISOString(),
+        }
+        const newCommentWithPostId: CommentTypeWithPostId = {
+            postId,
+            ...newComment,
+        }
+        await posts_repositories.createCommentByPostId(newCommentWithPostId)
+        return newComment;
+    },
 
     /*------------------------------------------------------------*/
 
@@ -62,3 +62,4 @@ export const postService = {
         return await posts_repositories.deleteID(id)
     },
 }
+

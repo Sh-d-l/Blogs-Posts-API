@@ -3,8 +3,8 @@ import {basicAuth} from "../auth/basic_auth"
 import {createNewUserValidation} from "../middlewares/validators/validations";
 import {usersService} from "../users_API-service/users_API-service";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
-import {TypeGetUsersWithCount} from "../users_API-repositories/usersRepositoriesQuery";
-import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
+import {TypeGetUsersWithCount} from "../types/types";
+import {TUsersDb} from "../types/types";
 
 export const usersRouter = Router({});
 

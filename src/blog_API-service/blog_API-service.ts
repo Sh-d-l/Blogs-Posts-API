@@ -1,7 +1,7 @@
 import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
-import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
+import {TBlogDb} from "../types/types";
 import {randomUUID} from "crypto";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {PostType} from "../types/types";
 import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
 
 export const blogsService = {

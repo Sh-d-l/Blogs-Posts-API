@@ -1,8 +1,8 @@
-import {PostType} from "./post_API-repositories-memory";
+import {PostType} from "../types/types";
 import {commentCollection, postCollection} from "../repositories/db";
 import {SortDirection} from "mongodb";
-import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
-import {CommentType} from "./post_API-repositories-db";
+import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
+import {CommentType} from "../types/types";
 
 export const postsRepoQuery = {
     async getPostsRepoQuery(sortBy: string,

@@ -1,5 +1,5 @@
 import {blogCollection} from "../repositories/db";
-import {TBlogDb} from "./blog_API-repositories-memory";
+import {TBlogDb} from "../types/types";
 
 export const blogs_repositories = {
     async getBlogs(): Promise<TBlogDb[]> {

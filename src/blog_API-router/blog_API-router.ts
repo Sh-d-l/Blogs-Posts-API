@@ -1,14 +1,14 @@
 import {Request, Response, Router} from "express";
-import {TBlogDb} from "../blog_API-repositories/blog_API-repositories-memory";
+import {TBlogDb} from "../types/types";
 import {basicAuth} from "../auth/basic_auth"
 import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/validations";
 import {blogsService} from "../blog_API-service/blog_API-service";
-import {TypeGetBlogsWithCount} from "../blog_API-repositories/blogRepositoriesQuery";
+import {TypeGetBlogsWithCount} from "../types/types";
 import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";
-import {TypeGetPostsByBlogId} from "../blog_API-repositories/blogRepositoriesQuery";
-import {PostType} from "../post_API-repositories/post_API-repositories-memory";
+import {TypeGetPostsByBlogId} from "../types/types";
+import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 
 export const blogRouter = Router({});
