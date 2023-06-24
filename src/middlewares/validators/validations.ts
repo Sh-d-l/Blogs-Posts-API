@@ -65,6 +65,13 @@ const registeredUserLoginValidation = body("login").custom(async (login) => {
     }
     return true
 })
+const registeredUserCodeValidation = body("code").custom(async (code) => {
+    const user = await authRepoDB.findUserByCode(code)
+    if(user) {
+        throw new Error("User already registered")
+    }
+    return true
+})
 
 const loginValidation = body("login")
     .exists()
@@ -159,6 +166,7 @@ export const createNewUserValidation = [
     inputValidator
 ]
 export const confirmCodeValidation = [
+    registeredUserCodeValidation,
     confirmationCodeValidation,
     inputValidator
 ]
