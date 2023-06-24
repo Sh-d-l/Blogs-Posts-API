@@ -1,5 +1,5 @@
 //import {BlogType} from "../blog_API-repositories/blog_API-repositories-memory";
-import {TUsersDb} from "../users_API-repositories/usersRepositoriesQuery";
+import {TUsersDb} from "../types/types";
 
 
 declare global {

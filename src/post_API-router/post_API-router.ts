@@ -11,7 +11,7 @@ import {authMiddleware} from "../middlewares/authMiddleware";
 import {postService} from "../post_API-service/post_API-service";
 import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
-import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
+import {TypeGetCommentsByPostId} from "../types/types";
 
 export const postRouter = Router({});
 

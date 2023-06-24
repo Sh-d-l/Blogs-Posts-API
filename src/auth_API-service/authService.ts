@@ -93,5 +93,18 @@ export const authWithMailService = {
             }
         }
         return true
-    }
+    },
+    async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
+        const user = await authRepoDB.findUserByUserId(userId)
+        if (user) {
+            return {
+                id: user.id,
+                login: user.login,
+                email: user.email,
+                createdAt: new Date().toISOString(),
+            }
+        } else {
+            return null;
+        }
+    },
 }

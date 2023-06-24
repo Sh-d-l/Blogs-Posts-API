@@ -28,7 +28,7 @@ export const postService = {
 
       /*----------------------create comment------------------------*/
 
-    async createCommentService(content: string,postId:string,user: TUsersDb):Promise<CommentType> {
+    async createCommentService(content: string,postId:string, user:TUsersDb):Promise<CommentType> {
         const newComment:CommentType = {
             id: randomUUID(),
             content,

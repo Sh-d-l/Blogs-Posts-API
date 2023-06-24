@@ -24,20 +24,6 @@ export const usersService = {
         return newUser;
     },
 
-    async findUserByIdService(userId: string): Promise<TUsersDb | null> {
-        const user: TUsersWithHashDb | null = await usersRepoDb.findUserByUserId(userId)
-        if (user) {
-            return {
-                id: user.id,
-                login: user.login,
-                email: user.email,
-                createdAt: new Date().toISOString(),
-            }
-        } else {
-            return null;
-        }
-    },
-
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)
     }

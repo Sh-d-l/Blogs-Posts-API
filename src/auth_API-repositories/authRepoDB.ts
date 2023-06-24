@@ -1,5 +1,5 @@
-import {TUsersWithHashEmailDb} from "../types/types";
-import {usersConfirmMailCollection} from "../repositories/db";
+import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
+import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
 
 export const authRepoDB = {
 
@@ -18,6 +18,9 @@ export const authRepoDB = {
     async changeIsConfirmed(id: string):Promise<boolean> {
         const isConfirmed =  await usersConfirmMailCollection.updateOne({id}, {$set: {"emailConfirmation.isConfirmed":true}})
         return !!isConfirmed.matchedCount;
+    },
+    async findUserByUserId(id: string): Promise<TUsersWithHashEmailDb | null> {
+        return await usersConfirmMailCollection.findOne({id}, {projection: {_id: 0}});
     },
     async deleteUserById(id: string): Promise<boolean> {
         const deleteResult = await usersConfirmMailCollection.deleteOne({id: id})
