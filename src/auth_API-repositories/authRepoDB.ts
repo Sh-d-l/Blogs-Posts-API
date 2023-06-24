@@ -9,7 +9,7 @@ export const authRepoDB = {
     async findUserByEmail(email: string): Promise<TUsersWithHashEmailDb | null> {
         return await usersConfirmMailCollection.findOne({email}, {projection: {_id: 0}});
     },
-    async findUserByLoginEmail(loginOrEmail: string): Promise<TUsersWithHashEmailDb | null> {
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<TUsersWithHashEmailDb | null> {
         return await usersConfirmMailCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
     },
     async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {

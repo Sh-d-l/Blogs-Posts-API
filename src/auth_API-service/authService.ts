@@ -44,7 +44,7 @@ export const authWithMailService = {
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
-        const user: TUsersWithHashDb | null = await authRepoDB.findUserByLoginEmail(loginOrEmail)
+        const user: TUsersWithHashDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
@@ -87,7 +87,6 @@ export const authWithMailService = {
         if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
             try {
                 await emailManager.transportEmailResendingManager(email, previouslyRegisteredUserWithMail)
-
             } catch (error) {
                 console.log(error)
                 throw new Error("Something is Wrong!")

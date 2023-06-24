@@ -51,8 +51,15 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     }
     return true;
 })
-const previouslyRegisteredUser = body("email").custom(async (val) => {
-    const user = await authRepoDB.findUserByEmail(val)
+const registeredUserEmailValidation = body("email").custom(async (email) => {
+    const user = await authRepoDB.findUserByLoginOrEmail(email)
+    if(user) {
+        throw new Error("User already registered")
+    }
+    return true
+})
+const registeredUserLoginValidation = body("login").custom(async (login) => {
+    const user = await authRepoDB.findUserByLoginOrEmail(login)
     if(user) {
         throw new Error("User already registered")
     }
@@ -144,7 +151,8 @@ export const createPostByBlogIDValidation = [
     inputValidator
 ]
 export const createNewUserValidation = [
-    previouslyRegisteredUser,
+    registeredUserEmailValidation,
+    registeredUserLoginValidation,
     loginValidation,
     passwordValidation,
     emailValidation,
