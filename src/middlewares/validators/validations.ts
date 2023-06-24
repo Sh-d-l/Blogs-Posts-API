@@ -2,6 +2,7 @@ import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
 import {authRepoDB} from "../../auth_API-repositories/authRepoDB";
+import {TUsersWithHashEmailDb} from "../../types/types";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
@@ -65,10 +66,24 @@ const registeredUserLoginValidation = body("login").custom(async (login) => {
     }
     return true
 })
-const registeredUserCodeValidation = body("code").custom(async (code) => {
-    const user = await authRepoDB.findUserByCode(code)
-    if(user) {
+const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
+    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByCode(code)
+    if(user && user.emailConfirmation.isConfirmed) {
         throw new Error("User already registered")
+    }
+    return true
+})
+const invalidConfirmedCodeValidation = body("code").custom(async (code) => {
+    const user = await authRepoDB.findUserByCode(code)
+    if (user && user.emailConfirmation.confirmationCode !== code) {
+        throw new Error("Invalid code")
+    }
+    return true
+})
+const expirationTimeValidation = body("code").custom(async (code) => {
+    const user = await authRepoDB.findUserByCode(code)
+    if (user && user.emailConfirmation.expirationTime < new Date()) {
+        throw new Error("Code expired")
     }
     return true
 })
@@ -166,11 +181,14 @@ export const createNewUserValidation = [
     inputValidator
 ]
 export const confirmCodeValidation = [
-    registeredUserCodeValidation,
     confirmationCodeValidation,
+    invalidConfirmedCodeValidation,
+    expirationTimeValidation,
+    registeredUserIsConfirmedValidation,
     inputValidator
 ]
 export const userEmailValidation = [
+    registeredUserEmailValidation,
     emailValidation,
     inputValidator
 ]

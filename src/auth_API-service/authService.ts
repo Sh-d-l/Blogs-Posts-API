@@ -60,19 +60,19 @@ export const authWithMailService = {
     },
 
     async confirmationCodeService(code: string): Promise<boolean> {
-        const user = await authRepoDB.findUserByCode(code)
+         const user = await authRepoDB.findUserByCode(code)
         if (!user) {
             return false
-        }
-        if (user.emailConfirmation.confirmationCode !== code) {
-            return false
-        }
-        if (user.emailConfirmation.isConfirmed) {
-            return false
-        }
-        if (user.emailConfirmation.expirationTime < new Date()) {
-            return false
-        }
+         }
+        // if (user.emailConfirmation.confirmationCode !== code) {
+        //     return false
+        // }
+        // if (user.emailConfirmation.isConfirmed) {
+        //     return false
+        // }
+        // if (user.emailConfirmation.expirationTime < new Date()) {
+        //     return false
+        // }
         return await authRepoDB.changeIsConfirmed(user.id);
     },
 
