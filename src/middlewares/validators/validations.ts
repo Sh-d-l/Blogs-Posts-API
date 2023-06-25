@@ -208,11 +208,6 @@ export const confirmCodeValidation = [
     registeredUserIsConfirmedValidation,
     inputValidator
 ]
-export const userEmailValidation = [
-    registeredUserEmailValidation,
-    emailValidation,
-    inputValidator
-]
 export const resendingEmailValidation = [
     resendingMailValidation,
     registeredUserIsConfirmedResendingMailValidation,

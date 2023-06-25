@@ -6,6 +6,7 @@ import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
 import {authRepoDB} from "../auth_API-repositories/authRepoDB";
 import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
+import {loginOrEmail} from "../../test/blogs.constans";
 
 export const authWithMailService = {
 

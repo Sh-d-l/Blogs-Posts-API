@@ -40,6 +40,7 @@ authRouter.post("/registration-confirmation",
         const updateIsConfirmed = await authWithMailService.confirmationCodeService(req.body.code)
         if (updateIsConfirmed) {
             res.sendStatus(204)
+            return
         }
     }
 )
@@ -49,6 +50,7 @@ authRouter.post("/registration-email-resending",
         const resendingEmail = await authWithMailService.resendingEmailService(req.body.email)
         if (resendingEmail) {
             res.sendStatus(204)
+            return
         }
     }
 )
