@@ -1,5 +1,5 @@
 import {usersSuperAdminCollection} from "../repositories/db";
-import {IPagination} from "../users_API-router/users_API-router";
+import {IPagination} from "../types/types";
 import {TUsersDb, TypeGetUsersWithCount} from "../types/types";
 
 export const usersQueryRepo = {

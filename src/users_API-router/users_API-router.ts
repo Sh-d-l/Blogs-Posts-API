@@ -5,19 +5,11 @@ import {usersService} from "../users_API-service/users_API-service";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {TUsersDb} from "../types/types";
+import {IPagination} from "../types/types";
 
 export const usersRouter = Router({});
 
-export interface IPagination {
-    searchLoginTerm: string,
-    searchEmailTerm: string,
-    searchNameTerm: string,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc',
-    pageNumber: number,
-    pageSize: number,
-    skip: number
-}
+
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
     const pageSize = Number(query.pageSize)

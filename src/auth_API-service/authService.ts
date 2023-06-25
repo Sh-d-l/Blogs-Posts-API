@@ -10,10 +10,6 @@ import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
 export const authWithMailService = {
 
     async createUserWithEmailService(login: string, password: string, email: string): Promise<TUsersDb | null> {
-        // const previouslyRegisteredUser = await authRepoDB.findUserByEmail(email)
-        // if (previouslyRegisteredUser) {
-        //     return null
-        // }
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -60,10 +56,10 @@ export const authWithMailService = {
     },
 
     async confirmationCodeService(code: string): Promise<boolean> {
-         const user = await authRepoDB.findUserByCode(code)
+        const user = await authRepoDB.findUserByCode(code)
         if (!user) {
             return false
-         }
+        }
         // if (user.emailConfirmation.confirmationCode !== code) {
         //     return false
         // }
@@ -76,23 +72,14 @@ export const authWithMailService = {
         return await authRepoDB.changeIsConfirmed(user.id);
     },
 
-    async resendingEmailService(email: string): Promise<boolean> {
+    async resendingEmailService(email: string): Promise<boolean | null> {
         const previouslyRegisteredUserWithMail = await authRepoDB.findUserByEmail(email)
-        if (previouslyRegisteredUserWithMail && previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
-            return false
-        }
-        if (previouslyRegisteredUserWithMail && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime < new Date()) {
-            return false
-        }
-        if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed) {
-            try {
+        if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed
+            && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime > new Date()) {
                 await emailManager.transportEmailResendingManager(email, previouslyRegisteredUserWithMail)
-            } catch (error) {
-                console.log(error)
-                throw new Error("Something is Wrong!")
-            }
+                return true
         }
-        return true
+        else return null
     },
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
         const user = await authRepoDB.findUserByUserId(userId)

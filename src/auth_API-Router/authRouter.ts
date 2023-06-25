@@ -4,7 +4,7 @@ import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {
     confirmCodeValidation,
-    createNewUserValidation,
+    createNewUserValidation, resendingEmailValidation,
     userEmailValidation
 } from "../middlewares/validators/validations";
 import {authWithMailService} from "../auth_API-service/authService";
@@ -50,13 +50,11 @@ authRouter.post("/registration-confirmation",
     }
 )
 authRouter.post("/registration-email-resending",
-    ...userEmailValidation,
+    ...resendingEmailValidation,
     async (req: Request, res: Response) => {
         const resendingEmail = await authWithMailService.resendingEmailService(req.body.email)
         if (resendingEmail) {
             res.sendStatus(204)
-        } else {
-            res.sendStatus(400)
         }
     }
 )

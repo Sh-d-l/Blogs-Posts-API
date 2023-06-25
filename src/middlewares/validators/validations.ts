@@ -87,6 +87,20 @@ const expirationTimeValidation = body("code").custom(async (code) => {
     }
     return true
 })
+const registeredUserIsConfirmedResendingMailValidation = body("email").custom(async (email) => {
+    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByEmail(email)
+    if(user && user.emailConfirmation.isConfirmed) {
+        throw new Error("User already registered")
+    }
+    return true
+})
+const expirationTimeResendingEmailValidation = body("email").custom(async (email) => {
+    const user = await authRepoDB.findUserByEmail(email)
+    if (user && user.emailConfirmation.expirationTime < new Date()) {
+        throw new Error("Code expired")
+    }
+    return true
+})
 
 const loginValidation = body("login")
     .exists()
@@ -188,6 +202,13 @@ export const confirmCodeValidation = [
     inputValidator
 ]
 export const userEmailValidation = [
+    registeredUserEmailValidation,
+    emailValidation,
+    inputValidator
+]
+export const resendingEmailValidation = [
+    registeredUserIsConfirmedResendingMailValidation,
+    expirationTimeResendingEmailValidation,
     registeredUserEmailValidation,
     emailValidation,
     inputValidator

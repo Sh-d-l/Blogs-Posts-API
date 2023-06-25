@@ -90,3 +90,13 @@ export type TypeGetUsersWithCount = {
     totalCount: number,
     items: TUsersDb[]
 }
+export interface IPagination {
+    searchLoginTerm: string,
+    searchEmailTerm: string,
+    searchNameTerm: string,
+    sortBy: string,
+    sortDirection: 'asc' | 'desc',
+    pageNumber: number,
+    pageSize: number,
+    skip: number
+}
