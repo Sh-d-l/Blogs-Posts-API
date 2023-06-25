@@ -15,8 +15,8 @@ commentsRouter.get("/:id", async (req: Request, res: Response) => {
     }
 })
 commentsRouter.put("/:commentId",
-    checkUserIdMiddleware,
     authMiddleware,
+    checkUserIdMiddleware,
     ...createCommentValidation,
     async (req: Request<{commentId: string}, {content: string}>, res: Response) => {
         const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.content)
@@ -28,8 +28,8 @@ commentsRouter.put("/:commentId",
         }
     })
 commentsRouter.delete("/:commentId",
-    checkUserIdMiddleware,
     authMiddleware,
+    checkUserIdMiddleware,
     async (req: Request, res: Response) => {
         const delComment: boolean = await commentsService.commentDelete(req.params.commentId)
         if (delComment) {
