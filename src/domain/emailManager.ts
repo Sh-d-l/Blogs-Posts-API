@@ -1,5 +1,6 @@
 import {emailAdapter} from "../adapters/emailAdapter";
 import {TUsersWithHashEmailDb} from "../types/types";
+import {UpdateResult} from "mongodb";
 
 export const emailManager = {
     async transportEmailManager(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {

@@ -7,6 +7,7 @@ import {emailManager} from "../domain/emailManager";
 import {authRepoDB} from "../auth_API-repositories/authRepoDB";
 import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
 import {loginOrEmail} from "../../test/blogs.constans";
+import {UpdateResult} from "mongodb";
 
 export const authWithMailService = {
 
@@ -41,8 +42,9 @@ export const authWithMailService = {
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
-        const user: TUsersWithHashDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
+        const user: TUsersWithHashEmailDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
+        if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
@@ -68,8 +70,12 @@ export const authWithMailService = {
         const previouslyRegisteredUserWithMail = await authRepoDB.findUserByEmail(email)
         if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed
             && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime > new Date()) {
-                await emailManager.transportEmailResendingManager(email, previouslyRegisteredUserWithMail)
-                return true
+            await authRepoDB.changeExpirationTimeConfirmationCode(email)
+        }
+        const updatedUser = await authRepoDB.findUserByEmail(email)
+        if(updatedUser) {
+            await emailManager.transportEmailResendingManager(email, updatedUser)
+            return true
         }
         else return null
     },

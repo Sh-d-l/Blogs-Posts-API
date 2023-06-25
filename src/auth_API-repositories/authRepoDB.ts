@@ -1,5 +1,9 @@
-import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
+import {TUsersWithHashEmailDb} from "../types/types";
 import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
+import {uuid} from "uuidv4";
+import {v4 as uuidv4} from "uuid";
+import add from "date-fns/add";
+import {UpdateResult} from "mongodb";
 
 export const authRepoDB = {
 
@@ -18,6 +22,13 @@ export const authRepoDB = {
     async changeIsConfirmed(id: string):Promise<boolean> {
         const isConfirmed =  await usersConfirmMailCollection.updateOne({id}, {$set: {"emailConfirmation.isConfirmed":true}})
         return !!isConfirmed.matchedCount;
+    },
+    async changeExpirationTimeConfirmationCode(email:string):Promise<boolean> {
+         const updateSuccess = await  usersConfirmMailCollection.updateOne({email}, {$set:{"emailConfirmation.confirmationCode":uuidv4(), "emailConfirmation.expirationTime":add(new Date(), {
+                    hours: 0,
+                    minutes: 3,
+                }),}})
+        return !!updateSuccess.matchedCount
     },
     async findUserByUserId(id: string): Promise<TUsersWithHashEmailDb | null> {
         return await usersConfirmMailCollection.findOne({id}, {projection: {_id: 0}});
