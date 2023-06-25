@@ -80,17 +80,17 @@ const registeredUserIsConfirmedValidation = body("code").custom(async (code) => 
     }
     return true
 })
-const invalidConfirmedCodeValidation = body("code").custom(async (code) => {
-    const user = await authRepoDB.findUserByCode(code)
-    if (user && user.emailConfirmation.confirmationCode !== code) {
-        throw new Error("Invalid code")
-    }
-    return true
-})
 const expirationTimeValidation = body("code").custom(async (code) => {
     const user = await authRepoDB.findUserByCode(code)
     if (user && user.emailConfirmation.expirationTime < new Date()) {
         throw new Error("Code expired")
+    }
+    return true
+})
+const resendingMailValidation = body("email").custom(async (email) => {
+    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByEmail(email)
+    if(!user) {
+        throw new Error("user not found")
     }
     return true
 })
@@ -204,7 +204,6 @@ export const createNewUserValidation = [
 export const confirmCodeValidation = [
     confirmationCodeValidation,
     correctConfirmationCodeValidation,
-    invalidConfirmedCodeValidation,
     expirationTimeValidation,
     registeredUserIsConfirmedValidation,
     inputValidator
@@ -215,6 +214,7 @@ export const userEmailValidation = [
     inputValidator
 ]
 export const resendingEmailValidation = [
+    resendingMailValidation,
     registeredUserIsConfirmedResendingMailValidation,
     expirationTimeResendingEmailValidation,
     emailValidation,
