@@ -209,7 +209,6 @@ export const userEmailValidation = [
 export const resendingEmailValidation = [
     registeredUserIsConfirmedResendingMailValidation,
     expirationTimeResendingEmailValidation,
-    registeredUserEmailValidation,
     emailValidation,
     inputValidator
 ]
