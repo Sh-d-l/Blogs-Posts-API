@@ -5,7 +5,6 @@ import {authMiddleware} from "../middlewares/authMiddleware";
 import {
     confirmCodeValidation,
     createNewUserValidation, resendingEmailValidation,
-    userEmailValidation
 } from "../middlewares/validators/validations";
 import {authWithMailService} from "../auth_API-service/authService";
 
@@ -34,9 +33,6 @@ authRouter.post("/registration",
             res.sendStatus(204)
             return
         }
-        else {
-            res.sendStatus(400)
-        }
     })
 authRouter.post("/registration-confirmation",
     ...confirmCodeValidation,
@@ -44,8 +40,6 @@ authRouter.post("/registration-confirmation",
         const updateIsConfirmed = await authWithMailService.confirmationCodeService(req.body.code)
         if (updateIsConfirmed) {
             res.sendStatus(204)
-        } else {
-            res.sendStatus(400)
         }
     }
 )

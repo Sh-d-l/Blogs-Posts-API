@@ -146,6 +146,8 @@ const confirmationCodeValidation = body ("code")
     .trim()
     .isString()
     .withMessage("Not string")
+    .isLength({min: 36, max: 36})
+    .withMessage("less or more 36")
 
 export const createCommentValidation = [
     commentValidation,
