@@ -66,6 +66,13 @@ const registeredUserLoginValidation = body("login").custom(async (login) => {
     }
     return true
 })
+const correctConfirmationCodeValidation = body("code").custom(async (code) => {
+    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByCode(code)
+    if(!user) {
+        throw new Error("User not found")
+    }
+    return true
+})
 const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
     const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByCode(code)
     if(user && user.emailConfirmation.isConfirmed) {
@@ -146,8 +153,6 @@ const confirmationCodeValidation = body ("code")
     .trim()
     .isString()
     .withMessage("Not string")
-    .isLength({min: 36, max: 36})
-    .withMessage("less or more 36")
 
 export const createCommentValidation = [
     commentValidation,
@@ -198,6 +203,7 @@ export const createNewUserValidation = [
 ]
 export const confirmCodeValidation = [
     confirmationCodeValidation,
+    correctConfirmationCodeValidation,
     invalidConfirmedCodeValidation,
     expirationTimeValidation,
     registeredUserIsConfirmedValidation,
