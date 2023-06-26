@@ -6,6 +6,7 @@ import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
 import {authRepoDB} from "../auth_API-repositories/authRepoDB";
 import {TUsersWithHashEmailDb} from "../types/types";
+import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
 
 export const authWithMailService = {
 
@@ -56,6 +57,8 @@ export const authWithMailService = {
         console.log(loginOrEmail)
         const user: TUsersWithHashEmailDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
         console.log(user)
+        console.log(await usersConfirmMailCollection.find())
+        console.log(await usersSuperAdminCollection.find())
         if (!user) return null;
         // if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)

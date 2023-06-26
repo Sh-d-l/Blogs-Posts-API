@@ -1,9 +1,8 @@
 import {TUsersWithHashEmailDb} from "../types/types";
 import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
-import {uuid} from "uuidv4";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {UpdateResult} from "mongodb";
+
 
 export const authRepoDB = {
 
