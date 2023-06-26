@@ -57,8 +57,8 @@ export const authWithMailService = {
         console.log(loginOrEmail)
         const user: TUsersWithHashEmailDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
         console.log(user)
-        console.log(await usersConfirmMailCollection.find())
-        console.log(await usersSuperAdminCollection.find())
+        console.log(await usersConfirmMailCollection.find().toArray(), 'usersConfirmMailCollection')
+        console.log(await usersSuperAdminCollection.find().toArray(), 'usersSuperAdminCollection')
         if (!user) return null;
         // if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
