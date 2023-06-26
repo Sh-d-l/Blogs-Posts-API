@@ -10,7 +10,7 @@ import {
     urlPosts
 } from "../../test/blogs.constans";
 import {incorrectBasicAuthName, incorrectBasicAuthPass, loginAuth, passAuth} from "../../test/authUsers.constans";
-import {emailUser, loginUser, passUser, urlUser} from "../../test/user.constans";
+import {emailUser, loginUser, passUser, urlUser,urlCreateUserWithEmail,urlResendingEmail,urlConfirmationCode} from "../../test/user.constans";
 import {urlAuth} from "../../test/auth.constans";
 describe ("comments", () => {
     beforeAll(async () => {

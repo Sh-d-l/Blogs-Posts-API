@@ -3,6 +3,9 @@ import {app} from "../src";
 import {loginAuth, passAuth} from "./authUsers.constans";
 
 export const urlUser = "/users/";
+export const urlCreateUserWithEmail = "/auth/registration"
+export const urlConfirmationCode = "/auth/registration-confirmation"
+export  const urlResendingEmail = "/auth/registration-email-resending"
 export const loginUser = "oNnbmkPJLG";
 export const emailUser = 'qwerty@mail.ru';
 export const passUser = "string";

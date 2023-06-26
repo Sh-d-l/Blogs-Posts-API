@@ -216,4 +216,10 @@ export const resendingEmailValidation = [
     emailValidation,
     inputValidator
 ]
+export const createNewUserSuperAdminValidation = [
+    loginValidation,
+    passwordValidation,
+    emailValidation,
+    inputValidator
+]
 

@@ -5,13 +5,16 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
 import {authRepoDB} from "../auth_API-repositories/authRepoDB";
-import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
-import {loginOrEmail} from "../../test/blogs.constans";
-import {UpdateResult} from "mongodb";
+import {TUsersWithHashEmailDb} from "../types/types";
 
 export const authWithMailService = {
 
-    async createUserWithEmailService(login: string, password: string, email: string): Promise<TUsersDb | null> {
+    async createUserWithEmailService(login: string, password: string, email: string, ip: string | undefined): Promise<TUsersDb | null> {
+        //const numberOfUsers = [];
+        // const expirationTime = add(new Date(), {
+        //         hours: 0,
+        //         minutes: 3,
+        //     })
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -22,6 +25,10 @@ export const authWithMailService = {
         const newUserWithHashMail: TUsersWithHashEmailDb = {
             ...newUser,
             userHash,
+            registrationData: {
+                userIP: ip,
+                dataOfCreation: new Date(),
+            },
             emailConfirmation: {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {
@@ -32,19 +39,25 @@ export const authWithMailService = {
             }
         }
         await authRepoDB.createNewUserEmail(newUserWithHashMail)
+        //numberOfUsers.push(newUserWithHashMail)
         try {
             await emailManager.transportEmailManager(email, newUserWithHashMail)
         } catch (error) {
             console.log(error)
             await authRepoDB.deleteUserById(newUserWithHashMail.id)
         }
+        // if(expirationTime < new Date() && numberOfUsers.length > 2 && newUserWithHashMail.registrationData.userIP) {
+        //     return null
+        // }
         return newUser;
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
+        console.log(loginOrEmail)
         const user: TUsersWithHashEmailDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
+        console.log(user)
         if (!user) return null;
-        if(!user.emailConfirmation.isConfirmed) return null
+        // if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
