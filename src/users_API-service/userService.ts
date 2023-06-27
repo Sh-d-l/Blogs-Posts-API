@@ -62,7 +62,7 @@ export const createUserService = {
         // console.log(await usersConfirmMailCollection.find().toArray(), 'usersConfirmMailCollection')
         // console.log(await usersSuperAdminCollection.find().toArray(), 'usersSuperAdminCollection')
         if (!user) return null;
-        if(!user.emailConfirmation.isConfirmed) return null
+        //if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
