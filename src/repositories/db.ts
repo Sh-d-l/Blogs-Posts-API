@@ -20,10 +20,9 @@ export const usersDbRepo = client.db(DB_NAME)
 export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
-export const usersSuperAdminCollection = usersDbRepo.collection<TUsersWithHashDb>("UsersSuperAdmin")
-export const usersConfirmMailCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
+export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
 
-export const collections = [blogCollection, postCollection, usersSuperAdminCollection,usersConfirmMailCollection,commentCollection]
+export const collections = [blogCollection, postCollection, usersCollection,commentCollection]
 
 export async function runDB() {
     try {

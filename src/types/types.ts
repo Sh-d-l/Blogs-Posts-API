@@ -4,10 +4,10 @@ export type TUsersWithHashEmailDb = {
     email: string,
     userHash: string,
     createdAt: string;
-    registrationData: {
-        userIP:string | undefined,
-        dataOfCreation: Date,
-    },
+    // registrationData: {
+    //     userIP:string | undefined,
+    //     dataOfCreation: Date,
+    // },
     emailConfirmation: {
         confirmationCode: string,
         expirationTime: Date,

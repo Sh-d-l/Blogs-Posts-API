@@ -1,14 +1,13 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
-import {createNewUserSuperAdminValidation, createNewUserValidation} from "../middlewares/validators/validations";
-import {usersService} from "../users_API-service/users_API-service";
+import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {TUsersDb} from "../types/types";
 import {IPagination} from "../types/types";
+import {createUserService} from "../users_API-service/userService";
 
 export const usersRouter = Router({});
-
 
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
@@ -37,8 +36,8 @@ usersRouter.post("/",
     basicAuth,
     ...createNewUserSuperAdminValidation,
     async (req: Request, res: Response) => {
-        const addUser: TUsersDb = await usersService
-            .createUserService(req.body.login,
+        const addUser: TUsersDb = await createUserService
+            .createUserSuperAdminService(req.body.login,
                 req.body.password,
                 req.body.email)
         res.status(201).send(addUser)
@@ -48,7 +47,7 @@ usersRouter.delete("/:id",
     basicAuth,
     async (req: Request, res: Response) => {
         const deleteUser: boolean =
-            await usersService.deleteUserById(req.params.id)
+            await createUserService.deleteUserById(req.params.id)
         if (deleteUser) {
             res.sendStatus(204)
         } else {

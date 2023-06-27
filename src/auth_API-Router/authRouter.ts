@@ -6,13 +6,13 @@ import {
     confirmCodeValidation,
     createNewUserValidation, resendingEmailValidation,
 } from "../middlewares/validators/validations";
-import {authWithMailService} from "../auth_API-service/authService";
+import {createUserService} from "../users_API-service/userService";
 
 export const authRouter = Router({})
 
 authRouter.post("/login",
     async (req: Request, res: Response) => {
-        const authUser: TUsersDb | null = await authWithMailService
+        const authUser: TUsersDb | null = await createUserService
             .authUserWithEmailService(req.body.loginOrEmail, req.body.password)
         if (authUser) {
             const token = await jwtService.createJwt(authUser)
@@ -25,7 +25,7 @@ authRouter.post("/login",
 authRouter.post("/registration",
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
-        const userRegWithMail: TUsersDb | null = await authWithMailService
+        const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,
                 req.body.password,
                 req.body.email,
@@ -41,7 +41,7 @@ authRouter.post("/registration",
 authRouter.post("/registration-confirmation",
     ...confirmCodeValidation,
     async (req: Request, res: Response) => {
-        const updateIsConfirmed = await authWithMailService.confirmationCodeService(req.body.code)
+        const updateIsConfirmed = await createUserService.confirmationCodeService(req.body.code)
         if (updateIsConfirmed) {
             res.sendStatus(204)
             return
@@ -51,7 +51,7 @@ authRouter.post("/registration-confirmation",
 authRouter.post("/registration-email-resending",
     ...resendingEmailValidation,
     async (req: Request, res: Response) => {
-        const resendingEmail = await authWithMailService.resendingEmailService(req.body.email)
+        const resendingEmail = await createUserService.resendingEmailService(req.body.email)
         if (resendingEmail) {
             res.sendStatus(204)
             return

@@ -4,13 +4,15 @@ import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
-import {authRepoDB} from "../auth_API-repositories/authRepoDB";
 import {TUsersWithHashEmailDb} from "../types/types";
-import {usersConfirmMailCollection, usersSuperAdminCollection} from "../repositories/db";
+import {
+    usersRepoDb
+} from "../users_API-repositories/users_API-repositories-db";
 
-export const authWithMailService = {
 
-    async createUserWithEmailService(login: string, password: string, email: string, ip: string | undefined): Promise<TUsersDb | null> {
+export const createUserService = {
+
+    async createUserWithEmailService(login: string, password: string, email: string, /*ip: string | undefined*/): Promise<TUsersDb | null> {
         //const numberOfUsers = [];
         // const expirationTime = add(new Date(), {
         //         hours: 0,
@@ -26,10 +28,10 @@ export const authWithMailService = {
         const newUserWithHashMail: TUsersWithHashEmailDb = {
             ...newUser,
             userHash,
-            registrationData: {
+           /* registrationData: {
                 userIP: ip,
                 dataOfCreation: new Date(),
-            },
+            },*/
             emailConfirmation: {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {
@@ -39,13 +41,13 @@ export const authWithMailService = {
                 isConfirmed: false,
             }
         }
-        await authRepoDB.createNewUserEmail(newUserWithHashMail)
+        await usersRepoDb.createNewUserEmail(newUserWithHashMail)
         //numberOfUsers.push(newUserWithHashMail)
         try {
             await emailManager.transportEmailManager(email, newUserWithHashMail)
         } catch (error) {
             console.log(error)
-            await authRepoDB.deleteUserById(newUserWithHashMail.id)
+            await usersRepoDb.deleteUserById(newUserWithHashMail.id)
         }
         // if(expirationTime < new Date() && numberOfUsers.length > 2 && newUserWithHashMail.registrationData.userIP) {
         //     return null
@@ -54,13 +56,13 @@ export const authWithMailService = {
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
-        console.log(loginOrEmail)
-        const user: TUsersWithHashEmailDb | null = await authRepoDB.findUserByLoginOrEmail(loginOrEmail)
-        console.log(user)
-        console.log(await usersConfirmMailCollection.find().toArray(), 'usersConfirmMailCollection')
-        console.log(await usersSuperAdminCollection.find().toArray(), 'usersSuperAdminCollection')
+        //console.log(loginOrEmail)
+        const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
+        // console.log(user)
+        // console.log(await usersConfirmMailCollection.find().toArray(), 'usersConfirmMailCollection')
+        // console.log(await usersSuperAdminCollection.find().toArray(), 'usersSuperAdminCollection')
         if (!user) return null;
-        // if(!user.emailConfirmation.isConfirmed) return null
+        if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
@@ -75,20 +77,20 @@ export const authWithMailService = {
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
-        const user = await authRepoDB.findUserByCode(code)
+        const user = await usersRepoDb.findUserByCode(code)
         if(user) {
-            return await authRepoDB.changeIsConfirmed(user.id);
+            return await usersRepoDb.changeIsConfirmed(user.id);
         }
         else return  null
     },
 
     async resendingEmailService(email: string): Promise<boolean | null> {
-        const previouslyRegisteredUserWithMail = await authRepoDB.findUserByEmail(email)
+        const previouslyRegisteredUserWithMail = await usersRepoDb.findUserByEmail(email)
         if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed
             && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime > new Date()) {
-            await authRepoDB.changeExpirationTimeConfirmationCode(email)
+            await usersRepoDb.changeExpirationTimeConfirmationCode(email)
         }
-        const updatedUser = await authRepoDB.findUserByEmail(email)
+        const updatedUser = await usersRepoDb.findUserByEmail(email)
         if(updatedUser) {
             await emailManager.transportEmailResendingManager(email, updatedUser)
             return true
@@ -96,7 +98,7 @@ export const authWithMailService = {
         else return null
     },
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
-        const user = await authRepoDB.findUserByUserId(userId)
+        const user = await usersRepoDb.findUserByUserId(userId)
         if (user) {
             return {
                 id: user.id,
@@ -108,4 +110,37 @@ export const authWithMailService = {
             return null;
         }
     },
+
+    /*------------------------------creating a super admin user---------------------------------------*/
+
+    async createUserSuperAdminService(login: string, password: string, email: string): Promise<TUsersDb> {
+        const userHash = await bcrypt.hash(password, 10)
+        const newUser: TUsersDb = {
+            id: randomUUID(),
+            login,
+            email,
+            createdAt: new Date().toISOString(),
+        }
+        const newUserWithHash: TUsersWithHashEmailDb = {
+            ...newUser,
+            userHash,
+            // registrationData: {
+            //     userIP: ip,
+            //     dataOfCreation: new Date(),
+            // },
+            emailConfirmation: {
+                confirmationCode: uuidv4(),
+                expirationTime: add(new Date(), {
+                    hours: 0,
+                    minutes: 3,
+                }),
+                isConfirmed: false,
+            }
+        }
+        await usersRepoDb.createNewUser(newUserWithHash)
+        return newUser;
+    },
+    async deleteUserById(id: string): Promise<boolean> {
+        return await usersRepoDb.deleteUserById(id)
+    }
 }

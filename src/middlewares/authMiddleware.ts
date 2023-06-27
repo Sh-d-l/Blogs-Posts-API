@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import {jwtService} from "../application/jwt-service";
-import {authWithMailService} from "../auth_API-service/authService";
+import {authWithMailService} from "../users_API-service/userService";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers.authorization
