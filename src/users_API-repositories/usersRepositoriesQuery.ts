@@ -1,6 +1,6 @@
-import {usersSuperAdminCollection} from "../repositories/db";
 import {IPagination} from "../types/types";
 import {TUsersDb, TypeGetUsersWithCount} from "../types/types";
+import {usersCollection} from "../repositories/db";
 
 export const usersQueryRepo = {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
@@ -12,9 +12,9 @@ export const usersQueryRepo = {
                 }
             }, {email: {$regex: pagination.searchEmailTerm, $options: "i"}}]
         }
-        const usersCount: number = await usersSuperAdminCollection.countDocuments(filter)
+        const usersCount: number = await usersCollection.countDocuments(filter)
         const pagesCount: number = Math.ceil(usersCount / pagination.pageSize);
-        const getUsersDbByLoginEmail: TUsersDb[] = await usersSuperAdminCollection
+        const getUsersDbByLoginEmail: TUsersDb[] = await usersCollection
             .find(filter, {projection: {_id: false, userHash: false}})
             .sort(pagination.sortBy, pagination.sortDirection)
             .skip(pagination.skip)

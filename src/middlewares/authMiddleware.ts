@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from "express";
-import {jwtService} from "../application/jwt-service";
-import {authWithMailService} from "../users_API-service/userService";
+import {jwtService} from "../application/jwt-service"
+import {createUserService} from "../users_API-service/userService";
+
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers.authorization
@@ -12,7 +13,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     if(authType !== 'Bearer') return res.sendStatus(401)
     const userId = await jwtService.getUserIdByToken(token)
     if (userId) {
-        req.user = await authWithMailService.findUserByIdWithMailService(userId)
+        req.user = await createUserService.findUserByIdWithMailService(userId)
         return next()
     }
     return res.sendStatus(401)

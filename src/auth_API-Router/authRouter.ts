@@ -28,8 +28,8 @@ authRouter.post("/registration",
         const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,
                 req.body.password,
-                req.body.email,
-                req.socket.remoteAddress)
+                req.body.email)
+                //req.socket.remoteAddress)
         if (userRegWithMail) {
             res.sendStatus(204)
             return

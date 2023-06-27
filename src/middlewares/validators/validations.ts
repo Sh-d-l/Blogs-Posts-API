@@ -1,8 +1,8 @@
 import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
-import {authRepoDB} from "../../auth_API-repositories/authRepoDB";
 import {TUsersWithHashEmailDb} from "../../types/types";
+import {usersRepoDb} from "../../users_API-repositories/users_API-repositories-db";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
@@ -53,42 +53,42 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     return true;
 })
 const registeredUserEmailValidation = body("email").custom(async (email) => {
-    const user = await authRepoDB.findUserByLoginOrEmail(email)
+    const user = await usersRepoDb.findUserByLoginOrEmail(email)
     if(user) {
         throw new Error("User already registered")
     }
     return true
 })
 const registeredUserLoginValidation = body("login").custom(async (login) => {
-    const user = await authRepoDB.findUserByLoginOrEmail(login)
+    const user = await usersRepoDb.findUserByLoginOrEmail(login)
     if(user) {
         throw new Error("User already registered")
     }
     return true
 })
 const correctConfirmationCodeValidation = body("code").custom(async (code) => {
-    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByCode(code)
+    const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
     if(!user) {
         throw new Error("User not found")
     }
     return true
 })
 const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
-    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByCode(code)
+    const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
     if(user && user.emailConfirmation.isConfirmed) {
         throw new Error("User already registered")
     }
     return true
 })
 const expirationTimeValidation = body("code").custom(async (code) => {
-    const user = await authRepoDB.findUserByCode(code)
+    const user = await usersRepoDb.findUserByCode(code)
     if (user && user.emailConfirmation.expirationTime < new Date()) {
         throw new Error("Code expired")
     }
     return true
 })
 const resendingMailValidation = body("email").custom(async (email) => {
-    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByEmail(email)
+    const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByEmail(email)
     if(!user ) {
         throw new Error("User not found")
     }
@@ -96,14 +96,14 @@ const resendingMailValidation = body("email").custom(async (email) => {
 })
 
 const registeredUserIsConfirmedResendingMailValidation = body("email").custom(async (email) => {
-    const user:TUsersWithHashEmailDb | null  = await authRepoDB.findUserByEmail(email)
+    const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByEmail(email)
     if(user && user.emailConfirmation.isConfirmed) {
         throw new Error("User already registered")
     }
     return true
 })
 const expirationTimeResendingEmailValidation = body("email").custom(async (email) => {
-    const user = await authRepoDB.findUserByEmail(email)
+    const user = await usersRepoDb.findUserByEmail(email)
     if (user && user.emailConfirmation.expirationTime < new Date()) {
         throw new Error("Code expired")
     }
