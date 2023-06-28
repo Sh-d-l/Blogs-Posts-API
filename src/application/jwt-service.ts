@@ -2,8 +2,11 @@ import jwt from "jsonwebtoken"
 import {TUsersDb} from "../types/types";
 
 export const jwtService = {
-    async createJwt(authUser: TUsersDb) {
-        return jwt.sign({id: authUser.id}, 'secret', {expiresIn: '10h'})
+    async createAccessToken(authUser: TUsersDb) {
+        return jwt.sign({id: authUser.id}, 'secret', {expiresIn: '10s'})
+    },
+    async createRefreshToken(authUser:TUsersDb) {
+        return jwt.sign({id:authUser.id}, 'secret', {expiresIn: '20s'} )
     },
     async getUserIdByToken(token: string): Promise<string | null> {
         try {

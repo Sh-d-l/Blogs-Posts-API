@@ -15,13 +15,30 @@ authRouter.post("/login",
         const authUser: TUsersDb | null = await createUserService
             .authUserWithEmailService(req.body.loginOrEmail, req.body.password)
         if (authUser) {
-            const token = await jwtService.createJwt(authUser)
-            res.status(200).send({accessToken: token})
+            const accessToken = await jwtService.createAccessToken(authUser)
+            const refreshToken = await jwtService.createRefreshToken(authUser)
+            res.cookie('cookie_name', refreshToken, {httpOnly: true, secure: true,})
+            res.status(200).send({accessToken})
             return
         } else {
             res.sendStatus(401)
         }
     })
+
+authRouter.post("/refresh-token",
+    async (req:Request,res:Response) => {
+        console.log(req.cookies.cookie_name)
+        const accessToken = await createUserService.refreshingTokensService(req.cookies.cookie_name)
+        if(accessToken) {
+            res.status(200).send({accessToken})
+            return
+        }
+        else {
+            res.sendStatus(401)
+        }
+
+    })
+
 authRouter.post("/registration",
     ...createNewUserValidation,
     async (req: Request, res: Response) => {

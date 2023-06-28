@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
 import {TBlogDb} from "../types/types";
 import {PostType} from "../types/types";
-import {TUsersWithHashDb, TUsersWithHashEmailDb} from "../types/types";
+import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 
 dotenv.config()

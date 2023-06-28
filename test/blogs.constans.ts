@@ -24,8 +24,8 @@ export const password = "87654321"
 
 export const urlBlogs = "/blogs/"
 export const urlPosts = "/posts/"
-export const urlComments = "/comments"
-export const urlAuth = "/auth/login"
+
+
 
 
 export const incorrectBlogName = 123

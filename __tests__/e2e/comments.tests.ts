@@ -6,12 +6,14 @@ import {
     blogWebsiteUrl,
     foundBlogById, postContent, postShortDescription,
     postTitle,
-    urlBlogs, urlComments,
+    urlBlogs,
     urlPosts
 } from "../../test/blogs.constans";
 import {incorrectBasicAuthName, incorrectBasicAuthPass, loginAuth, passAuth} from "../../test/authUsers.constans";
 import {emailUser, loginUser, passUser, urlUser,urlCreateUserWithEmail,urlResendingEmail,urlConfirmationCode} from "../../test/user.constans";
 import {urlAuth} from "../../test/auth.constans";
+import {content, lessContentLength, moreContentLength, urlComments} from "../../test/comments.constans";
+
 describe ("comments", () => {
     beforeAll(async () => {
         await request(app)
@@ -102,13 +104,170 @@ describe ("comments", () => {
         const postId = post.id
         const url = urlPosts + postId + urlComments
 
-        await request(app)
+        const comment = await request(app)
             .post(url)
             .auth(token, { type: 'bearer' })
             .send({
-                "content": "stringstringstringst"
+                content
             })
             .expect(201)
+        expect(comment.body).toEqual({
+            id: expect.any(String),
+            content,
+            commentatorInfo: {
+            userId: expect.any(String),
+            userLogin: expect.any(String)
+        },
+            createdAt: expect.any(String)
+        })
 
+        expect.setState({comment: comment.body})
+    })
+
+  /*------------------------------get all comments by postId--------------------------------------*/
+
+    it("get all comments by postId", async () => {
+        const {post} = expect.getState()
+        const postId = post.id
+        const url = urlPosts + postId + urlComments
+        const comments = await request(app)
+            .get(url)
+            .expect(200)
+        expect([comments.body])
+    })
+
+  /*-------------------------------put comment with bearer tokens auth------------------------------*/
+
+    it ('update comment, if the inputModel has incorrect values(more content length)', async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .put(url)
+            .auth(token, { type: 'bearer' })
+            .send({
+                content: moreContentLength
+            })
+            .expect(400)
+    })
+
+    it ('update comment, if the inputModel has incorrect values(less content length)', async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .put(url)
+            .auth(token, { type: 'bearer' })
+            .send({
+                content: lessContentLength
+            })
+            .expect(400)
+    })
+
+    it ('update comment, should return 401 if unauthorized)', async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .put(url)
+            .auth(token + "qwww", { type: 'bearer' })
+            .send({
+                content
+            })
+            .expect(401)
+    })
+
+    it("create another user", async () => {
+        const anotherUser = await request(app)
+            .post(urlUser)
+            .auth(loginAuth, passAuth)
+            .send({
+                    login: loginUser,
+                    password: passUser,
+                    email: emailUser,
+                }
+            )
+            .expect(201)
+    })
+
+    it("Update comment, if try edit the comment that is not your own (code 403)", async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .put(url)
+            .auth(token, { type: 'bearer' })
+            .send({
+                content
+            })
+            .expect(403)
+    })
+
+    it("Update comment, should return 404 if comment not found", async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId + "dfdfd"
+        await request(app)
+            .put(url)
+            .auth(token, { type: 'bearer' })
+            .send({
+                content
+            })
+            .expect(404)
+    })
+
+    it("update comment success", async () => {
+      const {comment,token} = expect.getState()
+      const commentId = comment.id
+      const url = urlComments + commentId
+      await request(app)
+          .put(url)
+          .auth(token, { type: 'bearer' })
+          .send({
+              content
+          })
+          .expect(204)
+  })
+
+/*---------------------------------------delete comment by id-----------------------------------*/
+
+    it ('delete comment, should return 401 if unauthorized)', async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .delete(url)
+            .auth(token + "qwww", { type: 'bearer' })
+            .expect(401)
+    })
+
+    it("Delete comment, if try edit the comment that is not your own (code 403)", async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .delete(url)
+            .auth(token, { type: 'bearer' })
+            .expect(403)
+    })
+
+    it("Delete comment, should return 404 if comment not found", async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId + "dfdfd"
+        await request(app)
+            .delete(url)
+            .auth(token, { type: 'bearer' })
+            .expect(404)
+    })
+
+    it("delete comment success", async () => {
+        const {comment,token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .delete(url)
+            .auth(token, { type: 'bearer' })
+            .expect(204)
     })
 })

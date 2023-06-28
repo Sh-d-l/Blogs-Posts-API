@@ -5,6 +5,7 @@ import {postRouter} from "./post_API-router/post_API-router";
 import {usersRouter} from "./users_API-router/users_API-router";
 import {commentsRouter} from "./comments_API-Router/comments_API-router";
 import {collections, runDB} from "./repositories/db"
+import cookieParser from 'cookie-parser';
 
 process.on('unhandledRejection', function (reason, p) {
     console.error('ERROR')
@@ -14,6 +15,7 @@ process.on('unhandledRejection', function (reason, p) {
 export const port = process.env.PORT || 5000
 export const app = express()
 app.use(express.json())
+app.use(cookieParser())
 
 app.use("/auth", authRouter)
 app.use("/blogs", blogRouter)
