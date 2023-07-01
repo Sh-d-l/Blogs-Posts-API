@@ -8,6 +8,7 @@ import {TUsersWithHashEmailDb} from "../types/types";
 import {
     usersRepoDb
 } from "../users_API-repositories/users_API-repositories-db";
+import {jwtService} from "../application/jwt-service";
 
 
 export const createUserService = {
@@ -75,8 +76,11 @@ export const createUserService = {
             return null;
         }
     },
-    async refreshingTokensService(refreshToken:string): Promise<boolean> {
 
+    async refreshingTokensService(refreshToken:string): Promise<boolean> {
+        if(!refreshToken) return false;
+        const expiresInToken = await jwtService.verifyRefreshToken(refreshToken)
+        console.log(expiresInToken)
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {

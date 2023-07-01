@@ -36,7 +36,6 @@ authRouter.post("/refresh-token",
         else {
             res.sendStatus(401)
         }
-
     })
 
 authRouter.post("/registration",

@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import jwt, {JwtPayload} from "jsonwebtoken"
 import {TUsersDb} from "../types/types";
 
 export const jwtService = {
@@ -8,6 +8,18 @@ export const jwtService = {
     async createRefreshToken(authUser:TUsersDb) {
         return jwt.sign({id:authUser.id}, 'secret', {expiresIn: '20s'} )
     },
+    async verifyRefreshToken(refreshToken:string):Promise<string | null> {
+        try {
+            const verifyToken = jwt.verify(refreshToken,'secret')
+            return verifyToken.
+        }
+        catch (error) {
+            return null
+        }
+    },
+    // async logout(refreshToken:string) {
+    //
+    // },
     async getUserIdByToken(token: string): Promise<string | null> {
         try {
             const result = jwt.verify(token, 'secret') as {id: string}
