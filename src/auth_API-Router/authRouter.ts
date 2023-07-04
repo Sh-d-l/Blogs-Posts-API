@@ -7,6 +7,7 @@ import {
     createNewUserValidation, resendingEmailValidation,
 } from "../middlewares/validators/validations";
 import {createUserService} from "../users_API-service/userService";
+import {log} from "util";
 
 export const authRouter = Router({})
 
@@ -15,8 +16,8 @@ authRouter.post("/login",
         const authUser: TUsersDb | null = await createUserService
             .authUserWithEmailService(req.body.loginOrEmail, req.body.password)
         if (authUser) {
-            const accessToken = await jwtService.createAccessToken(authUser)
-            const refreshToken = await jwtService.createRefreshToken(authUser)
+            const accessToken = await jwtService.createAccessToken(authUser.id)
+            const refreshToken = await jwtService.createRefreshToken(authUser.id)
             res.cookie('cookie_name', refreshToken, {httpOnly: true, secure: true,})
             res.status(200).send({accessToken})
             return
@@ -26,14 +27,14 @@ authRouter.post("/login",
     })
 
 authRouter.post("/refresh-token",
-    async (req:Request,res:Response) => {
+    async (req: Request, res: Response) => {
         console.log(req.cookies.cookie_name)
-        const accessToken = await createUserService.refreshingTokensService(req.cookies.cookie_name)
-        if(accessToken) {
-            res.status(200).send({accessToken})
+        const tokensArray = await createUserService.refreshingTokensService(req.cookies.cookie_name)
+        if (tokensArray) {
+            res.status(200).send({accessToken: tokensArray[0]})
+            res.cookie('refresh token', tokensArray[1], {httpOnly: true, secure: true,})
             return
-        }
-        else {
+        } else {
             res.sendStatus(401)
         }
     })
@@ -45,12 +46,11 @@ authRouter.post("/registration",
             .createUserWithEmailService(req.body.login,
                 req.body.password,
                 req.body.email)
-                //req.socket.remoteAddress)
+        //req.socket.remoteAddress)
         if (userRegWithMail) {
             res.sendStatus(204)
             return
-        }
-        else {
+        } else {
             res.sendStatus(400)
         }
     })
@@ -72,6 +72,12 @@ authRouter.post("/registration-email-resending",
             res.sendStatus(204)
             return
         }
+    }
+)
+authRouter.post("/logout",
+    async (req: Request, res: Response) => {
+        const cookies = req.cookies.cookie_name
+        res.cookie(cookies, "", {maxAge: 0})
     }
 )
 authRouter.get("/me",

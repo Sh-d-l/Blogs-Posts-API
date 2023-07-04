@@ -9,16 +9,12 @@ import {
     usersRepoDb
 } from "../users_API-repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
+import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 
 
 export const createUserService = {
 
     async createUserWithEmailService(login: string, password: string, email: string, /*ip: string | undefined*/): Promise<TUsersDb | null> {
-        //const numberOfUsers = [];
-        // const expirationTime = add(new Date(), {
-        //         hours: 0,
-        //         minutes: 3,
-        //     })
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -29,10 +25,6 @@ export const createUserService = {
         const newUserWithHashMail: TUsersWithHashEmailDb = {
             ...newUser,
             userHash,
-           /* registrationData: {
-                userIP: ip,
-                dataOfCreation: new Date(),
-            },*/
             emailConfirmation: {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {
@@ -43,27 +35,19 @@ export const createUserService = {
             }
         }
         await usersRepoDb.createNewUserEmail(newUserWithHashMail)
-        //numberOfUsers.push(newUserWithHashMail)
         try {
             await emailManager.transportEmailManager(email, newUserWithHashMail)
         } catch (error) {
             console.log(error)
             await usersRepoDb.deleteUserById(newUserWithHashMail.id)
         }
-        // if(expirationTime < new Date() && numberOfUsers.length > 2 && newUserWithHashMail.registrationData.userIP) {
-        //     return null
-        // }
         return newUser;
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
-        //console.log(loginOrEmail)
+
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
-        // console.log(user)
-        // console.log(await usersConfirmMailCollection.find().toArray(), 'usersConfirmMailCollection')
-        // console.log(await usersSuperAdminCollection.find().toArray(), 'usersSuperAdminCollection')
         if (!user) return null;
-        //if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             return {
@@ -77,18 +61,28 @@ export const createUserService = {
         }
     },
 
-    async refreshingTokensService(refreshToken:string): Promise<boolean> {
-        if(!refreshToken) return false;
-        const expiresInToken = await jwtService.verifyRefreshToken(refreshToken)
-        console.log(expiresInToken)
+    async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
+        if (!refreshToken) return null;
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        if (!userId) return null;
+
+        const newAccessToken = await jwtService.createAccessToken(userId)
+        const newRefreshToken = await jwtService.createRefreshToken(userId)
+
+        const revokedRefreshToken = {
+            userId,
+            refreshToken,
+            expiredAt: new Date()
+        }
+        const revokedToken = await repoRefreshToken.revokedTokens(revokedRefreshToken)
+        return [newAccessToken, newRefreshToken]
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
         const user = await usersRepoDb.findUserByCode(code)
-        if(user) {
+        if (user) {
             return await usersRepoDb.changeIsConfirmed(user.id);
-        }
-        else return  null
+        } else return null
     },
 
     async resendingEmailService(email: string): Promise<boolean | null> {
@@ -98,12 +92,12 @@ export const createUserService = {
             await usersRepoDb.changeExpirationTimeConfirmationCode(email)
         }
         const updatedUser = await usersRepoDb.findUserByEmail(email)
-        if(updatedUser) {
+        if (updatedUser) {
             await emailManager.transportEmailResendingManager(email, updatedUser)
             return true
-        }
-        else return null
+        } else return null
     },
+
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
         const user = await usersRepoDb.findUserByUserId(userId)
         if (user) {
