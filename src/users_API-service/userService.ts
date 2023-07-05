@@ -98,6 +98,13 @@ export const createUserService = {
         } else return null
     },
 
+    async logoutService(refreshToken:string):Promise<boolean> {
+        if (!refreshToken) return false;
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        if (!userId) return false;
+        return  true
+    },
+
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
         const user = await usersRepoDb.findUserByUserId(userId)
         if (user) {

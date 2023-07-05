@@ -7,7 +7,7 @@ import {
     createNewUserValidation, resendingEmailValidation,
 } from "../middlewares/validators/validations";
 import {createUserService} from "../users_API-service/userService";
-import {log} from "util";
+
 
 export const authRouter = Router({})
 
@@ -28,7 +28,6 @@ authRouter.post("/login",
 
 authRouter.post("/refresh-token",
     async (req: Request, res: Response) => {
-        console.log(req.cookies.cookie_name)
         const tokensArray = await createUserService.refreshingTokensService(req.cookies.cookie_name)
         if (tokensArray) {
             res.status(200).send({accessToken: tokensArray[0]})
@@ -46,7 +45,6 @@ authRouter.post("/registration",
             .createUserWithEmailService(req.body.login,
                 req.body.password,
                 req.body.email)
-        //req.socket.remoteAddress)
         if (userRegWithMail) {
             res.sendStatus(204)
             return
@@ -77,7 +75,15 @@ authRouter.post("/registration-email-resending",
 authRouter.post("/logout",
     async (req: Request, res: Response) => {
         const cookies = req.cookies.cookie_name
-        res.cookie(cookies, "", {maxAge: 0})
+        const correctRefreshToken: boolean = await createUserService.logoutService(cookies)
+        //console.log(correctRefreshToken)
+        if(correctRefreshToken) {
+            res.cookie(cookies, "", {maxAge: 0}).status(204)
+        }
+        else {
+            res.sendStatus(401)
+        }
+
     }
 )
 authRouter.get("/me",
