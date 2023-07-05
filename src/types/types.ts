@@ -105,7 +105,5 @@ export interface IPagination {
     skip: number
 }
 export type RevokedRToken = {
-    userId:string,
-    refreshToken: string,
-    expiredAt: Date
+    refreshToken: string
 }

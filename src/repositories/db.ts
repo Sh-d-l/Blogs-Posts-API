@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'
-import {DBRef, MongoClient} from "mongodb";
+import {MongoClient} from "mongodb";
 import {RevokedRToken, TBlogDb} from "../types/types";
 import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
@@ -16,15 +16,15 @@ export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
 export const usersDbRepo = client.db(DB_NAME)
-export const revokedRefreshTokenRepo = client.db(DB_NAME)
+export const blackListRefreshTokenRepo = client.db(DB_NAME)
 
 export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
-export const revokedRTokenCollection = revokedRefreshTokenRepo.collection<RevokedRToken>("revokedRefreshToken")
+export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
 
-export const collections = [blogCollection, postCollection, usersCollection,commentCollection,revokedRTokenCollection]
+export const collections = [blogCollection, postCollection, usersCollection,commentCollection,blackListRefreshTokenCollection]
 
 export async function runDB() {
     try {

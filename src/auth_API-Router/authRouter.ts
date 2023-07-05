@@ -18,9 +18,9 @@ authRouter.post("/login",
         if (authUser) {
             const accessToken = await jwtService.createAccessToken(authUser.id)
             const refreshToken = await jwtService.createRefreshToken(authUser.id)
-            res.cookie('cookie_name', refreshToken, {httpOnly: true, secure: true,})
-            res.status(200).send({accessToken})
-            return
+                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
+                .status(200)
+                .send({accessToken})
         } else {
             res.sendStatus(401)
         }
@@ -28,11 +28,11 @@ authRouter.post("/login",
 
 authRouter.post("/refresh-token",
     async (req: Request, res: Response) => {
-        const tokensArray = await createUserService.refreshingTokensService(req.cookies.cookie_name)
+        const tokensArray = await createUserService.refreshingTokensService(req.cookies.refreshToken)
         if (tokensArray) {
-            res.status(200).send({accessToken: tokensArray[0]})
-            res.cookie('refresh token', tokensArray[1], {httpOnly: true, secure: true,})
-            return
+             res.status(200)
+                .cookie('refreshToken', tokensArray[1], {httpOnly: true, secure: true,})
+                .send({accessToken: tokensArray[0]})
         } else {
             res.sendStatus(401)
         }
@@ -74,16 +74,14 @@ authRouter.post("/registration-email-resending",
 )
 authRouter.post("/logout",
     async (req: Request, res: Response) => {
-        const cookies = req.cookies.cookie_name
+        const cookies = req.cookies.refreshToken
         const correctRefreshToken: boolean = await createUserService.logoutService(cookies)
-        //console.log(correctRefreshToken)
         if(correctRefreshToken) {
-            res.cookie(cookies, "", {maxAge: 0}).status(204)
+            res.cookie(cookies, "", {maxAge: 0}).status(204).send()
         }
         else {
             res.sendStatus(401)
         }
-
     }
 )
 authRouter.get("/me",

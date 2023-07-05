@@ -1,4 +1,4 @@
-import {TUsersDb} from "../types/types";
+import {RevokedRToken, TUsersDb} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
@@ -65,16 +65,16 @@ export const createUserService = {
         if (!refreshToken) return null;
         const userId = await jwtService.getUserIdByToken(refreshToken)
         if (!userId) return null;
+        const refreshTokenObject = {
+            refreshToken:refreshToken
+        }
+        const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
+        if(checkBlackList) return null
 
         const newAccessToken = await jwtService.createAccessToken(userId)
         const newRefreshToken = await jwtService.createRefreshToken(userId)
 
-        const revokedRefreshToken = {
-            userId,
-            refreshToken,
-            expiredAt: new Date()
-        }
-        const revokedToken = await repoRefreshToken.revokedTokens(revokedRefreshToken)
+        await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
         return [newAccessToken, newRefreshToken]
     },
 
@@ -102,7 +102,12 @@ export const createUserService = {
         if (!refreshToken) return false;
         const userId = await jwtService.getUserIdByToken(refreshToken)
         if (!userId) return false;
-        return  true
+        const refreshTokenObject = {
+            refreshToken:refreshToken
+        }
+        const logout = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
+        if(logout) return true
+        else return false;
     },
 
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
