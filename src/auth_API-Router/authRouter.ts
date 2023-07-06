@@ -4,7 +4,7 @@ import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {
     confirmCodeValidation,
-    createNewUserValidation, resendingEmailValidation,
+    createNewUserValidation, refreshTokenFromCookieValidation, resendingEmailValidation,
 } from "../middlewares/validators/validations";
 import {createUserService} from "../users_API-service/userService";
 
@@ -27,6 +27,7 @@ authRouter.post("/login",
     })
 
 authRouter.post("/refresh-token",
+    ...refreshTokenFromCookieValidation,
     async (req: Request, res: Response) => {
         const tokensArray = await createUserService.refreshingTokensService(req.cookies.refreshToken)
         if (tokensArray) {

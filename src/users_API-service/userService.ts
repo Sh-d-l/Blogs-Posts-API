@@ -14,7 +14,7 @@ import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 
 export const createUserService = {
 
-    async createUserWithEmailService(login: string, password: string, email: string, /*ip: string | undefined*/): Promise<TUsersDb | null> {
+    async createUserWithEmailService(login: string, password: string, email: string): Promise<TUsersDb | null> {
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -45,7 +45,6 @@ export const createUserService = {
     },
 
     async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
-
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)

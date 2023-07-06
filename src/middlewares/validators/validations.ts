@@ -1,8 +1,10 @@
-import {body} from "express-validator";
+import {body, cookie} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
 import {TUsersWithHashEmailDb} from "../../types/types";
 import {usersRepoDb} from "../../users_API-repositories/users_API-repositories-db";
+import {jwtService} from "../../application/jwt-service";
+import {repoRefreshToken} from "../../repositories/revokedRefreshToken";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
@@ -109,6 +111,23 @@ const expirationTimeResendingEmailValidation = body("email").custom(async (email
     }
     return true
 })
+// const refreshTokenValidation = cookie("refreshToken").custom(async (refreshToken) => {
+//     if (!refreshToken) {
+//         throw new Error("refresh token does not exist")
+//     }
+//     const userId = await jwtService.getUserIdByToken(refreshToken)
+//     if (!userId) {
+//         throw new Error("refresh token expired")
+//     }
+//     const refreshTokenObject = {
+//         refreshToken:refreshToken
+//     }
+//     const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
+//     if(checkBlackList) {
+//         throw new Error("refresh token")
+//     }
+//     return true
+// })
 
 const loginValidation = body("login")
     .exists()
@@ -222,4 +241,8 @@ export const createNewUserSuperAdminValidation = [
     emailValidation,
     inputValidator
 ]
+// export const refreshTokenFromCookieValidation = [
+//     refreshTokenValidation,
+//     inputValidator
+// ]
 
