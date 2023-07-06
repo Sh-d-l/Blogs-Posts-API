@@ -1,4 +1,4 @@
-import {RevokedRToken, TUsersDb} from "../types/types";
+import {TUsersDb} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
@@ -73,7 +73,8 @@ export const createUserService = {
         const newAccessToken = await jwtService.createAccessToken(userId)
         const newRefreshToken = await jwtService.createRefreshToken(userId)
 
-        await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
+        const addRefreshTokenToBlackListSuccess = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
+        if(addRefreshTokenToBlackListSuccess) return null
         return [newAccessToken, newRefreshToken]
     },
 
