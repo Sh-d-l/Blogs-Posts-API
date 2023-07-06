@@ -74,7 +74,7 @@ export const createUserService = {
         const newRefreshToken = await jwtService.createRefreshToken(userId)
 
         const addRefreshTokenToBlackListSuccess = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-        if(addRefreshTokenToBlackListSuccess) return null
+        //if(addRefreshTokenToBlackListSuccess) return null
         return [newAccessToken, newRefreshToken]
     },
 
