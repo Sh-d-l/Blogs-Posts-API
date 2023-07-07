@@ -62,14 +62,13 @@ export const createUserService = {
 
     async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        if (!userId) return null;
         const refreshTokenObject = {
             refreshToken:refreshToken
         }
         const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        //console.log(checkBlackList,"checkBlackList")
         if(checkBlackList) return null
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        if (!userId) return null;
 
         const newAccessToken = await jwtService.createAccessToken(userId)
         const newRefreshToken = await jwtService.createRefreshToken(userId)
