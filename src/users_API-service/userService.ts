@@ -7,7 +7,7 @@ import {emailManager} from "../domain/emailManager";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {
     usersRepoDb
-} from "../users_API-repositories/users_API-repositories-db";
+} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 

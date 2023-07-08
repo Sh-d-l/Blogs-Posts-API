@@ -1,5 +1,5 @@
 import {CommentTypeWithPostId, PostType} from "../types/types";
-import {postCollection, commentCollection} from "../repositories/db";
+import {postCollection, commentCollection} from "./db";
 
 export const posts_repositories = {
     async getPost(): Promise<PostType[]> {

@@ -8,8 +8,8 @@ import {
     updatePostValidation
 } from "../middlewares/validators/validations";
 import {authMiddleware} from "../middlewares/authMiddleware";
-import {postService} from "../post_API-service/post_API-service";
-import {postsRepoQuery} from "../post_API-repositories/postRepositoriesQuery";
+import {postService} from "../service/post_API-service";
+import {postsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId} from "../types/types";
 

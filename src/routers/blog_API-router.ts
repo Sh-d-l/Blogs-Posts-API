@@ -4,9 +4,9 @@ import {basicAuth} from "../auth/basic_auth"
 import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/validations";
-import {blogsService} from "../blog_API-service/blog_API-service";
+import {blogsService} from "../service/blog_API-service";
 import {TypeGetBlogsWithCount} from "../types/types";
-import {blogsRepoQuery} from "../blog_API-repositories/blogRepositoriesQuery";
+import {blogsRepoQuery} from "../repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";

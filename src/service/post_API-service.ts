@@ -2,9 +2,9 @@ import {TBlogDb} from "../types/types";
 import {CommentType, CommentTypeWithPostId} from "../types/types";
 import {randomUUID} from "crypto";
 import {PostType} from "../types/types";
-import {posts_repositories} from "../post_API-repositories/post_API-repositories-db";
+import {posts_repositories} from "../repositories/post_API-repositories-db";
 import {TUsersDb} from "../types/types";
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-db";
+import {blogs_repositories} from "../repositories/blog_API-repositories-db";
 
 export const postService = {
     async createPostService(title: string,

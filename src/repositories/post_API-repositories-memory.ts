@@ -1,4 +1,4 @@
-import {blogs_repositories} from "../blog_API-repositories/blog_API-repositories-memory";
+import {blogs_repositories} from "./blog_API-repositories-memory";
 import {randomUUID} from "crypto";
 import {PostType} from "../types/types";
 

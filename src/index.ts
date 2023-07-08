@@ -1,9 +1,9 @@
 import express, {Response, Request} from 'express'
-import {authRouter} from "./auth_API-Router/authRouter";
-import {blogRouter} from "./blog_API-router/blog_API-router";
-import {postRouter} from "./post_API-router/post_API-router";
-import {usersRouter} from "./users_API-router/users_API-router";
-import {commentsRouter} from "./comments_API-Router/comments_API-router";
+import {authRouter} from "./routers/authRouter";
+import {blogRouter} from "./routers/blog_API-router";
+import {postRouter} from "./routers/post_API-router";
+import {usersRouter} from "./routers/users_API-router";
+import {commentsRouter} from "./routers/comments_API-router";
 import {collections, runDB} from "./repositories/db"
 import cookieParser from 'cookie-parser';
 

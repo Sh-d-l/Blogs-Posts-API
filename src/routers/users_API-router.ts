@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
 import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
-import {usersQueryRepo} from "../users_API-repositories/usersRepositoriesQuery";
+import {usersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {TUsersDb} from "../types/types";
 import {IPagination} from "../types/types";

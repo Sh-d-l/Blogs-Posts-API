@@ -1,8 +1,8 @@
 import {body, cookie} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
-import {blogs_repositories} from "../../blog_API-repositories/blog_API-repositories-db";
+import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
 import {TUsersWithHashEmailDb} from "../../types/types";
-import {usersRepoDb} from "../../users_API-repositories/users_API-repositories-db";
+import {usersRepoDb} from "../../repositories/users_API-repositories-db";
 import {jwtService} from "../../application/jwt-service";
 import {repoRefreshToken} from "../../repositories/revokedRefreshToken";
 const websiteUrlPattern =

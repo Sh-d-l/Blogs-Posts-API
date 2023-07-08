@@ -1,5 +1,5 @@
 import {CommentType} from "../types/types";
-import {commentsRepo} from "../comments_API-repositories/comments_API-repositories";
+import {commentsRepo} from "../repositories/comments_API-repositories";
 
 export const commentsService = {
     async getCommentById(id:string):Promise<CommentType | null> {

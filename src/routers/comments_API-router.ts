@@ -1,6 +1,6 @@
 import {Response, Request, Router} from "express";
 import {authMiddleware} from "../middlewares/authMiddleware";
-import {commentsService} from "../comments_API-service/comments_API-service";
+import {commentsService} from "../service/comments_API-service";
 import {createCommentValidation} from "../middlewares/validators/validations";
 import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 
