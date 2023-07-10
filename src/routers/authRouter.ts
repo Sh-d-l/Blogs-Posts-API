@@ -14,14 +14,12 @@ export const authRouter = Router({})
 authRouter.post("/login",
     customRateLimitMiddleware,
     async (req: Request, res: Response) => {
-        const authUser: TUsersDb | null = await createUserService
-            .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.baseUrl)
+        const authUser = await createUserService
+            .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.baseUrl,req.headers["user-agent"])
         if (authUser) {
-            const accessToken = await jwtService.createAccessToken(authUser.id)
-            const refreshToken = await jwtService.createRefreshToken(authUser.id)
-                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
+                 res.cookie('refreshToken', authUser[1], {httpOnly: true, secure: true,})
                 .status(200)
-                .send({accessToken})
+                .send({"accessToken":authUser[0]})
         } else {
             res.sendStatus(401)
         }

@@ -1,10 +1,9 @@
 import * as dotenv from 'dotenv'
-import {MongoClient} from "mongodb";
-import {RevokedRToken, TBlogDb} from "../types/types";
+import { MongoClient} from "mongodb";
+import {RevokedRToken, TBlogDb, TypeCustomRateLimit, TypeRefreshTokenMeta} from "../types/types";
 import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
-import {TypeCustomRateLimit} from "../types/types";
 
 dotenv.config()
 
@@ -18,16 +17,18 @@ export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
 export const usersDbRepo = client.db(DB_NAME)
 export const blackListRefreshTokenRepo = client.db(DB_NAME)
-export const customRateLimit = client.db(DB_NAME)
+export const rateLimitRepo = client.db(DB_NAME)
+export const refreshTokenMetaRepo = client.db(DB_NAME)
 
 export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
 export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
-export const customRateLimitCollection = customRateLimit.collection<TypeCustomRateLimit>("Custom rate limit")
+export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
+export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
 
-export const collections = [blogCollection, postCollection, usersCollection,commentCollection,blackListRefreshTokenCollection,customRateLimitCollection]
+export const collections = [blogCollection, postCollection, usersCollection,commentCollection,blackListRefreshTokenCollection]
 
 export async function runDB() {
     try {

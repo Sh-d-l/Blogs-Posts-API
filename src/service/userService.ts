@@ -11,6 +11,8 @@ import {
 import {jwtService} from "../application/jwt-service";
 import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 import {rateLimitRepo} from "../repositories/rateLimitRepo";
+import {uuid} from "uuidv4";
+import {securityDevicesRepo} from "../repositories/securityDevicesRepo";
 
 
 export const createUserService = {
@@ -45,23 +47,33 @@ export const createUserService = {
         return newUser;
     },
 
-    async authUserWithEmailService(loginOrEmail: string, password: string, ip:string, url:string): Promise<TUsersDb | null> {
+    async authUserWithEmailService(loginOrEmail: string, password: string, ip: string, url: string, title: string | undefined): Promise<(string)[] | null> {
         const rateLimitDocument = {
             IP:ip,
             URL:url,
             date: new Date()
         }
-        const rateLimit = await rateLimitRepo.addLoginAttempt(rateLimitDocument)
+        const deviceId = uuid()
+
+        await rateLimitRepo.addLoginAttempt(rateLimitDocument)
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            return {
+            const user =  {
                 id: user.id,
-                login: user.login,
-                email: user.email,
-                createdAt: user.createdAt
             }
+            const accessToken = await jwtService.createAccessToken(user.id)
+            const refreshToken = await jwtService.createRefreshToken(deviceId)
+            const refreshTokenSecurityDevices =  {
+                ip,
+                title,
+                lastActiveDate: new Date(),
+                deviceId,
+                expiredAt: new Date().getSeconds() + 20,
+            }
+            await securityDevicesRepo.addRefreshTokenMeta(refreshTokenSecurityDevices)
+            return  [accessToken,refreshToken]
         } else {
             return null;
         }
