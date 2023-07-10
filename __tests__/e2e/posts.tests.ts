@@ -16,17 +16,17 @@ import {
     incorrectShortDescriptionPostLength,
     incorrectContentPostLength,
     urlComments, loginOrEmail, password
-} from "../../test/blogs.constans";
-import {urlBlogs} from "../../test/blogs.constans";
+} from "../../test_constanse/blogs.constans";
+import {urlBlogs} from "../../test_constanse/blogs.constans";
 import {
     incorrectBasicAuthName,
     incorrectBasicAuthPass,
     loginAuth,
     passAuth
-} from "../../test/authUsers.constans";
-import {foundPostById} from "../../test/posts.constants";
-import {emailUser, loginUser, passUser, urlUser} from "../../test/user.constans";
-import {urlAuth} from "../../test/auth.constans";
+} from "../../test_constanse/authUsers.constans";
+import {foundPostById} from "../../test_constanse/posts.constants";
+import {emailUser, loginUser, passUser, urlUser} from "../../test_constanse/user.constans";
+import {urlAuth} from "../../test_constanse/auth.constans";
 
 describe('posts', () => {
     beforeAll(async () => {

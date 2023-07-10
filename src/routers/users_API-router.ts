@@ -5,7 +5,7 @@ import {usersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {TUsersDb} from "../types/types";
 import {IPagination} from "../types/types";
-import {createUserService} from "../users_API-service/userService";
+import {createUserService} from "../service/userService";
 
 export const usersRouter = Router({});
 

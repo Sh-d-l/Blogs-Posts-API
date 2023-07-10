@@ -10,6 +10,7 @@ import {
 } from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {repoRefreshToken} from "../repositories/revokedRefreshToken";
+import {rateLimitRepo} from "../repositories/rateLimitRepo";
 
 
 export const createUserService = {
@@ -44,7 +45,13 @@ export const createUserService = {
         return newUser;
     },
 
-    async authUserWithEmailService(loginOrEmail: string, password: string): Promise<TUsersDb | null> {
+    async authUserWithEmailService(loginOrEmail: string, password: string, ip:string, url:string): Promise<TUsersDb | null> {
+        const rateLimitDocument = {
+            IP:ip,
+            URL:url,
+            date: new Date()
+        }
+        const rateLimit = await rateLimitRepo.addLoginAttempt(rateLimitDocument)
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)

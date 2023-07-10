@@ -6,15 +6,16 @@ import {
     confirmCodeValidation,
     createNewUserValidation, resendingEmailValidation,
 } from "../middlewares/validators/validations";
-import {createUserService} from "../users_API-service/userService";
-
+import {createUserService} from "../service/userService";
+import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
 
 export const authRouter = Router({})
 
 authRouter.post("/login",
+    customRateLimitMiddleware,
     async (req: Request, res: Response) => {
         const authUser: TUsersDb | null = await createUserService
-            .authUserWithEmailService(req.body.loginOrEmail, req.body.password)
+            .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.baseUrl)
         if (authUser) {
             const accessToken = await jwtService.createAccessToken(authUser.id)
             const refreshToken = await jwtService.createRefreshToken(authUser.id)
@@ -39,6 +40,7 @@ authRouter.post("/refresh-token",
     })
 
 authRouter.post("/registration",
+    customRateLimitMiddleware,
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
         const userRegWithMail: TUsersDb | null = await createUserService
@@ -53,6 +55,7 @@ authRouter.post("/registration",
         }
     })
 authRouter.post("/registration-confirmation",
+    customRateLimitMiddleware,
     ...confirmCodeValidation,
     async (req: Request, res: Response) => {
         const updateIsConfirmed = await createUserService.confirmationCodeService(req.body.code)
@@ -63,6 +66,7 @@ authRouter.post("/registration-confirmation",
     }
 )
 authRouter.post("/registration-email-resending",
+    customRateLimitMiddleware,
     ...resendingEmailValidation,
     async (req: Request, res: Response) => {
         const resendingEmail = await createUserService.resendingEmailService(req.body.email)

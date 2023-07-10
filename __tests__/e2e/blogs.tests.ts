@@ -22,13 +22,13 @@ import {
     incorrectContentPostLength,
     incorrectTitlePostLength,
     incorrectShortDescriptionPostLength
-} from "../../test/blogs.constans";
+} from "../../test_constanse/blogs.constans";
 import {
     incorrectBasicAuthName,
     incorrectBasicAuthPass,
     loginAuth,
     passAuth
-} from "../../test/authUsers.constans";
+} from "../../test_constanse/authUsers.constans";
 
 
 describe('blogs', () => {

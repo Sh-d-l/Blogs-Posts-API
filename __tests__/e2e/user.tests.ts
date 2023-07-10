@@ -16,13 +16,13 @@ import {
     incorrectLengthPassUserLess,
     incorrectLengthPassUserMore,
     foundUserById,
-} from "../../test/user.constans";
+} from "../../test_constanse/user.constans";
 import {
     incorrectBasicAuthName,
     incorrectBasicAuthPass,
     loginAuth,
     passAuth,
-} from "../../test/authUsers.constans";
+} from "../../test_constanse/authUsers.constans";
 
 describe('user', () => {
     beforeAll(async () => {

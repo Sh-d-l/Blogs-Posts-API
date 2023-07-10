@@ -8,11 +8,11 @@ import {
     postTitle,
     urlBlogs,
     urlPosts
-} from "../../test/blogs.constans";
-import {incorrectBasicAuthName, incorrectBasicAuthPass, loginAuth, passAuth} from "../../test/authUsers.constans";
-import {emailUser, loginUser, passUser, urlUser,urlCreateUserWithEmail,urlResendingEmail,urlConfirmationCode} from "../../test/user.constans";
-import {urlAuth} from "../../test/auth.constans";
-import {content, lessContentLength, moreContentLength, urlComments} from "../../test/comments.constans";
+} from "../../test_constanse/blogs.constans";
+import {incorrectBasicAuthName, incorrectBasicAuthPass, loginAuth, passAuth} from "../../test_constanse/authUsers.constans";
+import {emailUser, loginUser, passUser, urlUser,urlCreateUserWithEmail,urlResendingEmail,urlConfirmationCode} from "../../test_constanse/user.constans";
+import {urlAuth} from "../../test_constanse/auth.constans";
+import {content, lessContentLength, moreContentLength, urlComments} from "../../test_constanse/comments.constans";
 
 describe ("comments", () => {
     beforeAll(async () => {

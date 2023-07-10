@@ -8,9 +8,9 @@ import {
     incorrectEmailUser,
     incorrectLoginUser,
     incorrectPassUserString, urlUser
-} from "../../test/user.constans";
-import {urlAuth} from "../../test/auth.constans";
-import {loginAuth, passAuth} from "../../test/authUsers.constans";
+} from "../../test_constanse/user.constans";
+import {urlAuth} from "../../test_constanse/auth.constans";
+import {loginAuth, passAuth} from "../../test_constanse/authUsers.constans";
 
 describe('auth', () => {
     it("create new user, should return 201 and {}", async () => {

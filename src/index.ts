@@ -16,6 +16,7 @@ export const port = process.env.PORT || 5000
 export const app = express()
 app.use(express.json())
 app.use(cookieParser())
+app.set('trust proxy', true)
 
 app.use("/auth", authRouter)
 app.use("/blogs", blogRouter)

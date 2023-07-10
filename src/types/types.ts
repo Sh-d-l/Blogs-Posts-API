@@ -14,14 +14,6 @@ export type TUsersWithHashEmailDb = {
         isConfirmed: boolean,
     }
 }
-export type TUsersWithHashDb = {
-    id: string,
-    login: string,
-    email: string,
-    userHash: string,
-    createdAt: string;
-}
-
 export type TBlogDb = {
     id: string,
     name: string,
@@ -106,4 +98,9 @@ export interface IPagination {
 }
 export type RevokedRToken = {
     refreshToken: string
+}
+export type TypeCustomRateLimit = {
+    IP:string,
+    URL:string,
+    date:Date
 }
