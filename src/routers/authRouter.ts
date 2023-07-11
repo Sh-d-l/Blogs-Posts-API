@@ -1,5 +1,4 @@
 import {Request, Response, Router} from "express";
-import {jwtService} from "../application/jwt-service";
 import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {

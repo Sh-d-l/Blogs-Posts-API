@@ -60,19 +60,16 @@ export const createUserService = {
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            const user =  {
-                id: user.id,
-            }
-            const accessToken = await jwtService.createAccessToken(user.id)
+            const accessToken = await jwtService.createAccessToken(deviceId)
             const refreshToken = await jwtService.createRefreshToken(deviceId)
-            const refreshTokenSecurityDevices =  {
+            const refreshTokenMeta =  {
                 ip,
                 title,
                 lastActiveDate: new Date(),
                 deviceId,
-                expiredAt: new Date().getSeconds() + 20,
+                expiredAt: this.lastActiveDate.getSeconds() + 20,
             }
-            await securityDevicesRepo.addRefreshTokenMeta(refreshTokenSecurityDevices)
+            await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return  [accessToken,refreshToken]
         } else {
             return null;
@@ -86,14 +83,14 @@ export const createUserService = {
         }
         const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
         if(checkBlackList) return null
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        if (!userId) return null;
+        const deviceId = await jwtService.getDeviceIdByToken(refreshToken)
+        if (!deviceId) return null;
 
-        const newAccessToken = await jwtService.createAccessToken(userId)
-        const newRefreshToken = await jwtService.createRefreshToken(userId)
+        const newAccessToken = await jwtService.createAccessToken(deviceId)
+        const newRefreshToken = await jwtService.createRefreshToken(deviceId)
+        const updateDateRefreshTokenMeta = await securityDevicesRepo.updateDateRefreshToken(deviceId)
 
-        const addRefreshTokenToBlackListSuccess = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-        //if(addRefreshTokenToBlackListSuccess) return null
+        await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
         return [newAccessToken, newRefreshToken]
     },
 
@@ -124,8 +121,8 @@ export const createUserService = {
         }
         const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
         if(checkBlackList) return false;
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        if (!userId) return false;
+        const deviceId = await jwtService.getDeviceIdByToken(refreshToken)
+        if (!deviceId) return false;
 
         const logout = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
         if(logout) return true
