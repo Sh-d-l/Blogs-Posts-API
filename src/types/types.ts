@@ -106,4 +106,5 @@ export type TypeRefreshTokenMeta = {
     lastActiveDate: Date,
     deviceId: string,
     expiredAt: number,
+    userId:string
 }

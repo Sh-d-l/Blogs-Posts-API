@@ -10,7 +10,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     }
     const [authType, token] = auth.split(" ")
     if(authType !== 'Bearer') return res.sendStatus(401)
-    const userId = await jwtService.getUserIdByToken(token)
+    const userId = await jwtService.getUserIdByAccessToken(token)
     if (userId) {
         req.user = await createUserService.findUserByIdWithMailService(userId)
         return next()

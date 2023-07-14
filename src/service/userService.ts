@@ -1,4 +1,4 @@
-import {TUsersDb} from "../types/types";
+import {TUsersDb, TypeRefreshTokenMeta} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
@@ -12,8 +12,7 @@ import {jwtService} from "../application/jwt-service";
 import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 import {rateLimitRepo} from "../repositories/rateLimitRepo";
 import {uuid} from "uuidv4";
-import {securityDevicesRepo} from "../repositories/securityDevicesRepo";
-
+import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
 
 export const createUserService = {
 
@@ -60,15 +59,17 @@ export const createUserService = {
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            const accessToken = await jwtService.createAccessToken(deviceId)
-            const refreshToken = await jwtService.createRefreshToken(deviceId)
             const refreshTokenMeta =  {
                 ip,
                 title,
                 lastActiveDate: new Date(),
                 deviceId,
-                expiredAt: this.lastActiveDate.getSeconds() + 20,
+                expiredAt: new Date().getSeconds() + 20,
+                userId:user.id
             }
+            const accessToken = await jwtService.createAccessToken(deviceId)
+            const refreshToken = await jwtService.createRefreshToken(deviceId,refreshTokenMeta.lastActiveDate,refreshTokenMeta.userId)
+
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return  [accessToken,refreshToken]
         } else {
@@ -78,20 +79,21 @@ export const createUserService = {
 
     async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
-        const refreshTokenObject = {
-            refreshToken:refreshToken
+        // const refreshTokenObject = {
+        //     refreshToken:refreshToken
+        // }
+        // const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
+        // if(checkBlackList) return null
+        const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
+        if (!payloadArray) return null;
+        const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
+        if(refreshTokenMetaObject && payloadArray[1] == refreshTokenMetaObject.lastActiveDate) {
+            const updateDateRefreshTokenMeta = await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
+            const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
+            const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],updateDateRefreshTokenMeta.lastActiveDate,updateDateRefreshTokenMeta.userId)
+            //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
+            return [newAccessToken, newRefreshToken]
         }
-        const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        if(checkBlackList) return null
-        const deviceId = await jwtService.getDeviceIdByToken(refreshToken)
-        if (!deviceId) return null;
-
-        const newAccessToken = await jwtService.createAccessToken(deviceId)
-        const newRefreshToken = await jwtService.createRefreshToken(deviceId)
-        const updateDateRefreshTokenMeta = await securityDevicesRepo.updateDateRefreshToken(deviceId)
-
-        await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-        return [newAccessToken, newRefreshToken]
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
@@ -121,8 +123,8 @@ export const createUserService = {
         }
         const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
         if(checkBlackList) return false;
-        const deviceId = await jwtService.getDeviceIdByToken(refreshToken)
-        if (!deviceId) return false;
+        const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
+        if (!payloadRefreshToken) return false;
 
         const logout = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
         if(logout) return true

@@ -6,6 +6,7 @@ import {usersRouter} from "./routers/users_API-router";
 import {commentsRouter} from "./routers/comments_API-router";
 import {collections, runDB} from "./repositories/db"
 import cookieParser from 'cookie-parser';
+import {securityDevicesRouter} from "./routers/securityDevicesRouter";
 
 process.on('unhandledRejection', function (reason, p) {
     console.error('ERROR')
@@ -23,6 +24,7 @@ app.use("/blogs", blogRouter)
 app.use("/posts", postRouter)
 app.use("/users", usersRouter)
 app.use("/comments", commentsRouter)
+app.use("/security", securityDevicesRouter)
 
 
 app.delete("/testing/all-data", async (req: Request, res: Response) => {
