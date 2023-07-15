@@ -1,4 +1,4 @@
-import {TUsersDb, TypeRefreshTokenMeta} from "../types/types";
+import {TUsersDb} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
@@ -48,8 +48,8 @@ export const createUserService = {
 
     async authUserWithEmailService(loginOrEmail: string, password: string, ip: string, url: string, title: string | undefined): Promise<(string)[] | null> {
         const rateLimitDocument = {
-            IP:ip,
-            URL:url,
+            IP: ip,
+            URL: url,
             date: new Date()
         }
         const deviceId = uuid()
@@ -59,25 +59,25 @@ export const createUserService = {
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            const refreshTokenMeta =  {
+            const refreshTokenMeta = {
                 ip,
                 title,
                 lastActiveDate: new Date(),
                 deviceId,
                 expiredAt: new Date().getSeconds() + 20,
-                userId:user.id
+                userId: user.id
             }
             const accessToken = await jwtService.createAccessToken(deviceId)
-            const refreshToken = await jwtService.createRefreshToken(deviceId,refreshTokenMeta.lastActiveDate,refreshTokenMeta.userId)
+            const refreshToken = await jwtService.createRefreshToken(deviceId, refreshTokenMeta.lastActiveDate, refreshTokenMeta.userId)
 
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
-            return  [accessToken,refreshToken]
+            return [accessToken, refreshToken]
         } else {
             return null;
         }
     },
 
-    async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
+    async refreshingTokensService(refreshToken: string): Promise<string[] | null > {
         if (!refreshToken) return null;
         // const refreshTokenObject = {
         //     refreshToken:refreshToken
@@ -87,13 +87,20 @@ export const createUserService = {
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
-        if(refreshTokenMetaObject && payloadArray[1] == refreshTokenMetaObject.lastActiveDate) {
-            const updateDateRefreshTokenMeta = await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
-            const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
-            const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],updateDateRefreshTokenMeta.lastActiveDate,updateDateRefreshTokenMeta.userId)
-            //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-            return [newAccessToken, newRefreshToken]
+        if (refreshTokenMetaObject && payloadArray[1] == refreshTokenMetaObject.lastActiveDate) {
+            await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
+            const refreshTokenWithUpdateLastActiveDate = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
+            if (refreshTokenWithUpdateLastActiveDate !== null) {
+                const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
+                const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
+                    refreshTokenWithUpdateLastActiveDate.lastActiveDate,
+                    refreshTokenWithUpdateLastActiveDate.userId)
+                //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
+                return [newAccessToken, newRefreshToken]
+            }
+            else return null
         }
+        else return null
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
@@ -116,18 +123,18 @@ export const createUserService = {
         } else return null
     },
 
-    async logoutService(refreshToken:string):Promise<boolean> {
+    async logoutService(refreshToken: string): Promise<boolean> {
         if (!refreshToken) return false;
         const refreshTokenObject = {
-            refreshToken:refreshToken
+            refreshToken: refreshToken
         }
         const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        if(checkBlackList) return false;
+        if (checkBlackList) return false;
         const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadRefreshToken) return false;
 
         const logout = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-        if(logout) return true
+        if (logout) return true
         else return false;
     },
 

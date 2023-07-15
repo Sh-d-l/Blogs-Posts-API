@@ -5,8 +5,8 @@ export const securityDevicesRepo = {
     async addRefreshTokenMeta(object: TypeRefreshTokenMeta) {
         await refreshTokenMetaCollection.insertOne(object)
     },
-    async updateDateRefreshToken(deviceId:string): Promise<TypeRefreshTokenMeta> {
-        return await refreshTokenMetaCollection.updateOne({deviceId}, {$set:{lastActiveDate:new Date()}})
+    async updateDateRefreshToken(deviceId:string) {
+        await refreshTokenMetaCollection.updateOne({deviceId}, {$set:{lastActiveDate:new Date()}})
     },
     async findRefreshTokenMetaByDeviceId(deviceId:string):Promise<TypeRefreshTokenMeta | null> {
         return await refreshTokenMetaCollection.findOne({deviceId})
@@ -14,8 +14,8 @@ export const securityDevicesRepo = {
     async getAllRefreshTokenMeta():Promise<TypeRefreshTokenMeta[]> {
         return await  refreshTokenMetaCollection.find({}, {projection: {_id: 0, userId: 0}}).toArray();
     },
-    async deleteAllDevicesExcludeCurrent(deviceId:string):Promise<boolean> {
-        const result =  await refreshTokenMetaCollection.deleteMany({}, {$not:{deviceId}})
+    async deleteAllDevicesExcludeCurrent(id:string):Promise<boolean> {
+        const result =  await refreshTokenMetaCollection.deleteMany({deviceId: {$nin:[id]}})
         return !! result.deletedCount
     },
     async deleteDeviceById(deviceId:string):Promise<boolean> {

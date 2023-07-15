@@ -3,6 +3,7 @@ import {jwtService} from "../application/jwt-service";
 import {TypeRefreshTokenMeta} from "../types/types";
 
 export const securityDevicesService = {
+
     async getAllDevices(refreshToken:string):Promise<TypeRefreshTokenMeta[] | null> {
         if (!refreshToken) return null;
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
