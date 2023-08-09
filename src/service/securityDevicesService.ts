@@ -9,8 +9,23 @@ export const securityDevicesService = {
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
+        if(!refreshTokenMetaObject) return null;
+        // console.log(payloadArray,'payload')
+        // console.log(payloadArray[1], "last active date")
+        if (refreshTokenMetaObject) {
+            // const one = payloadArray[1].split("-")
+            // const two = refreshTokenMetaObject.lastActiveDate.split("-")
+
+            // const one  = payloadArray[1]
+            // const two = refreshTokenMetaObject.lastActiveDate
+             console.log(typeof (refreshTokenMetaObject.lastActiveDate), 'refreshTokenMetaObject.lastActiveDate')
+             console.log(typeof (payloadArray[1]) )
+        }
+
         if(refreshTokenMetaObject && payloadArray[1] == refreshTokenMetaObject.lastActiveDate) {
-            return await securityDevicesRepo.getAllRefreshTokenMeta()
+
+            const arrayRefreshTokenMeta = await securityDevicesRepo.getAllRefreshTokenMeta()
+            console.log(arrayRefreshTokenMeta)
         }
         else return null
     },

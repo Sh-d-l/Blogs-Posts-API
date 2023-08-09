@@ -1,7 +1,7 @@
 import {TUsersDb} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
-import {v4 as uuidv4} from 'uuid';
+import {v4, v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
 import {TUsersWithHashEmailDb} from "../types/types";
@@ -52,7 +52,7 @@ export const createUserService = {
             URL: url,
             date: new Date()
         }
-        const deviceId = uuid()
+        const deviceId = v4()
 
         await rateLimitRepo.addLoginAttempt(rateLimitDocument)
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
