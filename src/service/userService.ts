@@ -69,7 +69,6 @@ export const createUserService = {
             }
             const accessToken = await jwtService.createAccessToken(deviceId)
             const refreshToken = await jwtService.createRefreshToken(deviceId, refreshTokenMeta.lastActiveDate, refreshTokenMeta.userId)
-
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return [accessToken, refreshToken]
         } else {

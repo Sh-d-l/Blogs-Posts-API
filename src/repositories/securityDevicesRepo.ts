@@ -19,7 +19,7 @@ export const securityDevicesRepo = {
         return !! result.deletedCount
     },
     async deleteDeviceById(deviceId:string):Promise<boolean> {
-        const result = await refreshTokenMetaCollection.deleteOne({deviceId})
+        const result = await refreshTokenMetaCollection.deleteOne({deviceId:deviceId})
         return !! result.deletedCount
     }
 }

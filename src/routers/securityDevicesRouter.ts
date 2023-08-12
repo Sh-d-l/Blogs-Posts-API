@@ -5,7 +5,6 @@ export const securityDevicesRouter = Router({})
 
 securityDevicesRouter.get("/devices",
     async (req:Request, res:Response) => {
-        console.log(req.cookies.refreshToken)
     const arrayRefreshTokenMeta = await securityDevicesService.getAllDevices(req.cookies.refreshToken)
         if(arrayRefreshTokenMeta) {
             res.status(200).send(arrayRefreshTokenMeta)
@@ -26,20 +25,24 @@ securityDevicesRouter.delete("/devices",
         }
     })
 
-securityDevicesRouter.delete("/devices/deviceId",
+securityDevicesRouter.delete("/devices/:deviceId",
     async (req:Request,res:Response) => {
-    const deleteSuccess = await securityDevicesService.deleteDeviceByIdService(req.cookies.refreshToken)
-        if(deleteSuccess) {
-            res.sendStatus(403)
-        }
-        if(deleteSuccess === true) {
+    const deleteSuccess = await securityDevicesService.deleteDeviceByIdService(req.params.deviceId, req.cookies.refreshToken)
+        if (deleteSuccess === 204) {
             res.sendStatus(204)
+            return
         }
-        else{
+        if (deleteSuccess === 401) {
             res.sendStatus(401)
+            return
         }
-        if(deleteSuccess === null) {
+        if (deleteSuccess === 403) {
+            res.sendStatus(403)
+            return
+        }
+        if (deleteSuccess === 404) {
             res.sendStatus(404)
+            return
         }
     }
 
