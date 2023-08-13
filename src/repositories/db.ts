@@ -28,7 +28,14 @@ export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collect
 export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
 export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
 
-export const collections = [blogCollection, postCollection, usersCollection,commentCollection,blackListRefreshTokenCollection]
+export const collections =
+    [blogCollection,
+    postCollection,
+    usersCollection,
+    commentCollection,
+    blackListRefreshTokenCollection,
+    refreshTokenMetaCollection,
+    customRateLimitCollection]
 
 export async function runDB() {
     try {

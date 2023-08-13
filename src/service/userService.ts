@@ -76,7 +76,7 @@ export const createUserService = {
         }
     },
 
-    async refreshingTokensService(refreshToken: string): Promise<string[] | null > {
+    async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
         // const refreshTokenObject = {
         //     refreshToken:refreshToken
@@ -86,7 +86,8 @@ export const createUserService = {
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
-        if (refreshTokenMetaObject && payloadArray[1] == refreshTokenMetaObject.lastActiveDate) {
+        if (!refreshTokenMetaObject) return null;
+        if (new Date(payloadArray[1]).getTime() == new Date(refreshTokenMetaObject.lastActiveDate).getTime()) {
             await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
             const refreshTokenWithUpdateLastActiveDate = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
             if (refreshTokenWithUpdateLastActiveDate !== null) {
@@ -96,10 +97,8 @@ export const createUserService = {
                     refreshTokenWithUpdateLastActiveDate.userId)
                 //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
                 return [newAccessToken, newRefreshToken]
-            }
-            else return null
-        }
-        else return null
+            } else return null
+        } else return null
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
