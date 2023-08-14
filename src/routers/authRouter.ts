@@ -11,10 +11,10 @@ import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddlewar
 export const authRouter = Router({})
 
 authRouter.post("/login",
-    //customRateLimitMiddleware,
+    customRateLimitMiddleware,
     async (req: Request, res: Response) => {
         const authUser = await createUserService
-            .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.baseUrl,req.headers["user-agent"])
+            .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.headers["user-agent"])
         if (authUser) {
                  res.cookie('refreshToken', authUser[1], {httpOnly: true, secure: true,})
                 .status(200)
@@ -75,10 +75,9 @@ authRouter.post("/registration-email-resending",
 )
 authRouter.post("/logout",
     async (req: Request, res: Response) => {
-        const cookies = req.cookies.refreshToken
-        const correctRefreshToken: boolean = await createUserService.logoutService(cookies)
+        const correctRefreshToken: boolean = await createUserService.logoutService(req.cookies.refreshToken)
         if(correctRefreshToken) {
-            res.cookie(cookies, "", {maxAge: 0}).status(204).send()
+            res.cookie(req.cookies.refreshToken, "", {maxAge: 0}).status(204).send()
         }
         else {
             res.sendStatus(401)

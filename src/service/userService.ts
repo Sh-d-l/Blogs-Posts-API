@@ -1,17 +1,12 @@
-import {TUsersDb} from "../types/types";
+import {TUsersDb, TUsersWithHashEmailDb} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4, v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
-import {TUsersWithHashEmailDb} from "../types/types";
-import {
-    usersRepoDb
-} from "../repositories/users_API-repositories-db";
+import {usersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
-import {repoRefreshToken} from "../repositories/revokedRefreshToken";
 import {rateLimitRepo} from "../repositories/rateLimitRepo";
-import {uuid} from "uuidv4";
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
 
 export const createUserService = {
@@ -46,15 +41,8 @@ export const createUserService = {
         return newUser;
     },
 
-    async authUserWithEmailService(loginOrEmail: string, password: string, ip: string, url: string, title: string | undefined): Promise<(string)[] | null> {
-        const rateLimitDocument = {
-            IP: ip,
-            URL: url,
-            date: new Date()
-        }
+    async authUserWithEmailService(loginOrEmail: string, password: string, ip: string, title: string | undefined): Promise<(string)[] | null> {
         const deviceId = v4()
-
-        await rateLimitRepo.addLoginAttempt(rateLimitDocument)
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
@@ -123,17 +111,14 @@ export const createUserService = {
 
     async logoutService(refreshToken: string): Promise<boolean> {
         if (!refreshToken) return false;
-        const refreshTokenObject = {
-            refreshToken: refreshToken
-        }
-        const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        if (checkBlackList) return false;
+        // const refreshTokenObject = {
+        //     refreshToken: refreshToken
+        // }
+        // const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
+        // if (checkBlackList) return false;
         const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadRefreshToken) return false;
-
-        const logout = await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
-        if (logout) return true
-        else return false;
+        return await securityDevicesRepo.deleteDeviceById(payloadRefreshToken[0]);
     },
 
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {

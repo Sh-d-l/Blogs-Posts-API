@@ -7,5 +7,8 @@ export const rateLimitRepo = {
     },
     async checkTheNumberOfLoginAttempts(ip:string,url:string):Promise<TypeCustomRateLimit | null> {
         return await customRateLimitCollection.findOne({IP:ip,URL:url})
-    }
+    },
+    // async addToArrAttempts(attempt:number) {
+    //     const arrAttempts
+    // }
 }
