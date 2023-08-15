@@ -148,10 +148,6 @@ export const createUserService = {
         const newUserWithHash: TUsersWithHashEmailDb = {
             ...newUser,
             userHash,
-            // registrationData: {
-            //     userIP: ip,
-            //     dataOfCreation: new Date(),
-            // },
             emailConfirmation: {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {

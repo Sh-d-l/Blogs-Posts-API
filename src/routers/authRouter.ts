@@ -37,7 +37,7 @@ authRouter.post("/refresh-token",
     })
 
 authRouter.post("/registration",
-    //customRateLimitMiddleware,
+    customRateLimitMiddleware,
     ...createNewUserValidation,
     async (req: Request, res: Response) => {
         const userRegWithMail: TUsersDb | null = await createUserService
@@ -52,7 +52,7 @@ authRouter.post("/registration",
         }
     })
 authRouter.post("/registration-confirmation",
-    //customRateLimitMiddleware,
+    customRateLimitMiddleware,
     ...confirmCodeValidation,
     async (req: Request, res: Response) => {
         const updateIsConfirmed = await createUserService.confirmationCodeService(req.body.code)
@@ -63,7 +63,7 @@ authRouter.post("/registration-confirmation",
     }
 )
 authRouter.post("/registration-email-resending",
-    //customRateLimitMiddleware,
+    customRateLimitMiddleware,
     ...resendingEmailValidation,
     async (req: Request, res: Response) => {
         const resendingEmail = await createUserService.resendingEmailService(req.body.email)

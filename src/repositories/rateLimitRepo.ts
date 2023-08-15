@@ -5,10 +5,10 @@ export const rateLimitRepo = {
     async addLoginAttempt(document:TypeCustomRateLimit) {
         await customRateLimitCollection.insertOne(document)
     },
-    async checkTheNumberOfLoginAttempts(ip:string,url:string):Promise<TypeCustomRateLimit | null> {
-        return await customRateLimitCollection.findOne({IP:ip,URL:url})
+    async findTheNumberOfAttempts(originalUrl:string, IP:string) {
+        return await customRateLimitCollection.find({URL:originalUrl, IP}).toArray()
     },
-    // async addToArrAttempts(attempt:number) {
-    //     const arrAttempts
-    // }
+    async deleteDocumentsIfMoreFive(originalUrl:string, IP:string) {
+        await customRateLimitCollection.deleteMany({URL:originalUrl, IP})
+    }
 }
