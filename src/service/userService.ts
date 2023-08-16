@@ -48,15 +48,15 @@ export const createUserService = {
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             const refreshTokenMeta = {
-                ip,
-                title,
-                lastActiveDate: new Date(),
                 deviceId,
-                expiredAt: new Date().getSeconds() + 20,
-                userId: user.id
+                ip,
+                lastActiveDate: new Date(),
+                title,
+                // expiredAt: new Date().getSeconds() + 20,
+                // userId: user.id
             }
             const accessToken = await jwtService.createAccessToken(deviceId)
-            const refreshToken = await jwtService.createRefreshToken(deviceId, refreshTokenMeta.lastActiveDate, refreshTokenMeta.userId)
+            const refreshToken = await jwtService.createRefreshToken(deviceId, refreshTokenMeta.lastActiveDate, user.id)
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return [accessToken, refreshToken]
         } else {
@@ -82,7 +82,7 @@ export const createUserService = {
                 const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
                 const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
                     refreshTokenWithUpdateLastActiveDate.lastActiveDate,
-                    refreshTokenWithUpdateLastActiveDate.userId)
+                    payloadArray[2])
                 //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
                 return [newAccessToken, newRefreshToken]
             } else return null
