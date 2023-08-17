@@ -34,7 +34,7 @@ export const securityDevicesService = {
         if (!payloadArray) return 401;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(deviceId)
         if(!refreshTokenMetaObject) return 404
-        if(deviceId !== payloadArray[0] && payloadArray[1] !== refreshTokenMetaObject.lastActiveDate ) return 403
+        if(deviceId !== payloadArray[0]) return 403
         //
         // if(refreshTokenMetaObject?.userId !== payloadArray[2] )  return 403
         //if(refreshTokenMetaObject && new Date (payloadArray[1]).getTime() !== new Date(refreshTokenMetaObject.lastActiveDate).getTime()) return 401
