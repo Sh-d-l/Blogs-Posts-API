@@ -32,7 +32,7 @@ export const securityDevicesService = {
         if (!refreshToken) return 401;
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return 401;
-        if(deviceId !== payloadArray[0]) return 403
+       // if(deviceId !== payloadArray[0]) return 403
         // const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(deviceId)
         // if(refreshTokenMetaObject?.userId !== payloadArray[2] )  return 403
         //if(refreshTokenMetaObject && new Date (payloadArray[1]).getTime() !== new Date(refreshTokenMetaObject.lastActiveDate).getTime()) return 401
