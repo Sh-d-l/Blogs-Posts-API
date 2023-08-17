@@ -11,7 +11,9 @@ import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
 
 export const createUserService = {
 
-    async createUserWithEmailService(login: string, password: string, email: string): Promise<TUsersDb | null> {
+    async createUserWithEmailService(login: string,
+                                     password: string,
+                                     email: string): Promise<TUsersDb | null> {
         const userHash = await bcrypt.hash(password, 10)
         const newUser: TUsersDb = {
             id: randomUUID(),
@@ -41,22 +43,27 @@ export const createUserService = {
         return newUser;
     },
 
-    async authUserWithEmailService(loginOrEmail: string, password: string, ip: string, title: string | undefined): Promise<(string)[] | null> {
+    async authUserWithEmailService(loginOrEmail: string,
+                                   password: string,
+                                   ip: string,
+                                   title: string | undefined): Promise<(string)[] | null> {
         const deviceId = v4()
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             const refreshTokenMeta = {
-                ip,
-                title,
-                lastActiveDate: new Date(),
                 deviceId,
-                expiredAt: new Date().getSeconds() + 20,
-                userId: user.id
+                ip,
+                lastActiveDate: new Date(),
+                title,
+
+                // expiredAt: new Date().getSeconds() + 20,
+                // userId: user.id
             }
             const accessToken = await jwtService.createAccessToken(deviceId)
-            const refreshToken = await jwtService.createRefreshToken(deviceId, refreshTokenMeta.lastActiveDate, refreshTokenMeta.userId)
+            const refreshToken = await jwtService.createRefreshToken(deviceId,
+                refreshTokenMeta.lastActiveDate)
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return [accessToken, refreshToken]
         } else {
@@ -81,8 +88,7 @@ export const createUserService = {
             if (refreshTokenWithUpdateLastActiveDate !== null) {
                 const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
                 const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
-                    refreshTokenWithUpdateLastActiveDate.lastActiveDate,
-                    refreshTokenWithUpdateLastActiveDate.userId)
+                    refreshTokenWithUpdateLastActiveDate.lastActiveDate)
                 //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
                 return [newAccessToken, newRefreshToken]
             } else return null
