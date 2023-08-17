@@ -141,7 +141,7 @@ export const createUserService = {
         }
     },
 
-    /*------------------------------creating a super admin user---------------------------------------*/
+    /*---------------------------------creating a super admin user---------------------------------------*/
 
     async createUserSuperAdminService(login: string, password: string, email: string): Promise<TUsersDb> {
         const userHash = await bcrypt.hash(password, 10)
