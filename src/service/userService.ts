@@ -63,7 +63,8 @@ export const createUserService = {
             }
             const accessToken = await jwtService.createAccessToken(deviceId)
             const refreshToken = await jwtService.createRefreshToken(deviceId,
-                refreshTokenMeta.lastActiveDate)
+                refreshTokenMeta.lastActiveDate,
+                refreshTokenMeta.title)
             await securityDevicesRepo.addRefreshTokenMeta(refreshTokenMeta)
             return [accessToken, refreshToken]
         } else {
@@ -88,7 +89,8 @@ export const createUserService = {
             if (refreshTokenWithUpdateLastActiveDate !== null) {
                 const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
                 const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
-                    refreshTokenWithUpdateLastActiveDate.lastActiveDate)
+                    refreshTokenWithUpdateLastActiveDate.lastActiveDate,
+                    refreshTokenWithUpdateLastActiveDate.title)
                 //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
                 return [newAccessToken, newRefreshToken]
             } else return null
