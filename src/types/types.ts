@@ -101,6 +101,7 @@ export type TypeCustomRateLimit = {
     date:Date
 }
 export type TypeRefreshTokenMeta = {
+    userId:string,
     deviceId: string,
     ip:string,
     lastActiveDate: Date,
