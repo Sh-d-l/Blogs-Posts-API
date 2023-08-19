@@ -11,8 +11,8 @@ export const securityDevicesRepo = {
     async findRefreshTokenMetaByDeviceId(deviceId:string):Promise<TypeRefreshTokenMeta | null> {
         return await refreshTokenMetaCollection.findOne({deviceId},{projection: {_id: 0}})
     },
-    async getAllRefreshTokenMeta():Promise<TypeRefreshTokenMeta[]> {
-        return await  refreshTokenMetaCollection.find({}, {projection: {_id: 0, userId: 0}}).toArray();
+    async getAllRefreshTokenMeta(userId:string):Promise<TypeRefreshTokenMeta[]> {
+        return await  refreshTokenMetaCollection.find({userId:userId}, {projection: {_id: 0, userId: 0}}).toArray();
     },
     async deleteAllDevicesExcludeCurrent(id:string):Promise<boolean> {
         const result =  await refreshTokenMetaCollection.deleteMany({deviceId: {$nin:[id]}})

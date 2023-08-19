@@ -10,8 +10,9 @@ export const securityDevicesService = {
         if (!payloadArray) return null;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
         if(!refreshTokenMetaObject) return null;
-        if(new Date (payloadArray[1]).getTime() == new Date(refreshTokenMetaObject.lastActiveDate).getTime()) {
-            return await securityDevicesRepo.getAllRefreshTokenMeta()
+        if(new Date (payloadArray[1]).getTime() === new Date(refreshTokenMetaObject.lastActiveDate).getTime()
+            && payloadArray[2] === refreshTokenMetaObject.userId) {
+            return await securityDevicesRepo.getAllRefreshTokenMeta(payloadArray[2])
         }
         else return null
     },

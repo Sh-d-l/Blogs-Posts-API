@@ -59,6 +59,7 @@ export const createUserService = {
                 lastActiveDate: new Date(),
                 title,
             }
+
             const accessToken = await jwtService.createAccessToken(deviceId)
             const refreshToken = await jwtService.createRefreshToken(deviceId,
                 refreshTokenMeta.lastActiveDate,
@@ -79,8 +80,10 @@ export const createUserService = {
         // if(checkBlackList) return null
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
+
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
         if (!refreshTokenMetaObject) return null;
+
         if (new Date(payloadArray[1]).getTime() == new Date(refreshTokenMetaObject.lastActiveDate).getTime()) {
             await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
             const refreshTokenWithUpdateLastActiveDate = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])

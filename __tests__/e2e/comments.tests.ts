@@ -14,12 +14,15 @@ import {emailUser, loginUser, passUser, urlUser,urlCreateUserWithEmail,urlResend
 import {urlAuth} from "../../test_constanse/auth.constans";
 import {content, lessContentLength, moreContentLength, urlComments} from "../../test_constanse/comments.constans";
 
+
+
 describe ("comments", () => {
     beforeAll(async () => {
         await request(app)
             .del("/testing/all-data")
             .expect(204)
     })
+
     it("create blog, should return 201 and {}", async () => {
         await request(app)
             .post(urlBlogs)
