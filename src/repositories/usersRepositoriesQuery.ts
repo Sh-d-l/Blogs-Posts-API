@@ -1,6 +1,6 @@
 import {IPagination} from "../types/types";
 import {TUsersDb, TypeGetUsersWithCount} from "../types/types";
-import {usersCollection} from "./db";
+import {usersCollection} from "../mongoDB/db";
 
 export const usersQueryRepo = {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {

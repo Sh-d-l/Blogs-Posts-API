@@ -1,4 +1,4 @@
-import {blogCollection} from "./db";
+import {blogCollection} from "../mongoDB/db";
 import {TBlogDb} from "../types/types";
 
 export const blogs_repositories = {

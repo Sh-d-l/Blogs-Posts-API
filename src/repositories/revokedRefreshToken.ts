@@ -1,4 +1,4 @@
-import {blackListRefreshTokenCollection} from "./db";
+import {blackListRefreshTokenCollection} from "../mongoDB/db";
 import {RevokedRToken} from "../types/types";
 
 export const repoRefreshToken = {

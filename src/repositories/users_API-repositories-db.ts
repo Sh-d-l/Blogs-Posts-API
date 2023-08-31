@@ -1,4 +1,4 @@
-import {usersCollection} from "./db";
+import {usersCollection} from "../mongoDB/db";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";

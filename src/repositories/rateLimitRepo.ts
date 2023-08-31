@@ -1,4 +1,4 @@
-import {customRateLimitCollection} from "./db";
+import {customRateLimitCollection} from "../mongoDB/db";
 import {TypeCustomRateLimit} from "../types/types";
 
 export const rateLimitRepo = {

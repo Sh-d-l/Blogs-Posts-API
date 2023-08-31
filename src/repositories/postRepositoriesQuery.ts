@@ -1,5 +1,5 @@
 import {PostType} from "../types/types";
-import {commentCollection, postCollection} from "./db";
+import {commentCollection, postCollection} from "../mongoDB/db";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
 import {CommentType} from "../types/types";

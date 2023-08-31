@@ -6,7 +6,6 @@ import add from 'date-fns/add'
 import {emailManager} from "../domain/emailManager";
 import {usersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
-import {rateLimitRepo} from "../repositories/rateLimitRepo";
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
 
 export const createUserService = {

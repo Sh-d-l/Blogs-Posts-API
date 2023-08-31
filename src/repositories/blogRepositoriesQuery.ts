@@ -1,5 +1,5 @@
 import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/types";
-import {blogCollection, postCollection} from "./db";
+import {blogCollection, postCollection} from "../mongoDB/db";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 import {CommentType} from "../types/types";

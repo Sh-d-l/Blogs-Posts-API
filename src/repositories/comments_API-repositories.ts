@@ -1,6 +1,6 @@
 
 import {CommentType} from "../types/types";
-import {commentCollection} from "./db";
+import {commentCollection} from "../mongoDB/db";
 
 export const commentsRepo = {
     async getCommentById(id: string): Promise<CommentType | null> {

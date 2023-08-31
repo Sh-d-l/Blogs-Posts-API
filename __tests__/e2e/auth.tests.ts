@@ -7,17 +7,18 @@ import {
     passUser,
     incorrectEmailUser,
     incorrectLoginUser,
-    incorrectPassUserString, urlUser
+    incorrectPassUserString, urlUser, urlConfirmationCode
 } from "../../test_constanse/user.constans";
 import {urlAuth} from "../../test_constanse/auth.constans";
-import {loginAuth, passAuth} from "../../test_constanse/authUsers.constans";
+import {usersCollection} from "../../src/mongoDB/db";
+import {usersRepoDb} from "../../src/repositories/users_API-repositories-db";
 
 describe('auth', () => {
     let tokens;
+    let newUser;
     it("create new user, should return 201 and {}", async () => {
-        const newUser = await request(app)
+         newUser = await request(app)
             .post(urlUser)
-            .auth(loginAuth, passAuth)
             .send({
                     login: loginUser,
                     password: passUser,
@@ -26,12 +27,24 @@ describe('auth', () => {
             )
             .expect(201)
         expect(newUser.body).toEqual({
-            id: newUser.body.id, //expect.any(String)
-            login: loginUser,
+            createdAt: expect.any(String),
             email: emailUser,
-            createdAt: newUser.body.createdAt, //expect.any(Date)
+            id: expect.any(String),
+            login: loginUser,
         })
     })
+
+    it("confirmation code success, should return 204", async () => {
+        const user = await usersCollection.findOne({email:emailUser})
+        if(user) {
+            await  request(app)
+                .post(urlConfirmationCode)
+                .send(user.emailConfirmation.confirmationCode)
+
+            expect(204)
+        }
+    })
+
     it("auth with correct login and pass, should return 200 with token", async () => {
         tokens = await  request(app)
             .post(urlAuth)
@@ -44,9 +57,11 @@ describe('auth', () => {
         expect(tokens.body).toEqual({
             accessToken: expect.any(String)
         })
+        expect(tokens.headers['set-cookie']).toEqual(expect.any(String))
 
         const refreshToken = tokens.headers['set-cookie'] //'refreshToken=djjfnogfgdfjgkdf'
     })
+
     it("auth with correct login and incorrect pass, should return 401", async () => {
         await  request(app)
             .post(urlAuth)

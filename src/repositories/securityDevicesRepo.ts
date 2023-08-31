@@ -1,4 +1,4 @@
-import {refreshTokenMetaCollection} from "./db";
+import {refreshTokenMetaCollection} from "../mongoDB/db";
 import {TypeRefreshTokenMeta} from "../types/types";
 
 export const securityDevicesRepo = {
