@@ -1,5 +1,4 @@
 import request from "supertest";
-import {app} from "../../src"
 import {
     blogName,
     blogDescription,
@@ -29,6 +28,8 @@ import {
     loginAuth,
     passAuth
 } from "../../test_constanse/authUsers.constans";
+import {app} from "../../settings";
+import {CreateCommentByPostIDSchema} from "../../src/mongoDB/db";
 
 
 describe('blogs', () => {

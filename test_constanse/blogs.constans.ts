@@ -1,5 +1,5 @@
 import request from "supertest";
-import {app} from "../src";
+import {app} from "../settings";
 
 export const postTitle = "string";
 export  const postShortDescription = "string";

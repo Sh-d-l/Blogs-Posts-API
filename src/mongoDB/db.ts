@@ -5,7 +5,6 @@ import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 import mongoose from "mongoose"
-import {WithId} from "mongodb";
 
 dotenv.config()
 
@@ -15,11 +14,11 @@ const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${DB_NAME}`
 
 export const client = new MongoClient(mongoURI)
 
-export const CreateUserWithMailSchema = new mongoose.Schema<WithId<TUsersWithHashEmailDb>> (
+export const CreateUserWithMailSchema = new mongoose.Schema<TUsersWithHashEmailDb> (
     {
         id: {String, require:true},
-        login: {String, require: true,maxLength: 10, minLength:3, match: "^[a-zA-Z0-9_-]*$"},
-        email: {String, require: true, match: "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"},
+        login: {String, require: true,maxLength: 10, minLength:3, /*match: /^[a-zA-Z0-9_-]*$/*/},
+        email: {String, require: true, /*match: /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/*/},
         createdAt: {Date, require:true},
         userHash: {String, require:true},
         emailConfirmation: {
@@ -30,30 +29,34 @@ export const CreateUserWithMailSchema = new mongoose.Schema<WithId<TUsersWithHas
     }
 )
 
-export const RegistrationConfirmationSchema = new mongoose.Schema<WithId<String>> (
+export const LoginSchema = new mongoose.Schema ({
+    loginOrEmail: {String, require:true}
+})
+
+export const RegistrationConfirmationSchema = new mongoose.Schema (
     {
-        code:{String,require:true}
+        code:{String,require:true},
     }
 )
 
-export const RegistrationEmailResendingSchema = new mongoose.Schema<WithId<String>> (
+export const RegistrationEmailResendingSchema = new mongoose.Schema (
     {
-        email: {String, require: true, match:"^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"}
+        email: {String, require: true, /*match:/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/*/}
     }
 )
 
-export const CreateNewBlogSchema = new mongoose.Schema <WithId<TBlogDb>>(
+export const CreateNewBlogSchema = new mongoose.Schema <TBlogDb>(
     {
         id:{String, require:true},
         name: {String,require:true, maxLength: 15},
         description: {String, require:true, maxLength:500},
-        websiteUrl:{String, require:true, maxLength: 100, match: "^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$"},
+        websiteUrl:{String, require:true, maxLength: 100,/*match: /https:([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/*/},
         createdAt: {Date, require:true},
-        isMembership: {Boolean, require:true}
+        isMembership: {Boolean, require:true},
     }
 )
 
-export const CreatePostSchema = new mongoose.Schema<WithId<PostType>> (
+export const CreatePostSchema = new mongoose.Schema<PostType> (
     {
         id:{String, require:true},
         title: {String, require:true, maxLength: 30},
@@ -65,7 +68,7 @@ export const CreatePostSchema = new mongoose.Schema<WithId<PostType>> (
     }
 )
 
-export const CreateCommentByPostIDSchema = new mongoose.Schema<WithId<CommentTypeWithPostId>> (
+export const CreateCommentByPostIDSchema = new mongoose.Schema<CommentTypeWithPostId> (
     {
         id:{String, require:true},
         content: {String, require:true, maxLength: 300, minLength: 20},
@@ -77,7 +80,13 @@ export const CreateCommentByPostIDSchema = new mongoose.Schema<WithId<CommentTyp
     }
 )
 
-
+export const CreateUserWithMailModel = mongoose.model("UsersWithConfirmMail",CreateUserWithMailSchema)
+export const RegistrationConfirmationModel = mongoose.model("UsersWithConfirmMail", RegistrationConfirmationSchema)
+export const RegistrationEmailResendingModel = mongoose.model("UsersWithConfirmMail", RegistrationEmailResendingSchema )
+export const CreateNewBlogModel = mongoose.model("Blogs",CreateNewBlogSchema )
+export const CreatePostModel = mongoose.model("Posts", CreatePostSchema)
+export const CreateCommentByPostIDModel = mongoose.model("Comments", CreateCommentByPostIDSchema)
+export const LoginModel = mongoose.model("UsersWithConfirmMail", LoginSchema)
 
 export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
@@ -90,7 +99,7 @@ export const refreshTokenMetaRepo = client.db(DB_NAME)
 export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
 export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
-export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
+//export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
 export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
 export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
 export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")

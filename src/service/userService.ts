@@ -143,6 +143,8 @@ export const createUserService = {
         }
     },
 
+
+
     /*---------------------------------creating a super admin user---------------------------------------*/
 
     async createUserSuperAdminService(login: string, password: string, email: string): Promise<TUsersDb> {
@@ -170,5 +172,8 @@ export const createUserService = {
     },
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)
-    }
+    },
+
+
+
 }
