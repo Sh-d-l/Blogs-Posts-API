@@ -1,3 +1,5 @@
+import {SortOrder} from "mongoose";
+
 export type TUsersWithHashEmailDb = {
     id: string,
     login: string,
@@ -86,7 +88,7 @@ export interface IPagination {
     searchLoginTerm: string,
     searchEmailTerm: string,
     searchNameTerm: string,
-    sortBy: string,
+    sortBy: any,
     sortDirection: 'asc' | 'desc',
     pageNumber: number,
     pageSize: number,

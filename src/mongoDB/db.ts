@@ -17,7 +17,7 @@ export const client = new MongoClient(mongoURI)
 export const CreateUserWithMailSchema = new mongoose.Schema<TUsersWithHashEmailDb> (
     {
         id: {String, require:true},
-        login: {String, require: true,maxLength: 10, minLength:3, /*match: /^[a-zA-Z0-9_-]*$/*/},
+        login: {String, require: true,maxLength: 10, minLength:3, match: /^[a-zA-Z0-9_-]*$/},
         email: {String, require: true, /*match: /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/*/},
         createdAt: {Date, require:true},
         userHash: {String, require:true},
@@ -91,7 +91,7 @@ export const LoginModel = mongoose.model("UsersWithConfirmMail", LoginSchema)
 export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
-export const usersDbRepo = client.db(DB_NAME)
+//export const usersDbRepo = client.db(DB_NAME)
 export const blackListRefreshTokenRepo = client.db(DB_NAME)
 export const rateLimitRepo = client.db(DB_NAME)
 export const refreshTokenMetaRepo = client.db(DB_NAME)
@@ -105,13 +105,14 @@ export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRate
 export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
 
 export const collections =
-    [blogCollection,
-    postCollection,
-    usersCollection,
-    commentCollection,
-    blackListRefreshTokenCollection,
-    refreshTokenMetaCollection,
-    customRateLimitCollection]
+    [CreateUserWithMailModel]
+    // [blogCollection,
+    // postCollection,
+    // //usersCollection,
+    // commentCollection,
+    // blackListRefreshTokenCollection,
+    // refreshTokenMetaCollection,
+    // customRateLimitCollection]
 
 export async function runDB() {
     try {

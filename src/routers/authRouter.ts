@@ -38,7 +38,7 @@ authRouter.post("/refresh-token",
 
 authRouter.post("/registration",
     customRateLimitMiddleware,
-    ...createNewUserValidation,
+    //...createNewUserValidation,
     async (req: Request, res: Response) => {
         const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,
