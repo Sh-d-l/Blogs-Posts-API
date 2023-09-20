@@ -7,7 +7,6 @@ import {
 } from "../middlewares/validators/validations";
 import {createUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
-
 export const authRouter = Router({})
 
 authRouter.post("/login",
@@ -40,6 +39,7 @@ authRouter.post("/registration",
     customRateLimitMiddleware,
     //...createNewUserValidation,
     async (req: Request, res: Response) => {
+        //console.log(req.body.login)
         const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,
                 req.body.password,
@@ -51,6 +51,7 @@ authRouter.post("/registration",
             res.sendStatus(400)
         }
     })
+
 authRouter.post("/registration-confirmation",
     customRateLimitMiddleware,
     ...confirmCodeValidation,

@@ -34,7 +34,7 @@ usersRouter.get('/',
 
 usersRouter.post("/",
     basicAuth,
-    ...createNewUserSuperAdminValidation,
+    //...createNewUserSuperAdminValidation,
     async (req: Request, res: Response) => {
         const addUser: TUsersDb = await createUserService
             .createUserSuperAdminService(req.body.login,

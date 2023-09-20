@@ -4,7 +4,7 @@ import {RevokedRToken, TBlogDb, TypeCustomRateLimit, TypeRefreshTokenMeta} from 
 import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
-import mongoose from "mongoose"
+import mongoose, {Schema} from "mongoose"
 
 dotenv.config()
 
@@ -14,75 +14,75 @@ const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${DB_NAME}`
 
 export const client = new MongoClient(mongoURI)
 
-export const CreateUserWithMailSchema = new mongoose.Schema<TUsersWithHashEmailDb> (
+export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
     {
-        id: {String, require:true},
-        login: {String, require: true,maxLength: 10, minLength:3, match: /^[a-zA-Z0-9_-]*$/},
-        email: {String, require: true, /*match: /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/*/},
-        createdAt: {Date, require:true},
-        userHash: {String, require:true},
+        id: {type:String, required:true},
+        login: {type:String, required: true,maxLength: 10, minLength:3, match: /^[a-zA-Z0-9_-]*$/},
+        email: {type:String, required: true, match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/},
+        createdAt: {type:String, required:true},
+        userHash: {type:String, required:true},
         emailConfirmation: {
-            confirmationCode:{String, require:true},
-            expirationTime: {String, require:true},
-            isConfirmed: {Boolean, require:true}
+            confirmationCode:{type:String, required:true},
+            expirationTime: {type:String, required:[true]},
+            isConfirmed: {type:Boolean, required:[true]}
         }
     }
 )
 
-export const LoginSchema = new mongoose.Schema ({
-    loginOrEmail: {String, require:true}
+export const LoginSchema = new Schema ({
+    loginOrEmail: {type:String, required:[true]}
 })
 
-export const RegistrationConfirmationSchema = new mongoose.Schema (
+export const RegistrationConfirmationSchema = new Schema (
     {
-        code:{String,require:true},
+        code:{type:String,required:[true]},
     }
 )
 
-export const RegistrationEmailResendingSchema = new mongoose.Schema (
+export const RegistrationEmailResendingSchema = new Schema (
     {
-        email: {String, require: true, /*match:/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/*/}
+        email: {type:String, required: [true], match:/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/}
     }
 )
 
-export const CreateNewBlogSchema = new mongoose.Schema <TBlogDb>(
+export const CreateNewBlogSchema = new Schema <TBlogDb>(
     {
-        id:{String, require:true},
-        name: {String,require:true, maxLength: 15},
-        description: {String, require:true, maxLength:500},
-        websiteUrl:{String, require:true, maxLength: 100,/*match: /https:([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/*/},
-        createdAt: {Date, require:true},
-        isMembership: {Boolean, require:true},
+        id:{type:String, required:true},
+        name: {type:String,required:true, maxLength: 15},
+        description: {type:String, required:true, maxLength:500},
+        websiteUrl:{type:String, required:true, maxLength: 100,}/*match: /^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$}*/,
+        createdAt: {type:String, required:true},
+        isMembership: {type:Boolean, required:true},
     }
 )
 
-export const CreatePostSchema = new mongoose.Schema<PostType> (
+export const CreatePostSchema = new Schema<PostType> (
     {
-        id:{String, require:true},
-        title: {String, require:true, maxLength: 30},
-        shortDescription: {String, require:true, maxLength: 100},
-        content: {String, require:true, maxLength: 1000},
-        blogId: {String, require:true},
-        blogName: {String,require:true, maxLength: 15},
-        createdAt: {Date, require:true},
+        id:{type:String, required:true},
+        title: {type:String, required:true, maxLength: 30},
+        shortDescription: {type:String, required:true, maxLength: 100},
+        content: {type:String, required:true, maxLength: 1000},
+        blogId: {type:String, required:true},
+        blogName: {type:String,required:true, maxLength: 15},
+        createdAt: {type:String, required:true},
     }
 )
 
-export const CreateCommentByPostIDSchema = new mongoose.Schema<CommentTypeWithPostId> (
+export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId> (
     {
-        id:{String, require:true},
-        content: {String, require:true, maxLength: 300, minLength: 20},
+        id:{type:String, required:true},
+        content: {type:String, required:true, maxLength: 300, minLength: 20},
         commentatorInfo: {
-            userId: {String, require:true},
-            userLogin: {String, require:true},
+            userId: {type:String, required:true},
+            userLogin: {type:String, required:true},
         },
-        createdAt: {Date, require:true},
+        createdAt: {type:String, required:true},
     }
 )
 
-export const CreateUserWithMailModel = mongoose.model("UsersWithConfirmMail",CreateUserWithMailSchema)
-export const RegistrationConfirmationModel = mongoose.model("UsersWithConfirmMail", RegistrationConfirmationSchema)
-export const RegistrationEmailResendingModel = mongoose.model("UsersWithConfirmMail", RegistrationEmailResendingSchema )
+export const CreateUserWithMailModel = mongoose.model('UsersWithConfirmMail',CreateUserWithMailSchema)
+export const RegistrationConfirmationModel = mongoose.model('UsersWithConfirmMail', RegistrationConfirmationSchema)
+export const RegistrationEmailResendingModel = mongoose.model('UsersWithConfirmMail', RegistrationEmailResendingSchema )
 export const CreateNewBlogModel = mongoose.model("Blogs",CreateNewBlogSchema )
 export const CreatePostModel = mongoose.model("Posts", CreatePostSchema)
 export const CreateCommentByPostIDModel = mongoose.model("Comments", CreateCommentByPostIDSchema)
@@ -105,7 +105,10 @@ export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRate
 export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
 
 export const collections =
-    [CreateUserWithMailModel]
+    [
+    CreateUserWithMailModel,
+    //CreateNewBlogModel,
+    ]
     // [blogCollection,
     // postCollection,
     // //usersCollection,

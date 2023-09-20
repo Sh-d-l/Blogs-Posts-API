@@ -1,7 +1,7 @@
 import { runDB} from "./mongoDB/db"
 import cookieParser from 'cookie-parser';
 
-import {app} from "../settings";
+import {app} from "./settings";
 
 process.on('unhandledRejection', function (reason, p) {
     console.error('ERROR')

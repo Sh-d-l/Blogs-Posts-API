@@ -28,7 +28,7 @@ import {
     loginAuth,
     passAuth
 } from "../../test_constanse/authUsers.constans";
-import {app} from "../../settings";
+import {app} from "../../src/settings";
 import {CreateCommentByPostIDSchema} from "../../src/mongoDB/db";
 
 

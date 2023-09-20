@@ -72,11 +72,6 @@ export const createUserService = {
 
     async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
-        // const refreshTokenObject = {
-        //     refreshToken:refreshToken
-        // }
-        // const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        // if(checkBlackList) return null
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
 
@@ -91,7 +86,6 @@ export const createUserService = {
                 const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
                     refreshTokenWithUpdateLastActiveDate.lastActiveDate,
                     payloadArray[2])
-                //await repoRefreshToken.addBlackListRefreshTokens(refreshTokenObject)
                 return [newAccessToken, newRefreshToken]
             } else return null
         } else return null
@@ -119,11 +113,6 @@ export const createUserService = {
 
     async logoutService(refreshToken: string): Promise<boolean> {
         if (!refreshToken) return false;
-        // const refreshTokenObject = {
-        //     refreshToken: refreshToken
-        // }
-        // const checkBlackList = await repoRefreshToken.blacklistedRefreshTokenSearch(refreshTokenObject)
-        // if (checkBlackList) return false;
         const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadRefreshToken) return false;
         return await securityDevicesRepo.deleteDeviceById(payloadRefreshToken[0]);
@@ -142,8 +131,6 @@ export const createUserService = {
             return null;
         }
     },
-
-
 
     /*---------------------------------creating a super admin user---------------------------------------*/
 

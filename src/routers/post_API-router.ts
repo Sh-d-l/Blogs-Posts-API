@@ -7,7 +7,7 @@ import {
     createPostValidation,
     updatePostValidation
 } from "../middlewares/validators/validations";
-import {authMiddleware} from "../middlewares/authMiddleware";
+//import {authMiddleware} from "../middlewares/authMiddleware";
 import {postService} from "../service/post_API-service";
 import {postsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
@@ -40,7 +40,7 @@ postRouter.post('/',
 /*-------------------------create comment by postId------------------------*/
 
 postRouter.post('/:postId/comments',
-    authMiddleware,
+    //authMiddleware,
     ...createCommentValidation,
     async (req: Request, res: Response) => {
         const getPostId: PostType | null = await postService
