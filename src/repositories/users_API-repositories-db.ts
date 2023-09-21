@@ -2,9 +2,6 @@ import {TUsersWithHashEmailDb} from "../types/types";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {CreateUserWithMailModel} from "../mongoDB/db";
-import {RegistrationEmailResendingModel} from "../mongoDB/db";
-import {LoginModel} from "../mongoDB/db";
-import {RegistrationConfirmationModel} from "../mongoDB/db";
 
 export const usersRepoDb = {
 
@@ -20,20 +17,22 @@ export const usersRepoDb = {
         await CreateUserWithMailModel.create({...newUserWithHashEmail})
     },
     async findUserByEmail(email: string): Promise<TUsersWithHashEmailDb | null> {
-        return RegistrationEmailResendingModel.findOne({email}, {projection: {_id: 0}});
+        return CreateUserWithMailModel.findOne({email}, {projection: {_id: 0}});
     },
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<TUsersWithHashEmailDb | null> {
-        return LoginModel.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
+        return CreateUserWithMailModel.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
     },
     async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
-        return RegistrationConfirmationModel.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+        return CreateUserWithMailModel.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
     },
     async changeIsConfirmed(id: string):Promise<boolean> {
-        const isConfirmed =  await CreateUserWithMailModel.findByIdAndUpdate({id}, {$set: {"emailConfirmation.isConfirmed":true}})
+        console.log(id, "user.id")
+        const isConfirmed =  await CreateUserWithMailModel.findByIdAndUpdate({id}, {"emailConfirmation.isConfirmed": true})
+        console.log(isConfirmed)
         return !!isConfirmed;
     },
     async changeExpirationTimeConfirmationCode(email:string):Promise<boolean> {
-        const updateSuccess = await  RegistrationConfirmationModel.updateOne({email}, {$set:{"emailConfirmation.confirmationCode":uuidv4(), "emailConfirmation.expirationTime":add(new Date(), {
+        const updateSuccess = await  CreateUserWithMailModel.updateOne({email}, {$set:{"emailConfirmation.confirmationCode":uuidv4(), "emailConfirmation.expirationTime":add(new Date(), {
                     hours: 0,
                     minutes: 3,
                 }),}})

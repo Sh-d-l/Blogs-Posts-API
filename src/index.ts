@@ -1,4 +1,4 @@
-import { runDB} from "./mongoDB/db"
+import {runDB} from "./mongoDB/db"
 import cookieParser from 'cookie-parser';
 
 import {app} from "./settings";

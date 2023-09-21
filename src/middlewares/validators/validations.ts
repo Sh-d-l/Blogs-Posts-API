@@ -68,13 +68,13 @@ const registeredUserLoginValidation = body("login").custom(async (login) => {
     }
     return true
 })
-const correctConfirmationCodeValidation = body("code").custom(async (code) => {
-    const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
-    if(!user) {
-        throw new Error("User not found")
-    }
-    return true
-})
+// const correctConfirmationCodeValidation = body("code").custom(async (code) => {
+//     const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
+//     if(!user) {
+//         throw new Error("User not found")
+//     }
+//     return true
+// })
 const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
     const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
     if(user && user.emailConfirmation.isConfirmed) {
@@ -223,7 +223,7 @@ export const createNewUserValidation = [
 ]
 export const confirmCodeValidation = [
     confirmationCodeValidation,
-    correctConfirmationCodeValidation,
+    //correctConfirmationCodeValidation,
     expirationTimeValidation,
     registeredUserIsConfirmedValidation,
     inputValidator

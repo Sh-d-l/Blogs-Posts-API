@@ -10,9 +10,24 @@ dotenv.config()
 
 export const DB_NAME = "Blogs-Posts-API";
 
-const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${DB_NAME}`
+const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${DB_NAME}`
 
 export const client = new MongoClient(mongoURI)
+
+export async function runDB() {
+    if (mongoose.connection.readyState === 1) {
+        console.log("already connected");
+        return;
+    }
+    try {
+        await mongoose.connect(mongoURI + DB_NAME)
+        console.log('it is ok')
+    } catch (e) {
+        console.log('no connection')
+        await mongoose.disconnect()
+    }
+}
+console.log(mongoURI + DB_NAME)
 
 export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
     {
@@ -23,25 +38,9 @@ export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
         userHash: {type:String, required:true},
         emailConfirmation: {
             confirmationCode:{type:String, required:true},
-            expirationTime: {type:String, required:[true]},
-            isConfirmed: {type:Boolean, required:[true]}
+            expirationTime: {type:Date, required:true},
+            isConfirmed: {type:Boolean, required:true}
         }
-    }
-)
-
-export const LoginSchema = new Schema ({
-    loginOrEmail: {type:String, required:[true]}
-})
-
-export const RegistrationConfirmationSchema = new Schema (
-    {
-        code:{type:String,required:[true]},
-    }
-)
-
-export const RegistrationEmailResendingSchema = new Schema (
-    {
-        email: {type:String, required: [true], match:/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/}
     }
 )
 
@@ -80,13 +79,11 @@ export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId> (
     }
 )
 
-export const CreateUserWithMailModel = mongoose.model('UsersWithConfirmMail',CreateUserWithMailSchema)
-export const RegistrationConfirmationModel = mongoose.model('UsersWithConfirmMail', RegistrationConfirmationSchema)
-export const RegistrationEmailResendingModel = mongoose.model('UsersWithConfirmMail', RegistrationEmailResendingSchema )
-export const CreateNewBlogModel = mongoose.model("Blogs",CreateNewBlogSchema )
-export const CreatePostModel = mongoose.model("Posts", CreatePostSchema)
-export const CreateCommentByPostIDModel = mongoose.model("Comments", CreateCommentByPostIDSchema)
-export const LoginModel = mongoose.model("UsersWithConfirmMail", LoginSchema)
+export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel',CreateUserWithMailSchema)
+export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel',CreateNewBlogSchema )
+export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)
+export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
+
 
 export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
@@ -117,15 +114,7 @@ export const collections =
     // refreshTokenMetaCollection,
     // customRateLimitCollection]
 
-export async function runDB() {
-    try {
-        await mongoose.connect(mongoURI)
-        console.log('it is ok')
-    } catch (e) {
-        console.log('no connection')
-        await mongoose.disconnect()
-    }
-}
+
 // export async function runDB() {
 //     try {
 //         await client.connect();
@@ -137,4 +126,4 @@ export async function runDB() {
 //     }
 // }
 
-console.log(process.env.MONGO_URL)
+
