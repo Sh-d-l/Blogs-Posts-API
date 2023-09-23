@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer"
 import {TUsersWithHashEmailDb} from "../types/types";
-import {UpdateResult} from "mongodb";
 
 export const emailAdapter = {
     async transportEmailAdapterRegistration(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {

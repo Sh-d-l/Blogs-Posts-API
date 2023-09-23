@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken"
+import {ObjectId, Schema} from "mongoose";
 
 export const jwtService = {
-    async createAccessToken(deviceId:string) {
-        return jwt.sign({deviceId}, 'secret', {expiresIn: '10h'})
+    async createAccessToken(deviceId:string, userId:string) {
+        return jwt.sign({deviceId, userId}, 'secret', {expiresIn: '10h'})
     },
     async createRefreshToken(deviceId:string, lastActiveDate: Date, userId:string) {
         return jwt.sign({deviceId,lastActiveDate,userId}, 'secret', {expiresIn: '20h'} )
@@ -18,8 +19,8 @@ export const jwtService = {
     },
     async getUserIdByAccessToken(token: string): Promise<string | null> {
         try {
-            const result = jwt.verify(token, 'secret') as {id: string }
-            return result.id
+            const result = jwt.verify(token, 'secret') as {userId:string, deviceId:string }
+            return result.userId
         } catch (error) {
             console.log(error)
             return null

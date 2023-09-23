@@ -1,4 +1,3 @@
-import {SortOrder} from "mongoose";
 
 export type TUsersWithHashEmailDb = {
     id: string,
@@ -12,6 +11,7 @@ export type TUsersWithHashEmailDb = {
         isConfirmed: boolean,
     }
 }
+
 export type TBlogDb = {
     id: string,
     name: string,
@@ -108,7 +108,5 @@ export type TypeRefreshTokenMeta = {
     ip:string,
     lastActiveDate: Date,
     title:string | undefined,
+    }
 
-    // expiredAt: number,
-    // userId:string
-}

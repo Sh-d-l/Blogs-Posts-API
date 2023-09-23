@@ -1,6 +1,7 @@
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo";
 import {jwtService} from "../application/jwt-service";
 import {TypeRefreshTokenMeta} from "../types/types";
+import {Schema} from "mongoose";
 
 export const securityDevicesService = {
 
@@ -8,11 +9,11 @@ export const securityDevicesService = {
         if (!refreshToken) return null;
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return null;
-        const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
+        const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaBy_Id(payloadArray[3])
         if(!refreshTokenMetaObject) return null;
         if(new Date (payloadArray[1]).getTime() === new Date(refreshTokenMetaObject.lastActiveDate).getTime()
             && payloadArray[2] === refreshTokenMetaObject.userId) {
-            return await securityDevicesRepo.getAllRefreshTokenMeta(payloadArray[2])
+            return await securityDevicesRepo.getAllRefreshTokenMeta(payloadArray[3])
         }
         else return null
     },
@@ -22,18 +23,18 @@ export const securityDevicesService = {
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return false;
         const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
-        if(!refreshTokenMetaObject) return false;
-        if(new Date (payloadArray[1]).getTime() == new Date(refreshTokenMetaObject.lastActiveDate).getTime()) {
+        if (!refreshTokenMetaObject) return false;
+        if (new Date (payloadArray[1]).getTime() == new Date(refreshTokenMetaObject.lastActiveDate).getTime()) {
             return await securityDevicesRepo.deleteAllDevicesExcludeCurrent(payloadArray[0])
         }
         else return false
     },
 
-    async deleteDeviceByIdService(deviceId:string, refreshToken:string): Promise<number> {
+    async deleteDeviceByIdService(deviceId:Schema.Types.UUID, refreshToken:string): Promise<number> {
         if (!refreshToken) return 401;
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadArray) return 401;
-        const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(deviceId)
+        const refreshTokenMetaObject = await securityDevicesRepo.findRefreshTokenMetaBy_Id(deviceId)
         console.log(refreshTokenMetaObject)
         if(!refreshTokenMetaObject) return 404
         // console.log(deviceId, "deviceId")

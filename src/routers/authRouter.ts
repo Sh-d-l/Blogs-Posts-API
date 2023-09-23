@@ -3,7 +3,7 @@ import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {
     confirmCodeValidation,
-    createNewUserValidation, resendingEmailValidation,
+     resendingEmailValidation,
 } from "../middlewares/validators/validations";
 import {createUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
@@ -39,7 +39,6 @@ authRouter.post("/registration",
     customRateLimitMiddleware,
     //...createNewUserValidation,
     async (req: Request, res: Response) => {
-        //console.log(req.body.login)
         const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,
                 req.body.password,

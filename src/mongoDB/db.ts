@@ -1,10 +1,18 @@
 import * as dotenv from 'dotenv'
 import { MongoClient} from "mongodb";
-import {RevokedRToken, TBlogDb, TypeCustomRateLimit, TypeRefreshTokenMeta} from "../types/types";
+import {
+    RevokedRToken,
+    TBlogDb,
+    TypeCustomRateLimit,
+    TypeRefreshTokenMeta
+} from "../types/types";
 import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
-import mongoose, {Schema} from "mongoose"
+import mongoose, {Schema, Types} from "mongoose"
+
+
+//   ?retryWrites=true&w=majority/
 
 dotenv.config()
 
@@ -29,9 +37,10 @@ export async function runDB() {
 }
 console.log(mongoURI + DB_NAME)
 
+
 export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
     {
-        id: {type:String, required:true},
+        id: {type: String, required:true},
         login: {type:String, required: true,maxLength: 10, minLength:3, match: /^[a-zA-Z0-9_-]*$/},
         email: {type:String, required: true, match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/},
         createdAt: {type:String, required:true},
@@ -43,6 +52,13 @@ export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
         }
     }
 )
+export const RefreshTokenMetaSchema = new Schema<TypeRefreshTokenMeta> ({
+        userId: {type:String, required: true},
+        deviceId: {type: String, required: true},
+        ip: {type: String, required: true},
+        lastActiveDate: {type: Date, required: true},
+        title: {type: String}
+})
 
 export const CreateNewBlogSchema = new Schema <TBlogDb>(
     {
@@ -80,10 +96,10 @@ export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId> (
 )
 
 export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel',CreateUserWithMailSchema)
+export const RefreshTokenMetaModel = mongoose.model('RefreshTokenMetaModel', RefreshTokenMetaSchema)
 export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel',CreateNewBlogSchema )
 export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)
 export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
-
 
 export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
@@ -104,6 +120,7 @@ export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRe
 export const collections =
     [
     CreateUserWithMailModel,
+
     //CreateNewBlogModel,
     ]
     // [blogCollection,

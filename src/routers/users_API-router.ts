@@ -1,6 +1,5 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
-import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 import {usersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {TUsersDb} from "../types/types";
@@ -47,7 +46,7 @@ usersRouter.delete("/:id",
     basicAuth,
     async (req: Request, res: Response) => {
         const deleteUser: boolean =
-            await createUserService.deleteUserById(req.params.id)
+            await createUserService.deleteUserById(req.params._id)
         if (deleteUser) {
             res.sendStatus(204)
         } else {

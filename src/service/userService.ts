@@ -1,4 +1,4 @@
-import {TUsersDb, TUsersWithHashEmailDb} from "../types/types";
+import {TUsersDb, TUsersWithHashEmailDb,} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4, v4 as uuidv4} from 'uuid';
@@ -7,6 +7,7 @@ import {emailManager} from "../domain/emailManager";
 import {usersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
+import {Schema} from "mongoose";
 
 export const createUserService = {
 
@@ -49,6 +50,7 @@ export const createUserService = {
         const deviceId = v4()
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
+        if(!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             const refreshTokenMeta = {
@@ -59,7 +61,7 @@ export const createUserService = {
                 title,
             }
 
-            const accessToken = await jwtService.createAccessToken(deviceId)
+            const accessToken = await jwtService.createAccessToken(deviceId, user.id)
             const refreshToken = await jwtService.createRefreshToken(deviceId,
                 refreshTokenMeta.lastActiveDate,
                 refreshTokenMeta.userId)
@@ -82,7 +84,7 @@ export const createUserService = {
             await securityDevicesRepo.updateDateRefreshToken(payloadArray[0])
             const refreshTokenWithUpdateLastActiveDate = await securityDevicesRepo.findRefreshTokenMetaByDeviceId(payloadArray[0])
             if (refreshTokenWithUpdateLastActiveDate !== null) {
-                const newAccessToken = await jwtService.createAccessToken(payloadArray[0])
+                const newAccessToken = await jwtService.createAccessToken(payloadArray[0], payloadArray[2])
                 const newRefreshToken = await jwtService.createRefreshToken(payloadArray[0],
                     refreshTokenWithUpdateLastActiveDate.lastActiveDate,
                     payloadArray[2])
@@ -92,11 +94,8 @@ export const createUserService = {
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
-        const user = await usersRepoDb.findUserByCode(code)
-        if (user) {
-            return await usersRepoDb.changeIsConfirmed(user.id);
-        } else return null
-    },
+            return await usersRepoDb.changeIsConfirmed(code);
+     },
 
     async resendingEmailService(email: string): Promise<boolean | null> {
         const previouslyRegisteredUserWithMail = await usersRepoDb.findUserByEmail(email)
@@ -115,7 +114,7 @@ export const createUserService = {
         if (!refreshToken) return false;
         const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadRefreshToken) return false;
-        return await securityDevicesRepo.deleteDeviceById(payloadRefreshToken[0]);
+        return await securityDevicesRepo.deleteDeviceByDeviceId(payloadRefreshToken[0]);
     },
 
     async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
