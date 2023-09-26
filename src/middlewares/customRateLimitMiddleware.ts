@@ -1,8 +1,9 @@
 import {Request, Response, NextFunction} from "express";
 import {rateLimitRepo} from "../repositories/rateLimitRepo";
+import {TypeCustomRateLimit} from "../types/types";
 
 export const customRateLimitMiddleware = async (req:Request,res:Response,next: NextFunction) => {
-    const rateLimitsDocument = {
+    const rateLimitsDocument:TypeCustomRateLimit = {
         IP: req.ip,
         URL: req.originalUrl,
         date: new Date()

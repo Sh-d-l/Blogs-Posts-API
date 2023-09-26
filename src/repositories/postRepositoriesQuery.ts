@@ -1,5 +1,5 @@
 import {PostType} from "../types/types";
-import {commentCollection, CreatePostModel, postCollection} from "../mongoDB/db";
+import {CreateCommentByPostIDModel, CreatePostModel} from "../mongoDB/db";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
 import {CommentType} from "../types/types";
@@ -32,15 +32,15 @@ export const postsRepoQuery = {
                                sortDirection: SortDirection,
                                pageNumber: number,
                                pageSize: number): Promise<TypeGetCommentsByPostId | null> {
-        const commentsTotal: number = await commentCollection.countDocuments({postId})
+        const commentsTotal: number = await CreateCommentByPostIDModel.countDocuments({postId})
         const commentsSkip: number = (+pageNumber - 1) * +pageSize
         const pagesCount: number = Math.ceil(commentsTotal / +pageSize)
-        const getCommentsDB: CommentType[] = await commentCollection
+        const getCommentsDB: CommentType[] = await CreateCommentByPostIDModel
             .find({postId}, {projection: {_id: false, postId:false}})
             .sort({[sortBy]: sortDirection})
             .skip(commentsSkip)
             .limit(pageSize)
-            .toArray()
+            .lean()
         if(getCommentsDB.length > 0) {
             return {
                 pagesCount,

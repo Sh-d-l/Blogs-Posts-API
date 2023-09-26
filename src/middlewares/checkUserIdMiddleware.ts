@@ -9,7 +9,8 @@ export const checkUserIdMiddleware = async (req:Request, res:Response, next:Next
         res.sendStatus(404)
         return
     }
-    const userId = await jwtService.getUserIdByAccessToken(req.headers.authorization!.split(" ")[2])
+    const auth = req.headers.authorization
+    const userId = await jwtService.getUserIdByAccessToken(auth!.split(" ") [1])
     if (userId !== getCommentById.commentatorInfo.userId) {
         res.sendStatus(403)
         return

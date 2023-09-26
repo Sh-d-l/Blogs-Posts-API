@@ -1,5 +1,5 @@
 import request from "supertest";
-import {app} from "../../src";
+import mongoose from "mongoose";
 import {
     urlPosts,
     postTitle,
@@ -15,7 +15,7 @@ import {
     incorrectTitlePostLength,
     incorrectShortDescriptionPostLength,
     incorrectContentPostLength,
-    urlComments, loginOrEmail, password
+
 } from "../../test_constanse/blogs.constans";
 import {urlBlogs} from "../../test_constanse/blogs.constans";
 import {
@@ -25,11 +25,12 @@ import {
     passAuth
 } from "../../test_constanse/authUsers.constans";
 import {foundPostById} from "../../test_constanse/posts.constants";
-import {emailUser, loginUser, passUser, urlUser} from "../../test_constanse/user.constans";
-import {urlAuth} from "../../test_constanse/auth.constans";
+import {app} from "../../src/settings";
+import {mongoURI} from "../../src/mongoDB/db";
 
 describe('posts', () => {
     beforeAll(async () => {
+        await mongoose.connect(mongoURI)
         await request(app)
             .del("/testing/all-data")
             .expect(204)
@@ -39,7 +40,7 @@ describe('posts', () => {
     it("create blog, should return 201 and {}", async () => {
         await request(app)
             .post(urlBlogs)
-            .auth(loginAuth, passAuth)
+            .auth(auth.token, { type: 'bearer' })
             .send({
                 name: blogName,
                 description: blogDescription,

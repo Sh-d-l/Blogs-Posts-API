@@ -1,5 +1,5 @@
 import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/types";
-import {CreateNewBlogModel, CreatePostModel, postCollection} from "../mongoDB/db";
+import {CreateNewBlogModel, CreatePostModel} from "../mongoDB/db";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 export const blogsRepoQuery = {

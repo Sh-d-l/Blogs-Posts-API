@@ -1,5 +1,5 @@
 import request from "supertest";
-import {app} from "../src";
+import {app} from "../src/settings";
 import {urlPosts} from "./blogs.constans";
 
 export const foundPostById = async () => {

@@ -1,5 +1,8 @@
 import {CommentTypeWithPostId, PostType} from "../types/types";
-import {commentCollection, CreatePostModel} from "../mongoDB/db";
+import {
+    CreateCommentByPostIDModel,
+    CreatePostModel
+} from "../mongoDB/db";
 
 export const posts_repositories = {
     async getPost(): Promise<PostType[]> {
@@ -12,7 +15,7 @@ export const posts_repositories = {
         return await CreatePostModel.create({...newPost});
     },
     async createCommentByPostId(newCommentWithPostId:CommentTypeWithPostId) {
-         await commentCollection.insertOne({...newCommentWithPostId})
+         await CreateCommentByPostIDModel.create({...newCommentWithPostId})
     },
     async getPostID(id: string): Promise<PostType | null> {
         return CreatePostModel.findOne({id}, {projection: {_id: 0}});

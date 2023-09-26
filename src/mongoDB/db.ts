@@ -1,9 +1,7 @@
 import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
 import {
-    RevokedRToken,
-    TBlogDb,
-    TypeCustomRateLimit,
+    TBlogDb, TypeCustomRateLimit,
     TypeRefreshTokenMeta
 } from "../types/types";
 import {PostType} from "../types/types";
@@ -11,16 +9,13 @@ import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 import mongoose, {Schema, Types} from "mongoose"
 
-
-//   ?retryWrites=true&w=majority/
-
 dotenv.config()
 
 export const DB_NAME = "Blogs-Posts-API";
 
-const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${DB_NAME}`
+export const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${DB_NAME}`
 
-export const client = new MongoClient(mongoURI)
+//export const client = new MongoClient(mongoURI)
 
 export async function runDB() {
     if (mongoose.connection.readyState === 1) {
@@ -90,6 +85,7 @@ export const CreatePostSchema = new Schema<PostType>(
 
 export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId>(
     {
+        postId: {type:String, required: true},
         id: {type: String, required: true},
         content: {type: String, required: true, maxLength: 300, minLength: 20},
         commentatorInfo: {
@@ -99,35 +95,47 @@ export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId>(
         createdAt: {type: String, required: true},
     }
 )
+export const CreateRateLimitDocumentSchema = new Schema<TypeCustomRateLimit> (
+    {
+        IP: {type:String, required:true},
+        URL: {type:String, required:true},
+        date: {type:Date, required:true}
+})
 
 export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel', CreateUserWithMailSchema)
 export const RefreshTokenMetaModel = mongoose.model('RefreshTokenMetaModel', RefreshTokenMetaSchema)
 export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel', CreateNewBlogSchema)
 export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)
 export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
-
-//export const blogDbRepo = client.db(DB_NAME)
-export const postDbRepo = client.db(DB_NAME)
-export const commentDbRepo = client.db(DB_NAME)
-//export const usersDbRepo = client.db(DB_NAME)
-export const blackListRefreshTokenRepo = client.db(DB_NAME)
-export const rateLimitRepo = client.db(DB_NAME)
-export const refreshTokenMetaRepo = client.db(DB_NAME)
-
-export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
-export const postCollection = postDbRepo.collection<PostType>("Posts")
-//export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
-//export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
-export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
-export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
-export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
+export const CreateRateLimitDocumentModel = mongoose.model("CreateRateLimitDocumentModel", CreateRateLimitDocumentSchema)
 
 export const collections =
     [
         CreateUserWithMailModel,
-        //RefreshTokenMetaModel,
-        //CreateNewBlogModel
-       ]
+        // RefreshTokenMetaModel,
+        // CreateNewBlogModel,
+        // CreatePostModel,
+        // CreateCommentByPostIDModel
+    ]
+
+
+//export const blogDbRepo = client.db(DB_NAME)
+// export const postDbRepo = client.db(DB_NAME)
+// export const commentDbRepo = client.db(DB_NAME)
+//export const usersDbRepo = client.db(DB_NAME)
+// export const blackListRefreshTokenRepo = client.db(DB_NAME)
+// export const rateLimitRepo = client.db(DB_NAME)
+// export const refreshTokenMetaRepo = client.db(DB_NAME)
+
+// export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
+// export const postCollection = postDbRepo.collection<PostType>("Posts")
+//export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
+//export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
+// export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
+// export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
+// export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRefreshTokenMeta>("refreshTokenMeta")
+
+
 
 
 // export async function runDB() {

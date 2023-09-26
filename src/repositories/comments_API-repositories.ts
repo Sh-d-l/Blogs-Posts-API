@@ -1,17 +1,16 @@
-
 import {CommentType} from "../types/types";
-import {commentCollection} from "../mongoDB/db";
+import {CreateCommentByPostIDModel} from "../mongoDB/db";
 
 export const commentsRepo = {
     async getCommentById(id: string): Promise<CommentType | null> {
-        return commentCollection.findOne({id}, {projection: {_id: 0, postId:false}})
+        return CreateCommentByPostIDModel.findOne({id}, {projection: {_id: 0, postId:false}})
     },
     async commentUpdateRepo(id: string, content: string): Promise<boolean> {
-        const updateCommentDB = await commentCollection.updateOne({id}, {$set:{content}})
-        return !!updateCommentDB.matchedCount
+        const updateCommentDB = await CreateCommentByPostIDModel.updateOne({id}, {$set:{content}})
+        return !!updateCommentDB
     },
     async commentDeleteDB(id: string): Promise<boolean> {
-        const delCommentDB = await commentCollection.deleteOne({id})
-        return !!delCommentDB.deletedCount
+        const delCommentDB = await CreateCommentByPostIDModel.deleteOne({id})
+        return !!delCommentDB
     }
 }
