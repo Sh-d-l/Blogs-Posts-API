@@ -21,6 +21,7 @@ export const usersQueryRepo = {
             //.sort({field:pagination.sortDirection})    /*pagination.sortBy, pagination.sortDirection*/)
             .skip(pagination.skip)
             .limit(pagination.pageSize)
+            .lean()
             //.toArray()
         const resArrUsers: TypeGetUsersWithCount = {
             pagesCount,

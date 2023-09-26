@@ -1,13 +1,12 @@
 import {Request, Response, Router} from "express";
 import {PostType} from "../types/types";
 import {CommentType} from "../types/types";
-import {basicAuth} from "../auth/basic_auth"
 import {
     createCommentValidation,
     createPostValidation,
     updatePostValidation
 } from "../middlewares/validators/validations";
-//import {authMiddleware} from "../middlewares/authMiddleware";
+import {authMiddleware} from "../middlewares/authMiddleware";
 import {postService} from "../service/post_API-service";
 import {postsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
@@ -23,8 +22,10 @@ postRouter.get('/', async (req: Request, res: Response) => {
         Number(req.query.pageSize) || 10,)
     res.status(200).send(getPosts)
 })
+
 postRouter.post('/',
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     ...createPostValidation,
     async (req: Request, res: Response) => {
         const postPost: PostType | null = await postService.createPostService(
@@ -40,7 +41,7 @@ postRouter.post('/',
 /*-------------------------create comment by postId------------------------*/
 
 postRouter.post('/:postId/comments',
-    //authMiddleware,
+    authMiddleware,
     ...createCommentValidation,
     async (req: Request, res: Response) => {
         const getPostId: PostType | null = await postService
@@ -82,7 +83,8 @@ postRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 postRouter.put('/:id',
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     ...updatePostValidation,
     async (req: Request, res: Response) => {
         const putPost: boolean = await postService.updatePostService(
@@ -98,7 +100,8 @@ postRouter.put('/:id',
         }
     })
 postRouter.delete('/:id',
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     async (req, res) => {
         const delPostID: boolean = await postService.deleteIDService(req.params.id)
         if (delPostID) {

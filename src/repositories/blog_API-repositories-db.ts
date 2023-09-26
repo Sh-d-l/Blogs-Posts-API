@@ -1,25 +1,25 @@
-import {blogCollection} from "../mongoDB/db";
+import {CreateNewBlogModel} from "../mongoDB/db";
 import {TBlogDb} from "../types/types";
 
 export const blogs_repositories = {
     async getBlogs(): Promise<TBlogDb[]> {
-        return blogCollection.find({}, {projection: {_id: 0}}).toArray();
+        return CreateNewBlogModel.find({}, {projection: {_id: 0}}).lean();
     },
     async createBlog(newBlog: TBlogDb) {
-        await blogCollection.insertOne({...newBlog});
+        await CreateNewBlogModel.create({...newBlog});
     },
     async getBlogID(id: string): Promise<TBlogDb | null> {
-        return await blogCollection.findOne({id: id}, {projection: {_id: false}});
+        return CreateNewBlogModel.findOne({id: id}, {projection: {_id: false}});
     },
     async updateBlog(id: string, name: string, description: string, websiteUrl: string,): Promise<boolean> {
-        const resultUpdate = await blogCollection.updateOne({id},
-            {$set: {name, description, websiteUrl}}
+        const resultUpdate = await CreateNewBlogModel.updateOne({id},
+             {name, description, websiteUrl}
         )
-        return !!resultUpdate.matchedCount;
+        return !!resultUpdate;
     },
     async deleteID(id: string): Promise<boolean> {
-        const found_blog_by_ID = await blogCollection.deleteOne({id});
-        return !!found_blog_by_ID.deletedCount
+        const found_blog_by_ID = await CreateNewBlogModel.deleteOne({id});
+        return !!found_blog_by_ID
     },
 
 }

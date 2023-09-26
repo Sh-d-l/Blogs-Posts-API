@@ -1,6 +1,5 @@
-import {RefreshTokenMetaModel, RefreshTokenMetaSchema} from "../mongoDB/db";
+import {RefreshTokenMetaModel} from "../mongoDB/db";
 import {TypeRefreshTokenMeta} from "../types/types";
-import {Schema} from "mongoose";
 
 export const securityDevicesRepo = {
     async addRefreshTokenMeta(object: TypeRefreshTokenMeta) {
@@ -12,15 +11,15 @@ export const securityDevicesRepo = {
     async findRefreshTokenMetaByDeviceId(deviceId:string):Promise<TypeRefreshTokenMeta | null> {
         return RefreshTokenMetaModel.findOne({deviceId},{projection: {_id: 0}})
     },
-    async getAllRefreshTokenMeta(_id:Schema.Types.ObjectId):Promise<TypeRefreshTokenMeta[]> {
-        return RefreshTokenMetaModel.find({_id}, {projection: {_id: 0, userId: 0}});
+    async getAllRefreshTokenMeta(userId:string):Promise<TypeRefreshTokenMeta[]> {
+        return RefreshTokenMetaModel.find({userId}, {projection: {_id: 0, userId: 0}}).lean();
     },
-    async deleteAllDevicesExcludeCurrent(_id:Schema.Types.ObjectId):Promise<boolean> {
-        const result =  await RefreshTokenMetaModel.deleteMany({deviceId: {$nin:[_id]}})
+    async deleteAllDevicesExcludeCurrent(deviceId:string):Promise<boolean> {
+        const result =  await RefreshTokenMetaModel.deleteMany({deviceId: {$nin:[deviceId]}})
         return !! result
     },
     async deleteDeviceByDeviceId(deviceId:string):Promise<boolean> {
-        const result = await RefreshTokenMetaModel.findOne({deviceId})
+        const result = await RefreshTokenMetaModel.deleteOne({deviceId})
         return !! result
     }
 }

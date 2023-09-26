@@ -51,6 +51,7 @@ export const postService = {
     async getPostIDService(id: string): Promise<PostType | null> {
         return await posts_repositories.getPostID(id);
     },
+
     async updatePostService(id: string,
                      title: string,
                      shortDescription: string,
@@ -58,6 +59,7 @@ export const postService = {
                      blogId: string,): Promise<boolean> {
         return await posts_repositories.updatePost(id,title,shortDescription,content,blogId)
     },
+
     async deleteIDService(id: string): Promise<boolean> {
         return await posts_repositories.deleteID(id)
     },

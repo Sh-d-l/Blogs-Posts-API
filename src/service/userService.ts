@@ -7,7 +7,6 @@ import {emailManager} from "../domain/emailManager";
 import {usersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
-import {Schema} from "mongoose";
 
 export const createUserService = {
 

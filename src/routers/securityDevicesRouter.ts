@@ -5,7 +5,7 @@ export const securityDevicesRouter = Router({})
 
 securityDevicesRouter.get("/devices",
     async (req:Request, res:Response) => {
-    const arrayRefreshTokenMeta = await securityDevicesService.getAllDevices(req.cookies.refreshToken)
+    const arrayRefreshTokenMeta = await securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
         if(arrayRefreshTokenMeta) {
             res.status(200).send(arrayRefreshTokenMeta)
         }

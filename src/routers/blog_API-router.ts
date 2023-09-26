@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {TBlogDb} from "../types/types";
-import {basicAuth} from "../auth/basic_auth"
+
 import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/validations";
@@ -10,6 +10,7 @@ import {blogsRepoQuery} from "../repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 export const blogRouter = Router({});
 
@@ -26,9 +27,10 @@ blogRouter.get('/', async (req: Request, res: Response) => {
 })
 
 blogRouter.post("/",
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     ...createBlogValidation,
-    async (req, res) => {
+    async (req:Request, res:Response) => {
         const postBlog: TBlogDb = await blogsService
             .createBlogService(req.body.name,
                 req.body.description,
@@ -37,9 +39,10 @@ blogRouter.post("/",
     })
 
 blogRouter.post("/:blogId/posts",
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     ...createPostByBlogIDValidation,
-    async (req, res) => {
+    async (req:Request, res:Response) => {
         const addPostByBlogId: PostType | null = await blogsService
             .createPostByBlogId(req.params.blogId, req.body.title,
                 req.body.shortDescription,
@@ -78,7 +81,8 @@ blogRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
 })
 
 blogRouter.put('/:id',
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     ...updateBlogValidation,
     async (req:Request, res:Response) => {
         const putBlog: boolean = await blogsService.updateBlogService(
@@ -94,7 +98,8 @@ blogRouter.put('/:id',
         }
     })
 blogRouter.delete('/:id',
-    basicAuth,
+    authMiddleware,
+    //basicAuth,
     async (req, res) => {
         const delBlogID: boolean = await blogsService.deleteIDService(req.params.id)
         if (delBlogID) {

@@ -2,7 +2,6 @@ import {TUsersWithHashEmailDb} from "../types/types";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {CreateUserWithMailModel} from "../mongoDB/db";
-import {ObjectId, Schema} from "mongoose";
 
 export const usersRepoDb = {
 
@@ -38,7 +37,7 @@ export const usersRepoDb = {
         return !!updateSuccess
     },
     async findUserByUserId(userId: string): Promise<TUsersWithHashEmailDb | null> {
-        return CreateUserWithMailModel.findById({userId});
+        return CreateUserWithMailModel.findOne({id:userId});
     },
     async deleteUserById(id: string): Promise<boolean> {
         const deleteResult = await CreateUserWithMailModel.deleteOne({id})

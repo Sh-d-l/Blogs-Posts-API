@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'
-import { MongoClient} from "mongodb";
+import {MongoClient} from "mongodb";
 import {
     RevokedRToken,
     TBlogDb,
@@ -35,73 +35,78 @@ export async function runDB() {
         await mongoose.disconnect()
     }
 }
+
 console.log(mongoURI + DB_NAME)
 
 
-export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb> (
+export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb>(
     {
-        id: {type: String, required:true},
-        login: {type:String, required: true,maxLength: 10, minLength:3, match: /^[a-zA-Z0-9_-]*$/},
-        email: {type:String, required: true, match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/},
-        createdAt: {type:String, required:true},
-        userHash: {type:String, required:true},
+        id: {type: String, required: true},
+        login: {type: String, required: true, maxLength: 10, minLength: 3, match: /^[a-zA-Z0-9_-]*$/},
+        email: {type: String, required: true, match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/},
+        createdAt: {type: String, required: true},
+        userHash: {type: String, required: true},
         emailConfirmation: {
-            confirmationCode:{type:String, required:true},
-            expirationTime: {type:Date, required:true},
-            isConfirmed: {type:Boolean, required:true}
+            confirmationCode: {type: String, required: true},
+            expirationTime: {type: Date, required: true},
+            isConfirmed: {type: Boolean, required: true}
         }
     }
 )
-export const RefreshTokenMetaSchema = new Schema<TypeRefreshTokenMeta> ({
-        userId: {type:String, required: true},
-        deviceId: {type: String, required: true},
-        ip: {type: String, required: true},
-        lastActiveDate: {type: Date, required: true},
-        title: {type: String}
+export const RefreshTokenMetaSchema = new Schema<TypeRefreshTokenMeta>({
+    userId: {type: String, required: true},
+    deviceId: {type: String, required: true},
+    ip: {type: String, required: true},
+    lastActiveDate: {type: Date, required: true},
+    title: {type: String}
 })
 
-export const CreateNewBlogSchema = new Schema <TBlogDb>(
+export const CreateNewBlogSchema = new Schema<TBlogDb>(
     {
-        id:{type:String, required:true},
-        name: {type:String,required:true, maxLength: 15},
-        description: {type:String, required:true, maxLength:500},
-        websiteUrl:{type:String, required:true, maxLength: 100,}/*match: /^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$}*/,
-        createdAt: {type:String, required:true},
-        isMembership: {type:Boolean, required:true},
+        id: {type: String, required: true},
+        name: {type: String, required: true, maxLength: 15},
+        description: {type: String, required: true, maxLength: 500},
+        websiteUrl: {
+            type: String,
+            required: true,
+            maxLength: 100,
+        }/*match: /^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$}*/,
+        createdAt: {type: String, required: true},
+        isMembership: {type: Boolean, required: true},
     }
 )
 
-export const CreatePostSchema = new Schema<PostType> (
+export const CreatePostSchema = new Schema<PostType>(
     {
-        id:{type:String, required:true},
-        title: {type:String, required:true, maxLength: 30},
-        shortDescription: {type:String, required:true, maxLength: 100},
-        content: {type:String, required:true, maxLength: 1000},
-        blogId: {type:String, required:true},
-        blogName: {type:String,required:true, maxLength: 15},
-        createdAt: {type:String, required:true},
+        id: {type: String, required: true},
+        title: {type: String, required: true, maxLength: 30},
+        shortDescription: {type: String, required: true, maxLength: 100},
+        content: {type: String, required: true, maxLength: 1000},
+        blogId: {type: String, required: true},
+        blogName: {type: String, required: true, maxLength: 15},
+        createdAt: {type: String, required: true},
     }
 )
 
-export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId> (
+export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId>(
     {
-        id:{type:String, required:true},
-        content: {type:String, required:true, maxLength: 300, minLength: 20},
+        id: {type: String, required: true},
+        content: {type: String, required: true, maxLength: 300, minLength: 20},
         commentatorInfo: {
-            userId: {type:String, required:true},
-            userLogin: {type:String, required:true},
+            userId: {type: String, required: true},
+            userLogin: {type: String, required: true},
         },
-        createdAt: {type:String, required:true},
+        createdAt: {type: String, required: true},
     }
 )
 
-export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel',CreateUserWithMailSchema)
+export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel', CreateUserWithMailSchema)
 export const RefreshTokenMetaModel = mongoose.model('RefreshTokenMetaModel', RefreshTokenMetaSchema)
-export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel',CreateNewBlogSchema )
+export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel', CreateNewBlogSchema)
 export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)
 export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
 
-export const blogDbRepo = client.db(DB_NAME)
+//export const blogDbRepo = client.db(DB_NAME)
 export const postDbRepo = client.db(DB_NAME)
 export const commentDbRepo = client.db(DB_NAME)
 //export const usersDbRepo = client.db(DB_NAME)
@@ -111,7 +116,7 @@ export const refreshTokenMetaRepo = client.db(DB_NAME)
 
 export const commentCollection = commentDbRepo.collection<CommentTypeWithPostId>("Comments")
 export const postCollection = postDbRepo.collection<PostType>("Posts")
-export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
+//export const blogCollection = blogDbRepo.collection<TBlogDb>("Blogs")
 //export const usersCollection = usersDbRepo.collection<TUsersWithHashEmailDb>("UsersWithConfirmMail")
 export const blackListRefreshTokenCollection = blackListRefreshTokenRepo.collection<RevokedRToken>("blacklistRefreshToken")
 export const customRateLimitCollection = rateLimitRepo.collection<TypeCustomRateLimit>("customRateLimit")
@@ -119,17 +124,10 @@ export const refreshTokenMetaCollection = refreshTokenMetaRepo.collection<TypeRe
 
 export const collections =
     [
-    CreateUserWithMailModel,
-
-    //CreateNewBlogModel,
-    ]
-    // [blogCollection,
-    // postCollection,
-    // //usersCollection,
-    // commentCollection,
-    // blackListRefreshTokenCollection,
-    // refreshTokenMetaCollection,
-    // customRateLimitCollection]
+        CreateUserWithMailModel,
+        //RefreshTokenMetaModel,
+        //CreateNewBlogModel
+       ]
 
 
 // export async function runDB() {
