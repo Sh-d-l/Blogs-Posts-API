@@ -1,7 +1,10 @@
-import {TUsersWithHashEmailDb} from "../types/types";
+import {TUsersWithHashEmailDb, TypeRecoveryCode} from "../types/types";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {CreateUserWithMailModel} from "../mongoDB/db";
+import {
+    CreateDocumentWithRecoveryCodeModel,
+    CreateUserWithMailModel
+} from "../mongoDB/db";
 
 export const usersRepoDb = {
 
@@ -24,6 +27,18 @@ export const usersRepoDb = {
     },
     async findUserByCode(code: string): Promise<TUsersWithHashEmailDb | null> {
         return CreateUserWithMailModel.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+    },
+    async createDocumentWithRecoveryCode(recoveryCode:TypeRecoveryCode) {
+        return CreateDocumentWithRecoveryCodeModel.create(recoveryCode)
+    },
+    async deleteDocumentWithRecoveryCode(recoveryCode: string) {
+        return CreateDocumentWithRecoveryCodeModel.deleteOne({recoveryCode})
+    },
+    async findRecoveryCodeObjectByRecoveryCode(recoveryCode: string):Promise<TypeRecoveryCode | null> {
+        return CreateDocumentWithRecoveryCodeModel.findOne({recoveryCode})
+    },
+    async updatePasswordInTheUserObject(userId:string,hash:string) {
+        return CreateUserWithMailModel.updateOne({id:userId},{userHash:hash})
     },
     async changeIsConfirmed(code:string):Promise<boolean> {
         const isConfirmed =  await CreateUserWithMailModel.updateOne({"emailConfirmation.confirmationCode":code}, {"emailConfirmation.isConfirmed": true})

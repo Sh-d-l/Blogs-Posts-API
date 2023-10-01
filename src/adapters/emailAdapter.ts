@@ -1,8 +1,8 @@
 import nodemailer from "nodemailer"
-import {TUsersWithHashEmailDb} from "../types/types";
+import {TUsersWithHashEmailDb, TypeRecoveryCode} from "../types/types";
 
 export const emailAdapter = {
-    async transportEmailAdapterRegistration(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {
+    async transportEmailAdapter(email: string, user: TUsersWithHashEmailDb): Promise<boolean> {
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 465,
@@ -15,15 +15,18 @@ export const emailAdapter = {
         let info = await transporter.sendMail(
             {
                 from: "incubatorBack@gmail.com",
-                to: mail,
+                to: email,
                 subject: "Send Email with confirmation code",
                 text: "Send Email with confirmation code",
-                html: '<p>You requested for email verification, kindly use this <a href="https://google.com/confirm-email?code=' + user.emailConfirmation.confirmationCode + '">link</a> to verify your email address</p>'
+                html: '<p>You requested for email verification, kindly use this' +
+                    ' <a href="https://google.com/confirm-email?code=' + user.emailConfirmation.confirmationCode
+                    + '">' +   'link</a> to verify your email address</p>'
             }
         );
         return !!info;
     },
-    async transportEmailAdapterResending(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {
+
+    async transportEmailAdapterPasswordRecovery(email:string,recoveryCode:TypeRecoveryCode): Promise<boolean> {
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 465,
@@ -36,10 +39,12 @@ export const emailAdapter = {
         let info = await transporter.sendMail(
             {
                 from: "incubatorBack@gmail.com",
-                to: mail,
-                subject: "Resending Email with confirmation code",
-                text: "Resending Email with confirmation code",
-                html: '<p>You requested for email verification, kindly use this <a href="https://google.com/confirm-email?code=' + user.emailConfirmation.confirmationCode + '">link</a> to verify your email address</p>'
+                to: email,
+                subject: "Send Email with recoveryCode",
+                text: "Send Email with recoveryCode",
+                html: '<p>To finish password recovery please follow the link below:' +
+        '<a href="https://somesite.com/password-recovery?recoveryCode=' + recoveryCode.recoveryCode +'" >'
+                    + 'link</a>recoveryCode</p>'
             }
         );
         return !!info;

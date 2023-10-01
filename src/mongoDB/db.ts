@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
 import {
-    TBlogDb, TypeCustomRateLimit,
+    TBlogDb, TypeCustomRateLimit, TypeRecoveryCode,
     TypeRefreshTokenMeta
 } from "../types/types";
 import {PostType} from "../types/types";
@@ -102,7 +102,17 @@ export const CreateRateLimitDocumentSchema = new Schema<TypeCustomRateLimit> (
         date: {type:Date, required:true}
 })
 
+export const CreateDocumentWithRecoveryCodeSchema = new Schema<TypeRecoveryCode>(
+
+    {
+        userId: {type: String, required: true},
+        recoveryCode: {type: String, required: true},
+        expirationTime: {type: Date, required: true},
+    }
+)
+
 export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel', CreateUserWithMailSchema)
+export const CreateDocumentWithRecoveryCodeModel = mongoose.model("CreateDocumentWithRecoveryCodeModel", CreateDocumentWithRecoveryCodeSchema)
 export const RefreshTokenMetaModel = mongoose.model('RefreshTokenMetaModel', RefreshTokenMetaSchema)
 export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel', CreateNewBlogSchema)
 export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)

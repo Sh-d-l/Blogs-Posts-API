@@ -71,6 +71,46 @@ export const createUserService = {
         }
     },
 
+    async passwordRecoveryService (email:string): Promise<boolean | null> {
+        const user = await  usersRepoDb.findUserByEmail(email)
+        let recoveryCode;
+        if(user) {
+            recoveryCode = {
+                userId: user.id,
+                recoveryCode:uuidv4(),
+                expirationTime: add(new Date(), {
+                    hours: 0,
+                    minutes: 3,
+                })
+            }
+            try {
+                await emailManager.transportEmailManagerPasswordRecovery(email,recoveryCode)
+                await usersRepoDb.createDocumentWithRecoveryCode(recoveryCode)
+                return true
+            }
+            catch (error) {
+                console.log(error, "Email not sent")
+                await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode.recoveryCode)
+                return null
+            }
+
+        }
+        else return true
+
+    },
+
+    async changePasswordOfUser (newPassword:string, recoveryCode:string): Promise<boolean> {
+        const recoveryCodeObject = await  usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
+        if(recoveryCodeObject && recoveryCodeObject.expirationTime > new Date()) {
+            const newHash = await bcrypt.hash(newPassword, 10)
+            await usersRepoDb.updatePasswordInTheUserObject(recoveryCodeObject.userId,newHash)
+            await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode)
+            return true
+        }
+        else return false
+
+    },
+
     async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
         const payloadArray = await jwtService.getPayloadRefreshToken(refreshToken)
@@ -104,7 +144,7 @@ export const createUserService = {
         }
         const updatedUser = await usersRepoDb.findUserByEmail(email)
         if (updatedUser) {
-            await emailManager.transportEmailResendingManager(email, updatedUser)
+            await emailManager.transportEmailManager(email, updatedUser)
             return true
         } else return null
     },

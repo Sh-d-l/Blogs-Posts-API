@@ -66,13 +66,7 @@ const registeredUserLoginValidation = body("login").custom(async (login) => {
     }
     return true
 })
-// const correctConfirmationCodeValidation = body("code").custom(async (code) => {
-//     const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
-//     if(!user) {
-//         throw new Error("User not found")
-//     }
-//     return true
-// })
+
 const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
     const user:TUsersWithHashEmailDb | null  = await usersRepoDb.findUserByCode(code)
     if(user && user.emailConfirmation.isConfirmed) {
@@ -155,6 +149,22 @@ const confirmationCodeValidation = body ("code")
     .isString()
     .withMessage("Not string")
 
+const newPasswordValidation = body("newPassword")
+    .exists()
+    .withMessage("Not exists")
+    .trim()
+    .isString()
+    .withMessage("Not string")
+    .isLength({min: 6, max: 20})
+    .withMessage("less 6 or more 20")
+
+const recoveryCodeValidation = body("recoveryCode")
+    .exists()
+    .withMessage("Not exists")
+    .trim()
+    .isString()
+    .withMessage("Not string")
+
 export const createCommentValidation = [
     commentValidation,
     inputValidator
@@ -219,6 +229,16 @@ export const createNewUserSuperAdminValidation = [
     loginValidation,
     passwordValidation,
     emailValidation,
+    inputValidator
+]
+export const mailValidation =[
+    emailValidation,
+    inputValidator
+]
+
+export const newPasswordValidationArray = [
+    newPasswordValidation,
+    recoveryCodeValidation,
     inputValidator
 ]
 

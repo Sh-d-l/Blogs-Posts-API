@@ -2,8 +2,8 @@ import {Request, Response, Router} from "express";
 import {TUsersDb} from "../types/types";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {
-    confirmCodeValidation,
-     resendingEmailValidation,
+    confirmCodeValidation, createNewUserValidation, mailValidation, newPasswordValidationArray,
+    resendingEmailValidation,
 } from "../middlewares/validators/validations";
 import {createUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
@@ -23,6 +23,26 @@ authRouter.post("/login",
         }
     })
 
+authRouter.post("/password-recovery",
+    customRateLimitMiddleware,
+    ...mailValidation,
+    async (req: Request, res: Response) => {
+        const passwordRecoveryBoolean = await createUserService.passwordRecoveryService(req.body.email)
+        if (passwordRecoveryBoolean) {
+            res.sendStatus(204)
+            return
+        }
+    })
+
+authRouter.post("/new-password",
+    customRateLimitMiddleware,
+    ...newPasswordValidationArray,
+    async (req:Request, res:Response) => {
+    const passwordChanged = await  createUserService.changePasswordOfUser(req.body.newPassword, req.body.recoveryCode)
+        if(passwordChanged)  res.sendStatus(204)
+        else res.sendStatus(400)
+    }    )
+
 authRouter.post("/refresh-token",
     async (req: Request, res: Response) => {
         const tokensArray = await createUserService.refreshingTokensService(req.cookies.refreshToken)
@@ -37,7 +57,7 @@ authRouter.post("/refresh-token",
 
 authRouter.post("/registration",
     customRateLimitMiddleware,
-    //...createNewUserValidation,
+    ...createNewUserValidation,
     async (req: Request, res: Response) => {
         const userRegWithMail: TUsersDb | null = await createUserService
             .createUserWithEmailService(req.body.login,

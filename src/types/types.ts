@@ -110,3 +110,9 @@ export type TypeRefreshTokenMeta = {
     title:string | undefined,
     }
 
+export type TypeRecoveryCode = {
+    userId:string,
+    recoveryCode:string,
+    expirationTime:Date,
+}
+

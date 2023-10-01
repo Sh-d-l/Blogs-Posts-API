@@ -1,11 +1,11 @@
 import {emailAdapter} from "../adapters/emailAdapter";
-import {TUsersWithHashEmailDb} from "../types/types";
+import {TUsersWithHashEmailDb, TypeRecoveryCode} from "../types/types";
 
 export const emailManager = {
-    async transportEmailManager(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {
-        return await emailAdapter.transportEmailAdapterRegistration(mail, user)
+    async transportEmailManager(email: string, user: TUsersWithHashEmailDb): Promise<boolean> {
+        return await emailAdapter.transportEmailAdapter(email, user)
     },
-    async transportEmailResendingManager(mail: string, user: TUsersWithHashEmailDb): Promise<boolean> {
-        return await emailAdapter.transportEmailAdapterResending(mail, user)
-    }
+    async transportEmailManagerPasswordRecovery(email: string, recoveryCode:TypeRecoveryCode): Promise<boolean> {
+        return await emailAdapter.transportEmailAdapterPasswordRecovery(email, recoveryCode)
+    },
 }
