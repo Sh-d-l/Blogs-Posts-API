@@ -121,7 +121,7 @@ export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchem
 export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
 export const CreateRateLimitDocumentModel = mongoose.model("CreateRateLimitDocumentModel", CreateRateLimitDocumentSchema)
 
-export const collections =
+export const collections: any[] =
     [
         CreateUserWithMailModel,
         CreateDocumentWithRecoveryCodeModel,
@@ -132,14 +132,7 @@ export const collections =
         RefreshTokenMetaModel,
     ]
 
-app.delete("/testing/all-data", async (req: Request, res: Response) => {
 
-    const promises = collections.map(c => c.deleteMany())
-
-    return Promise.all(promises)
-
-    res.sendStatus(204);
-})
 
 //export const blogDbRepo = client.db(DB_NAME)
 // export const postDbRepo = client.db(DB_NAME)
