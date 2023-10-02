@@ -8,6 +8,8 @@ import {PostType} from "../types/types";
 import {TUsersWithHashEmailDb} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 import mongoose, {Schema, Types} from "mongoose"
+import {Request, Response} from "express";
+import {app} from "../settings";
 
 dotenv.config()
 
@@ -122,12 +124,22 @@ export const CreateRateLimitDocumentModel = mongoose.model("CreateRateLimitDocum
 export const collections =
     [
         CreateUserWithMailModel,
-        // RefreshTokenMetaModel,
-        // CreateNewBlogModel,
-        // CreatePostModel,
-        // CreateCommentByPostIDModel
+        CreateDocumentWithRecoveryCodeModel,
+        CreateNewBlogModel,
+        CreatePostModel,
+        CreateCommentByPostIDModel,
+        CreateRateLimitDocumentModel,
+        RefreshTokenMetaModel,
     ]
 
+app.delete("/testing/all-data", async (req: Request, res: Response) => {
+
+    const promises = collections.map(c => c.deleteMany())
+
+    return Promise.all(promises)
+
+    res.sendStatus(204);
+})
 
 //export const blogDbRepo = client.db(DB_NAME)
 // export const postDbRepo = client.db(DB_NAME)
