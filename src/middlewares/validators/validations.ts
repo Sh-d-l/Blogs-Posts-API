@@ -127,9 +127,9 @@ const passwordValidation = body("password")
 const emailValidation = body("email")
     .exists()
     .withMessage("Not exists")
-    .trim()
     .isString()
     .withMessage("Not string")
+    .trim()
     .matches(emailPattern)
     .withMessage("Does not match pattern email")
 
@@ -159,11 +159,12 @@ const newPasswordValidation = body("newPassword")
     .withMessage("less 6 or more 20")
 
 const recoveryCodeValidation = body("recoveryCode")
+    .isString()
+    .withMessage("Not string")
     .exists()
     .withMessage("Not exists")
     .trim()
-    .isString()
-    .withMessage("Not string")
+
 
 export const createCommentValidation = [
     commentValidation,
@@ -219,9 +220,6 @@ export const confirmCodeValidation = [
     inputValidator
 ]
 export const resendingEmailValidation = [
-    resendingMailValidation,
-    registeredUserIsConfirmedResendingMailValidation,
-    expirationTimeResendingEmailValidation,
     emailValidation,
     inputValidator
 ]

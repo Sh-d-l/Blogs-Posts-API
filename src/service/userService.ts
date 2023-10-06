@@ -49,7 +49,7 @@ export const createUserService = {
         const deviceId = v4()
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
-        if(!user.emailConfirmation.isConfirmed) return null
+        if (!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             const refreshTokenMeta = {
@@ -71,43 +71,40 @@ export const createUserService = {
         }
     },
 
-    async passwordRecoveryService (email:string): Promise<boolean | null> {
-        const user = await  usersRepoDb.findUserByEmail(email)
+    async passwordRecoveryService(email: string): Promise<boolean | null> {
+        const user = await usersRepoDb.findUserByEmail(email)
         let recoveryCode;
-        if(user) {
+        if (user) {
             recoveryCode = {
                 userId: user.id,
-                recoveryCode:uuidv4(),
+                recoveryCode: uuidv4(),
                 expirationTime: add(new Date(), {
                     hours: 0,
                     minutes: 3,
                 })
             }
             try {
-                await emailManager.transportEmailManagerPasswordRecovery(email,recoveryCode)
+                await emailManager.transportEmailManagerPasswordRecovery(email, recoveryCode)
                 await usersRepoDb.createDocumentWithRecoveryCode(recoveryCode)
                 return true
-            }
-            catch (error) {
+            } catch (error) {
                 console.log(error, "Email not sent")
                 await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode.recoveryCode)
                 return null
             }
 
-        }
-        else return true
+        } else return true
 
     },
 
-    async changePasswordOfUser (newPassword:string, recoveryCode:string): Promise<boolean> {
-        const recoveryCodeObject = await  usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
-        if(recoveryCodeObject && recoveryCodeObject.expirationTime > new Date()) {
+    async changePasswordOfUser(newPassword: string, recoveryCode: string): Promise<boolean> {
+        const recoveryCodeObject = await usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
+        if (recoveryCodeObject && recoveryCodeObject.expirationTime > new Date()) {
             const newHash = await bcrypt.hash(newPassword, 10)
-            await usersRepoDb.updatePasswordInTheUserObject(recoveryCodeObject.userId,newHash)
+            await usersRepoDb.updatePasswordInTheUserObject(recoveryCodeObject.userId, newHash)
             await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode)
             return true
-        }
-        else return false
+        } else return false
 
     },
 
@@ -133,16 +130,18 @@ export const createUserService = {
     },
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
-            return await usersRepoDb.changeIsConfirmed(code);
-     },
+        return await usersRepoDb.changeIsConfirmed(code);
+    },
 
     async resendingEmailService(email: string): Promise<boolean | null> {
         const previouslyRegisteredUserWithMail = await usersRepoDb.findUserByEmail(email)
+
         if (previouslyRegisteredUserWithMail && !previouslyRegisteredUserWithMail.emailConfirmation.isConfirmed
             && previouslyRegisteredUserWithMail.emailConfirmation.expirationTime > new Date()) {
             await usersRepoDb.changeExpirationTimeConfirmationCode(email)
         }
         const updatedUser = await usersRepoDb.findUserByEmail(email)
+
         if (updatedUser) {
             await emailManager.transportEmailManager(email, updatedUser)
             return true
@@ -198,7 +197,6 @@ export const createUserService = {
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)
     },
-
 
 
 }
