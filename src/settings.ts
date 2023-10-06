@@ -20,11 +20,3 @@ app.use("/comments", commentsRouter)
 app.use("/security", securityDevicesRouter)
 
 
-app.delete("/testing/all-data", async (req: Request, res: Response) => {
-
-    const promises = collections.map(c => c.deleteMany())
-
-    await Promise.all(promises)
-
-    res.sendStatus(204);
-})
