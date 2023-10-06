@@ -27,7 +27,7 @@ blogRouter.get('/', async (req: Request, res: Response) => {
 })
 
 blogRouter.post("/",
-    //authMiddleware,
+    authMiddleware,
     //basicAuth,
     ...createBlogValidation,
     async (req:Request, res:Response) => {
