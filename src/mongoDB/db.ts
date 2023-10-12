@@ -20,10 +20,10 @@ export const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${DB_N
 //export const client = new MongoClient(mongoURI)
 
 export async function runDB() {
-    if (mongoose.connection.readyState === 1) {
-        console.log("already connected");
-        return;
-    }
+    // if (mongoose.connection.readyState === 1) {
+    //     console.log("already connected");
+    //     return;
+    // }
     try {
         await mongoose.connect(mongoURI + DB_NAME)
         console.log('it is ok')
