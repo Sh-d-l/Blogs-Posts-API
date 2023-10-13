@@ -103,6 +103,13 @@ const expirationTimeResendingEmailValidation = body("email").custom(async (email
     }
     return true
 })
+const recoveryCodeForNewPasswordValidation = body("recoveryCode").custom(async (recoveryCode) => {
+    const recoveryCodeObject = await usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
+    if(!recoveryCodeObject) {
+        throw new Error("incorrect recoveryCode")
+    }
+    return true
+})
 
 const loginValidation = body("login")
     .exists()
@@ -158,7 +165,7 @@ const newPasswordValidation = body("newPassword")
     .isLength({min: 6, max: 20})
     .withMessage("less 6 or more 20")
 
-const recoveryCodeValidation = body("recoveryCode")
+const recoveryCodeTypeValidation = body("recoveryCode")
     .exists()
     .withMessage("Not exists")
     .isString()
@@ -236,7 +243,8 @@ export const mailValidation =[
 
 export const newPasswordValidationArray = [
     newPasswordValidation,
-   // recoveryCodeValidation,
+    recoveryCodeTypeValidation,
+    recoveryCodeForNewPasswordValidation,
     inputValidator
 ]
 

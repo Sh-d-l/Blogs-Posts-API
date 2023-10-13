@@ -99,7 +99,8 @@ export const createUserService = {
 
     async changePasswordOfUser(newPassword: string, recoveryCode: string): Promise<boolean> {
         const recoveryCodeObject = await usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
-        if (recoveryCodeObject && recoveryCodeObject.expirationTime > new Date()) {
+         if (!recoveryCodeObject) return false
+        if (recoveryCodeObject.expirationTime > new Date()) {
             const newHash = await bcrypt.hash(newPassword, 10)
             await usersRepoDb.updatePasswordInTheUserObject(recoveryCodeObject.userId, newHash)
             await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode)
