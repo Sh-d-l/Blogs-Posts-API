@@ -64,6 +64,7 @@ authRouter.post("/registration",
                 req.body.password,
                 req.body.email)
         if (userRegWithMail) {
+
             res.sendStatus(204)
             return
         } else {

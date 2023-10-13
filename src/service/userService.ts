@@ -73,9 +73,9 @@ export const createUserService = {
 
     async passwordRecoveryService(email: string): Promise<boolean | null> {
         const user = await usersRepoDb.findUserByEmail(email)
-        let recoveryCode;
+        let documentWithRecoveryCode;
         if (user) {
-            recoveryCode = {
+            documentWithRecoveryCode = {
                 userId: user.id,
                 recoveryCode: uuidv4(),
                 expirationTime: add(new Date(), {
@@ -84,12 +84,12 @@ export const createUserService = {
                 })
             }
             try {
-                await emailManager.transportEmailManagerPasswordRecovery(email, recoveryCode)
-                await usersRepoDb.createDocumentWithRecoveryCode(recoveryCode)
+                await emailManager.transportEmailManagerPasswordRecovery(email, documentWithRecoveryCode)
+                await usersRepoDb.createDocumentWithRecoveryCode(documentWithRecoveryCode)
                 return true
             } catch (error) {
                 console.log(error, "Email not sent")
-                await usersRepoDb.deleteDocumentWithRecoveryCode(recoveryCode.recoveryCode)
+                await usersRepoDb.deleteDocumentWithRecoveryCode(documentWithRecoveryCode.recoveryCode)
                 return null
             }
 

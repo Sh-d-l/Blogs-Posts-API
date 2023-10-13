@@ -29,7 +29,7 @@ export const usersRepoDb = {
         return CreateUserWithMailModel.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
     },
     async createDocumentWithRecoveryCode(recoveryCode:TypeRecoveryCode) {
-        return CreateDocumentWithRecoveryCodeModel.create(recoveryCode)
+        return CreateDocumentWithRecoveryCodeModel.create({...recoveryCode})
     },
     async deleteDocumentWithRecoveryCode(recoveryCode: string) {
         return CreateDocumentWithRecoveryCodeModel.deleteOne({recoveryCode})
