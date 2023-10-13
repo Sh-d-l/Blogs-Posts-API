@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv'
+import {config} from 'dotenv'
 import {MongoClient} from "mongodb";
 import {
     TBlogDb, TypeCustomRateLimit, TypeRecoveryCode,
@@ -11,7 +11,7 @@ import mongoose, {Schema, Types} from "mongoose"
 import {Request, Response} from "express";
 import {app} from "../settings";
 
-dotenv.config()
+config()
 
 export const DB_NAME = "Blogs-Posts-API";
 
@@ -25,7 +25,7 @@ export async function runDB() {
         return;
     }
     try {
-        await mongoose.connect(mongoURI + DB_NAME)
+        await mongoose.connect(mongoURI)
         console.log('it is ok')
     } catch (e) {
         console.log('no connection')
@@ -33,7 +33,7 @@ export async function runDB() {
     }
 }
 
-console.log(mongoURI + DB_NAME)
+console.log(mongoURI)
 
 
 export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb>(
