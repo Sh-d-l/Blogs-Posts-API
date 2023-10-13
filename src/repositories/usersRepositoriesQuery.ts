@@ -17,7 +17,7 @@ export const usersQueryRepo = {
         const pagesCount: number = Math.ceil(usersCount / pagination.pageSize);
         const getUsersDbByLoginEmail: TUsersDb[] = await CreateUserWithMailModel
             .find(filter, {projection: {_id: false, userHash: false}})
-            .sort({field:pagination.sortBy, test: pagination.sortDirection})
+            .sort({[pagination.sortBy]: pagination.sortDirection})
             //.sort({field:pagination.sortDirection})    /*pagination.sortBy, pagination.sortDirection*/)
             .skip(pagination.skip)
             .limit(pagination.pageSize)
