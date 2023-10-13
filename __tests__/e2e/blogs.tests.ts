@@ -47,6 +47,7 @@ describe('blogs', () => {
     beforeAll(async () => {
         /* Connecting to the database. */
         await mongoose.connect(mongoURI)
+
         await request(app)
             .del("/testing/all-data")
             .expect(204)
