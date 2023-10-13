@@ -159,10 +159,10 @@ const newPasswordValidation = body("newPassword")
     .withMessage("less 6 or more 20")
 
 const recoveryCodeValidation = body("recoveryCode")
-    .isString()
-    .withMessage("Not string")
     .exists()
     .withMessage("Not exists")
+    .isString()
+    .withMessage("Not string")
     .trim()
 
 
@@ -236,7 +236,7 @@ export const mailValidation =[
 
 export const newPasswordValidationArray = [
     newPasswordValidation,
-    recoveryCodeValidation,
+   // recoveryCodeValidation,
     inputValidator
 ]
 

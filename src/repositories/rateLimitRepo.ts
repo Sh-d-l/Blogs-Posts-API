@@ -6,7 +6,7 @@ export const rateLimitRepo = {
         await CreateRateLimitDocumentModel.create(document)
     },
     async findTheNumberOfAttempts(originalUrl:string, IP:string) {
-        return CreateRateLimitDocumentModel.find({URL:originalUrl, IP}).lean()
+        return CreateRateLimitDocumentModel.find({URL:originalUrl, IP})
     },
     async deleteDocumentsIfMoreFive(originalUrl:string, IP:string) {
         await CreateRateLimitDocumentModel.deleteMany({URL:originalUrl, IP})
