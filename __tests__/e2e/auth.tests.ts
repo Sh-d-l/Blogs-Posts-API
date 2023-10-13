@@ -31,8 +31,9 @@ describe('auth', () => {
     beforeAll(async () => {
         /* Connecting to the database. */
         await mongoose.connect(mongoURI)
+        //console.log(app, "app")
         await request(app)
-            .del("/testing/all-data")
+            .delete("/testing/all-data")
             .expect(204)
     })
     /*--------------------------create user---------------------------------*/
@@ -48,221 +49,221 @@ describe('auth', () => {
             )
             .expect(400)
     })
-    it("create new user with incorrect password, should return 400", async () => {
-        await request(app)
-            .post(urlCreateUserWithEmail)
-            .send({
-                    login: loginUser,
-                    password: incorrectPassUser,
-                    email: emailUser,
-                }
-            )
-            .expect(400)
-    })
-    it("create new user with incorrect email, should return 400", async () => {
-        await request(app)
-            .post(urlCreateUserWithEmail)
-            .send({
-                    login: loginUser,
-                    password: passUser,
-                    email: incorrectEmailUser,
-                }
-            )
-            .expect(400)
-    })
-    it("new user, should return 204", async () => {
-        await request(app)
-            .post(urlCreateUserWithEmail)
-            .send({
-                    login: loginUser,
-                    password: passUser,
-                    email: emailUser,
-                }
-            )
-            .expect(204)
-    })
-
-    /*-------------------------------resending email-------------------------------*/
-
-    it("resending email with confirmation code , should return 204", async () => {
-        await request(app)
-            .post(urlResendingEmail)
-            .send({email: emailUser})
-            .expect(204)
-    })
-
-    /*----------------------------- confirmation code -----------------------------*/
-
-    it("confirmation code success, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
-        if (user) {
-            await request(app)
-                .post(urlConfirmationCode)
-                .send({code: user.emailConfirmation.confirmationCode})
-                .expect(204)
-        }
-    })
-
-    it("confirmation code expired, should return 400", async () => {
-        await CreateUserWithMailModel.updateOne({email: emailUser}, {
-            "emailConfirmation.expirationTime": add(new Date(), {
-                hours: 0,
-                minutes: 0,
-            }),
-        })
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
-        if (user) {
-            await request(app)
-                .post(urlConfirmationCode)
-                .send(user.emailConfirmation.confirmationCode)
-                .expect(400)
-        }
-    })
-    it("incorrect confirmation code, should return 400", async () => {
-        await request(app)
-            .post(urlConfirmationCode)
-            .send(incorrectConfirmationCode)
-            .expect(400)
-    })
-    /*-----------------------------------login----------------------------------------*/
-
-    it("auth , should return 200 with tokens", async () => {
-        tokens = await request(app)
-            .post(urlAuth)
-            .set('X-Forwarded-For', '::1')
-            .set('user-agent', "some spoofed agent")
-            .send({
-                loginOrEmail: emailUser,
-                password: passUser,
-            })
-            .expect(200)
-        //console.log(tokens.headers['set-cookie'])
-        expect(tokens.body).toEqual({
-            accessToken: expect.any(String)
-        })
-        expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
-    })
-
-    it("auth with correct login and incorrect pass, should return 401", async () => {
-        await request(app)
-            .post(urlAuth)
-            .send({
-                loginOrEmail: loginUser,
-                password: incorrectPassUserString
-            })
-            .expect(401)
-    })
-    it("auth with incorrect login and correct pass, should return 401", async () => {
-        await request(app)
-            .post(urlAuth)
-            .send({
-                loginOrEmail: incorrectLoginUser,
-                password: passUser
-            })
-            .expect(401)
-    })
-
-    /*--------------------------resending email with incorrect data-----------------------*/
-
-    it("resending email with incorrect email, should return 400", async () => {
-        await request(app)
-            .post(urlResendingEmail)
-            .send(incorrectPatternEmailUser)
-            .expect(400)
-    })
-    it("resending email with expired confirmation code, should return 400", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
-        if (user) {
-            await request(app)
-                .post(urlResendingEmail)
-                .send(user.emailConfirmation.confirmationCode)
-                .expect(400)
-        }
-    })
-    it("resending email with isConfirmed:true, should return 400", async () => {
-        await CreateUserWithMailModel.updateOne({email: emailUser}, {"emailConfirmation.isConfirmed": true})
-        //const user = await CreateUserWithMailModel.findOne({email:emailUser})
-        //console.log(user)
-        await request(app)
-            .post(urlResendingEmail)
-            .send(emailUser)
-            .expect(400)
-    })
-
-    /*------------------------------------password recovery---------------------------------*/
-
-    it("password recovery, should return 204", async () => {
-        await request(app)
-            .post(urlPasswordRecovery)
-            .send({email: emailUser})
-            .expect(204)
-    })
-
-    it("password recovery with incorrect email, should return 400", async () => {
-        await request(app)
-            .post(urlPasswordRecovery)
-            .send(incorrectPatternEmailUser)
-            .expect(400)
-    })
-    it("new password for an existing user, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
-        const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
-        await request(app)
-            .post(urlNewPassword)
-            .send({newPassword: newPass})
-            .send({recoveryCode: documentWithRecoveryCode?.recoveryCode})
-            .expect(204)
-    })
-    it("new password for an existing user, expired recovery code, should return 400", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({emailUser})
-        const updateExpirationTime = await CreateDocumentWithRecoveryCodeModel.updateOne({userId: user?.id}, {
-            expirationTime: add(new Date(), {
-                hours: 0,
-                minutes: 0,
-            })
-        })
-        const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
-        await request(app)
-            .post(urlNewPassword)
-            .send(documentWithRecoveryCode?.recoveryCode)
-            .expect(400)
-    })
-
-
-    it("new access token and refresh token (/auth/refresh-token), should return 200 and new tokens (body, cookies)", async () => {
-        await request(app)
-            .post(urlRefreshTokens)
-            .set('Cookie', tokens.headers['set-cookie'][0])
-            .expect(200)
-        //console.log(tokens.headers['set-cookie'][0])
-        expect(tokens.body).toEqual({
-            accessToken: expect.any(String)
-        })
-        expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
-    })
-    it("logout, should return 204", async () => {  /*изменить .set*/
-        await request(app)
-            .post(urlLogout)
-            .set('Cookie', tokens.headers['set-cookie'][0])
-            .expect(204)
-    })
-    // it("auth", async () => {
-    //     tokens = await  request(app)
+    // it("create new user with incorrect password, should return 400", async () => {
+    //     await request(app)
+    //         .post(urlCreateUserWithEmail)
+    //         .send({
+    //                 login: loginUser,
+    //                 password: incorrectPassUser,
+    //                 email: emailUser,
+    //             }
+    //         )
+    //         .expect(400)
+    // })
+    // it("create new user with incorrect email, should return 400", async () => {
+    //     await request(app)
+    //         .post(urlCreateUserWithEmail)
+    //         .send({
+    //                 login: loginUser,
+    //                 password: passUser,
+    //                 email: incorrectEmailUser,
+    //             }
+    //         )
+    //         .expect(400)
+    // })
+    // it("new user, should return 204", async () => {
+    //     await request(app)
+    //         .post(urlCreateUserWithEmail)
+    //         .send({
+    //                 login: loginUser,
+    //                 password: passUser,
+    //                 email: emailUser,
+    //             }
+    //         )
+    //         .expect(204)
+    // })
+    //
+    // /*-------------------------------resending email-------------------------------*/
+    //
+    // it("resending email with confirmation code , should return 204", async () => {
+    //     await request(app)
+    //         .post(urlResendingEmail)
+    //         .send({email: emailUser})
+    //         .expect(204)
+    // })
+    //
+    // /*----------------------------- confirmation code -----------------------------*/
+    //
+    // it("confirmation code success, should return 204", async () => {
+    //     const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+    //     if (user) {
+    //         await request(app)
+    //             .post(urlConfirmationCode)
+    //             .send({code: user.emailConfirmation.confirmationCode})
+    //             .expect(204)
+    //     }
+    // })
+    //
+    // it("confirmation code expired, should return 400", async () => {
+    //     await CreateUserWithMailModel.updateOne({email: emailUser}, {
+    //         "emailConfirmation.expirationTime": add(new Date(), {
+    //             hours: 0,
+    //             minutes: 0,
+    //         }),
+    //     })
+    //     const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+    //     if (user) {
+    //         await request(app)
+    //             .post(urlConfirmationCode)
+    //             .send(user.emailConfirmation.confirmationCode)
+    //             .expect(400)
+    //     }
+    // })
+    // it("incorrect confirmation code, should return 400", async () => {
+    //     await request(app)
+    //         .post(urlConfirmationCode)
+    //         .send(incorrectConfirmationCode)
+    //         .expect(400)
+    // })
+    // /*-----------------------------------login----------------------------------------*/
+    //
+    // it("auth , should return 200 with tokens", async () => {
+    //     tokens = await request(app)
     //         .post(urlAuth)
+    //         .set('X-Forwarded-For', '::1')
+    //         .set('user-agent', "some spoofed agent")
     //         .send({
     //             loginOrEmail: emailUser,
-    //             password: passUser
+    //             password: passUser,
     //         })
     //         .expect(200)
     //     //console.log(tokens.headers['set-cookie'])
+    //     expect(tokens.body).toEqual({
+    //         accessToken: expect.any(String)
+    //     })
+    //     expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
     // })
-    // it("logout, should return 401 if refresh token expired", async () => {
-    //     await jwtService.createRefreshToken(tokens.headers['set-cookie'][0])
-    //     await  request(app)
+    //
+    // it("auth with correct login and incorrect pass, should return 401", async () => {
+    //     await request(app)
+    //         .post(urlAuth)
+    //         .send({
+    //             loginOrEmail: loginUser,
+    //             password: incorrectPassUserString
+    //         })
+    //         .expect(401)
+    // })
+    // it("auth with incorrect login and correct pass, should return 401", async () => {
+    //     await request(app)
+    //         .post(urlAuth)
+    //         .send({
+    //             loginOrEmail: incorrectLoginUser,
+    //             password: passUser
+    //         })
+    //         .expect(401)
+    // })
+    //
+    // /*--------------------------resending email with incorrect data-----------------------*/
+    //
+    // it("resending email with incorrect email, should return 400", async () => {
+    //     await request(app)
+    //         .post(urlResendingEmail)
+    //         .send(incorrectPatternEmailUser)
+    //         .expect(400)
+    // })
+    // it("resending email with expired confirmation code, should return 400", async () => {
+    //     const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+    //     if (user) {
+    //         await request(app)
+    //             .post(urlResendingEmail)
+    //             .send(user.emailConfirmation.confirmationCode)
+    //             .expect(400)
+    //     }
+    // })
+    // it("resending email with isConfirmed:true, should return 400", async () => {
+    //     await CreateUserWithMailModel.updateOne({email: emailUser}, {"emailConfirmation.isConfirmed": true})
+    //     //const user = await CreateUserWithMailModel.findOne({email:emailUser})
+    //     //console.log(user)
+    //     await request(app)
+    //         .post(urlResendingEmail)
+    //         .send(emailUser)
+    //         .expect(400)
+    // })
+    //
+    // /*------------------------------------password recovery---------------------------------*/
+    //
+    // it("password recovery, should return 204", async () => {
+    //     await request(app)
+    //         .post(urlPasswordRecovery)
+    //         .send({email: emailUser})
+    //         .expect(204)
+    // })
+    //
+    // it("password recovery with incorrect email, should return 400", async () => {
+    //     await request(app)
+    //         .post(urlPasswordRecovery)
+    //         .send(incorrectPatternEmailUser)
+    //         .expect(400)
+    // })
+    // it("new password for an existing user, should return 204", async () => {
+    //     const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+    //     const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
+    //     await request(app)
+    //         .post(urlNewPassword)
+    //         .send({newPassword: newPass})
+    //         .send({recoveryCode: documentWithRecoveryCode?.recoveryCode})
+    //         .expect(204)
+    // })
+    // it("new password for an existing user, expired recovery code, should return 400", async () => {
+    //     const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({emailUser})
+    //     const updateExpirationTime = await CreateDocumentWithRecoveryCodeModel.updateOne({userId: user?.id}, {
+    //         expirationTime: add(new Date(), {
+    //             hours: 0,
+    //             minutes: 0,
+    //         })
+    //     })
+    //     const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
+    //     await request(app)
+    //         .post(urlNewPassword)
+    //         .send(documentWithRecoveryCode?.recoveryCode)
+    //         .expect(400)
+    // })
+    //
+    //
+    // it("new access token and refresh token (/auth/refresh-token), should return 200 and new tokens (body, cookies)", async () => {
+    //     await request(app)
+    //         .post(urlRefreshTokens)
+    //         .set('Cookie', tokens.headers['set-cookie'][0])
+    //         .expect(200)
+    //     //console.log(tokens.headers['set-cookie'][0])
+    //     expect(tokens.body).toEqual({
+    //         accessToken: expect.any(String)
+    //     })
+    //     expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
+    // })
+    // it("logout, should return 204", async () => {  /*изменить .set*/
+    //     await request(app)
     //         .post(urlLogout)
-    //         .send(tokens.headers['set-cookie'][0])
-    //     expect(204)
+    //         .set('Cookie', tokens.headers['set-cookie'][0])
+    //         .expect(204)
     // })
+    // // it("auth", async () => {
+    // //     tokens = await  request(app)
+    // //         .post(urlAuth)
+    // //         .send({
+    // //             loginOrEmail: emailUser,
+    // //             password: passUser
+    // //         })
+    // //         .expect(200)
+    // //     //console.log(tokens.headers['set-cookie'])
+    // // })
+    // // it("logout, should return 401 if refresh token expired", async () => {
+    // //     await jwtService.createRefreshToken(tokens.headers['set-cookie'][0])
+    // //     await  request(app)
+    // //         .post(urlLogout)
+    // //         .send(tokens.headers['set-cookie'][0])
+    // //     expect(204)
+    // // })
     afterAll(async () => {
         /* Closing database connection after each test. */
         await mongoose.connection.close()

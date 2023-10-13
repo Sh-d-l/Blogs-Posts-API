@@ -11,6 +11,7 @@ import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 import {authMiddleware} from "../middlewares/authMiddleware";
+import {basicAuth} from "../auth/basic_auth";
 
 export const blogRouter = Router({});
 
@@ -27,8 +28,8 @@ blogRouter.get('/', async (req: Request, res: Response) => {
 })
 
 blogRouter.post("/",
-    authMiddleware,
-    //basicAuth,
+    //authMiddleware,
+    basicAuth,
     ...createBlogValidation,
     async (req:Request, res:Response) => {
         const postBlog: TBlogDb = await blogsService

@@ -3,7 +3,7 @@ import {app} from "../src/settings";
 import {loginAuth, passAuth} from "./authUsers.constans";
 
 export const urlUser = "/users/";
-export const urlCreateUserWithEmail = "/auth/registration/"
+export const urlCreateUserWithEmail = "/auth/registration"
 export const urlConfirmationCode = "/auth/registration-confirmation/"
 export  const urlResendingEmail = "/auth/registration-email-resending/"
 export const urlPasswordRecovery = "/auth/password-recovery/"

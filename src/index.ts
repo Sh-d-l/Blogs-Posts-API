@@ -17,11 +17,3 @@ export const startApp = async () => {
 };
 startApp();
 
-app.delete("/testing/all-data", async (req: Request, res: Response) => {
-
-    const promises = collections.map(c => c.deleteMany())
-
-    await Promise.all(promises)
-
-    res.sendStatus(204);
-})
