@@ -40,8 +40,8 @@ blogRouter.post("/",
     })
 
 blogRouter.post("/:blogId/posts",
-    authMiddleware,
-    //basicAuth,
+    //authMiddleware,
+    basicAuth,
     ...createPostByBlogIDValidation,
     async (req:Request, res:Response) => {
         const addPostByBlogId: PostType | null = await blogsService
@@ -82,8 +82,8 @@ blogRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
 })
 
 blogRouter.put('/:id',
-    authMiddleware,
-    //basicAuth,
+    //authMiddleware,
+    basicAuth,
     ...updateBlogValidation,
     async (req:Request, res:Response) => {
         const putBlog: boolean = await blogsService.updateBlogService(
@@ -99,8 +99,8 @@ blogRouter.put('/:id',
         }
     })
 blogRouter.delete('/:id',
-    authMiddleware,
-    //basicAuth,
+    //authMiddleware,
+    basicAuth,
     async (req, res) => {
         const delBlogID: boolean = await blogsService.deleteIDService(req.params.id)
         if (delBlogID) {

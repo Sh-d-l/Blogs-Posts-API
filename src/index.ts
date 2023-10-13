@@ -7,9 +7,9 @@ process.on('unhandledRejection', function (reason, p) {
     console.error(reason, p)
 })
 
-export const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000
 
-export const startApp = async () => {
+const startApp = async () => {
     await runDB();
     app.listen(port, () => {
         console.log(`Example app listening on port ${port}`);
