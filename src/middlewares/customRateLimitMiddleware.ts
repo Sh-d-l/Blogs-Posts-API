@@ -10,7 +10,7 @@ export const customRateLimitMiddleware = async (req:Request,res:Response,next: N
     }
     await rateLimitRepo.addLoginAttempt(rateLimitsDocument)
     const count = await rateLimitRepo.findTheNumberOfAttempts(req.originalUrl, req.ip)
-    if( rateLimitsDocument.date.getTime() >= new Date().getTime() - 99999 && count.length > 5) {
+    if( rateLimitsDocument.date.getTime() >= new Date().getTime() - 10001 && count.length > 5) {
         await rateLimitRepo.deleteDocumentsIfMoreFive(req.originalUrl, req.ip)
         res.sendStatus(429)
     }
