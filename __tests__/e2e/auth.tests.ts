@@ -194,6 +194,45 @@ describe('auth', () => {
 
     /*------------------------------------password recovery---------------------------------*/
 
+    it("Password recovery. If more than 5 requests were sent within 10 seconds, should return 429", async () => {
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("1")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("2")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("3")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("4")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("5")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+        console.log("6")
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(429)
+        console.log("7")
+
+    })
+
     it("password recovery, should return 204", async () => {
         await request(app)
             .post(urlPasswordRecovery)
@@ -214,6 +253,9 @@ describe('auth', () => {
             .send(incorrectPatternEmailUser)
             .expect(400)
     })
+
+    /*-----------------------------new pass for existing user------------------------*/
+
     it("new password for an existing user, should return 204", async () => {
         const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
         const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
@@ -223,6 +265,7 @@ describe('auth', () => {
             .send({recoveryCode: documentWithRecoveryCode?.recoveryCode})
             .expect(204)
     })
+
     /*-------------------------------login with new pass-------------------------------------*/
 
     it("auth with new pass, should return 200 with tokens", async () => {

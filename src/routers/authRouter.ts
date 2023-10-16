@@ -5,9 +5,23 @@ import {
     confirmCodeValidation, createNewUserValidation, mailValidation, newPasswordValidationArray,
     resendingEmailValidation,
 } from "../middlewares/validators/validations";
+import { rateLimit } from 'express-rate-limit'
 import {createUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
+import {app} from "../settings";
 export const authRouter = Router({})
+
+// export const apiLimiter = rateLimit({
+//     windowMs: 10 * 60 * 1000, // 15 minutes
+//     limit: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+//     standardHeaders: 'draft-7', // Set `RateLimit` and `RateLimit-Policy` headers
+//     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+//     // store: ... , // Use an external store for more precise rate limiting
+// })
+//
+// // Apply the rate limiting middleware to API calls only
+
+
 
 authRouter.post("/login",
     customRateLimitMiddleware,
