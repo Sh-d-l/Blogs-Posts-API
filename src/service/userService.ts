@@ -49,7 +49,7 @@ export const createUserService = {
         const deviceId = v4()
         const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
-        if (!user.emailConfirmation.isConfirmed) return null
+        //if (!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
             const refreshTokenMeta = {

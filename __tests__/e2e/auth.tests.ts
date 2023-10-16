@@ -125,6 +125,8 @@ describe('auth', () => {
             .send(incorrectConfirmationCode)
             .expect(400)
     })
+
+
     /*-----------------------------------login----------------------------------------*/
 
     it("auth , should return 200 with tokens", async () => {
@@ -199,6 +201,13 @@ describe('auth', () => {
             .expect(204)
     })
 
+    it("password recovery, should return 204", async () => {
+        await request(app)
+            .post(urlPasswordRecovery)
+            .send({email: emailUser})
+            .expect(204)
+    })
+
     it("password recovery with incorrect email, should return 400", async () => {
         await request(app)
             .post(urlPasswordRecovery)
@@ -214,6 +223,45 @@ describe('auth', () => {
             .send({recoveryCode: documentWithRecoveryCode?.recoveryCode})
             .expect(204)
     })
+    /*-------------------------------login with new pass-------------------------------------*/
+
+    it("auth with new pass, should return 200 with tokens", async () => {
+        tokens = await request(app)
+            .post(urlAuth)
+            .set('X-Forwarded-For', '::1')
+            .set('user-agent', "some spoofed agent")
+            .send({
+                loginOrEmail: emailUser,
+                password: newPass,
+            })
+            .expect(200)
+        //console.log(tokens.headers['set-cookie'])
+        expect(tokens.body).toEqual({
+            accessToken: expect.any(String)
+        })
+        expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
+    })
+
+    it("auth with old pass, should return 401 with tokens", async () => {
+        tokens = await request(app)
+            .post(urlAuth)
+            .set('X-Forwarded-For', '::1')
+            .set('user-agent', "some spoofed agent")
+            .send({
+                loginOrEmail: emailUser,
+                password: passUser,
+            })
+            .expect(401)
+        //console.log(tokens.headers['set-cookie'])
+        // expect(tokens.body).toEqual({
+        //     accessToken: expect.any(String)
+        // })
+        // expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
+    })
+
+    /*-------------------------------------------------------------------------------*/
+
+
     it("new password for an existing user, expired recovery code, should return 400", async () => {
         const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({emailUser})
         const updateExpirationTime = await CreateDocumentWithRecoveryCodeModel.updateOne({userId: user?.id}, {
