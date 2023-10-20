@@ -120,7 +120,8 @@ describe('blogs', () => {
     it("create blog, should return 201 and {}", async () => {
         const blog = await request(app)
             .post(urlBlogs)
-            .set('Authorization', `Bearer ${tokens.body.accessToken}`)
+            //.auth(u)
+            //.set('Authorization', `Bearer ${tokens.body.accessToken}`)
             .send({
                 name: blogName,
                 description: blogDescription,

@@ -3,31 +3,27 @@ import {securityDevicesService} from "../service/securityDevicesService";
 
 export const securityDevicesRouter = Router({})
 
-securityDevicesRouter.get("/devices",
-    async (req:Request, res:Response) => {
-    const arrayRefreshTokenMeta = await securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
+class SecurityDevicesController{
+    async getAllDevices(req:Request, res:Response){
+        const arrayRefreshTokenMeta = await securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
         if(arrayRefreshTokenMeta) {
             res.status(200).send(arrayRefreshTokenMeta)
         }
         else {
             res.sendStatus(401)
         }
-    })
-
-securityDevicesRouter.delete("/devices",
-    async  (req:Request, res:Response) => {
-    const deleteAllExcludeCurrent = await securityDevicesService.deleteAllDevicesExcludeCurrentService(req.cookies.refreshToken)
+    }
+    async deleteAllDevicesExcludeCurrent(req:Request, res:Response){
+        const deleteAllExcludeCurrent = await securityDevicesService.deleteAllDevicesExcludeCurrentService(req.cookies.refreshToken)
         if (deleteAllExcludeCurrent) {
             res.sendStatus(204)
         }
         else {
             res.sendStatus(401)
         }
-    })
-
-securityDevicesRouter.delete("/devices/:deviceId",
-    async (req:Request,res:Response) => {
-    const deleteSuccess = await securityDevicesService.deleteDeviceByIdService(req.params.deviceId, req.cookies.refreshToken)
+    }
+    async deleteDeviceById(req:Request, res:Response) {
+        const deleteSuccess = await securityDevicesService.deleteDeviceByIdService(req.params.deviceId, req.cookies.refreshToken)
         if (deleteSuccess === 204) {
             res.sendStatus(204)
             return
@@ -45,5 +41,19 @@ securityDevicesRouter.delete("/devices/:deviceId",
             return
         }
     }
+
+
+}
+
+export const securityDevicesController = new SecurityDevicesController()
+
+securityDevicesRouter.get("/devices",
+    securityDevicesController.getAllDevices )
+
+securityDevicesRouter.delete("/devices",
+    securityDevicesController.deleteAllDevicesExcludeCurrent )
+
+securityDevicesRouter.delete("/devices/:deviceId",
+    securityDevicesController.deleteDeviceById
 
 )

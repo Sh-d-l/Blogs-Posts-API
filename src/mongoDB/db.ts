@@ -1,5 +1,4 @@
 import {config} from 'dotenv'
-import {MongoClient} from "mongodb";
 import {
     TBlogDb, TypeCustomRateLimit, TypeRecoveryCode,
     TypeRefreshTokenMeta
@@ -8,8 +7,7 @@ import {PostType} from "../types/types";
 import {CreateUsersWithConfirmationCode} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 import mongoose, {Schema, Types} from "mongoose"
-import {Request, Response} from "express";
-import {app} from "../settings";
+
 
 config()
 

@@ -8,6 +8,31 @@ import {createUserService} from "../service/userService";
 
 export const usersRouter = Router({});
 
+class SuperAdminUserController{
+    async getAllUser(req: Request, res: Response){
+        const pagination = getPaginationFromQuery(req.query)
+        const getUsers: TypeGetUsersWithCount = await usersQueryRepo.getUsersRepoQuery(pagination)
+        res.status(200).send(getUsers)
+    }
+    async createSuperAdminUser(req: Request, res: Response){
+        const addUser: CreateObjectOfUserForClient = await createUserService
+            .createUserSuperAdminService(req.body.login,
+                req.body.password,
+                req.body.email)
+        res.status(201).send(addUser)
+    }
+    async deleteUser(req: Request, res: Response){
+        const deleteUser: boolean =
+            await createUserService.deleteUserById(req.params._id)
+        if (deleteUser) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+}
+export const superAdminUserController = new SuperAdminUserController()
+
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
     const pageSize = Number(query.pageSize)
@@ -25,32 +50,14 @@ export const getPaginationFromQuery = (query: any): IPagination => {
 
 usersRouter.get('/',
     basicAuth,
-    async (req: Request, res: Response) => {
-        const pagination = getPaginationFromQuery(req.query)
-        const getUsers: TypeGetUsersWithCount = await usersQueryRepo.getUsersRepoQuery(pagination)
-        res.status(200).send(getUsers)
-    })
+    superAdminUserController.getAllUser )
 
 usersRouter.post("/",
     basicAuth,
     //...createNewUserSuperAdminValidation,
-    async (req: Request, res: Response) => {
-        const addUser: CreateObjectOfUserForClient = await createUserService
-            .createUserSuperAdminService(req.body.login,
-                req.body.password,
-                req.body.email)
-        res.status(201).send(addUser)
-    })
+    superAdminUserController.createSuperAdminUser )
 
 usersRouter.delete("/:id",
     basicAuth,
-    async (req: Request, res: Response) => {
-        const deleteUser: boolean =
-            await createUserService.deleteUserById(req.params._id)
-        if (deleteUser) {
-            res.sendStatus(204)
-        } else {
-             res.sendStatus(404)
-        }
-    }
+    superAdminUserController.deleteUser
 )

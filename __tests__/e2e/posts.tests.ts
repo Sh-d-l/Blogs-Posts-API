@@ -34,7 +34,7 @@ import {
     urlConfirmationCode,
     urlCreateUserWithEmail
 } from "../../test_constanse/user.constans";
-import {TUsersWithHashEmailDb} from "../../src/types/types";
+import {CreateUsersWithConfirmationCode} from "../../src/types/types";
 import {urlAuth} from "../../test_constanse/auth.constans";
 
 describe('posts', () => {
@@ -62,7 +62,7 @@ describe('posts', () => {
     /*--------------------------confirmation of registration--------------------*/
 
     it("confirmationCode success, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
 
         if (user) {
             await request(app)
