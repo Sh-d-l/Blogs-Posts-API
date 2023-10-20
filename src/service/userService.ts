@@ -1,4 +1,7 @@
-import {TUsersDb, TUsersWithHashEmailDb,} from "../types/types";
+import {
+    CreateObjectOfUserForClient,
+    CreateUsersWithConfirmationCode, TypeRecoveryCode, TypeRefreshTokenMeta,
+} from "../types/types";
 import {randomUUID} from "crypto";
 import bcrypt from "bcrypt";
 import {v4, v4 as uuidv4} from 'uuid';
@@ -8,30 +11,47 @@ import {usersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {securityDevicesRepo} from "../repositories/securityDevicesRepo"
 
-export const createUserService = {
+class CreateUserService {
 
     async createUserWithEmailService(login: string,
                                      password: string,
-                                     email: string): Promise<TUsersDb | null> {
+                                     email: string): Promise<CreateObjectOfUserForClient | null> {
         const userHash = await bcrypt.hash(password, 10)
-        const newUser: TUsersDb = {
-            id: randomUUID(),
-            login,
-            email,
-            createdAt: new Date().toISOString(),
-        }
-        const newUserWithHashMail: TUsersWithHashEmailDb = {
-            ...newUser,
+        const newUser = new CreateObjectOfUserForClient(randomUUID(), login, email, new Date().toISOString())
+        // const newUser: TUsersDb = {
+        //     id: randomUUID(),
+        //     login,
+        //     email,
+        //     createdAt: new Date().toISOString(),
+        // }
+
+        const newUserWithHashMail = new CreateUsersWithConfirmationCode(
+            newUser.id,
+            newUser.login,
+            newUser.email,
+            newUser.createdAt,
             userHash,
-            emailConfirmation: {
-                confirmationCode: uuidv4(),
-                expirationTime: add(new Date(), {
-                    hours: 0,
-                    minutes: 3,
-                }),
-                isConfirmed: false,
-            }
-        }
+            {
+                    confirmationCode: uuidv4(),
+                    expirationTime: add(new Date(), {
+                        hours: 0,
+                        minutes: 3,
+                    }),
+                    isConfirmed: false,
+                }
+        )
+        //{
+        //     ...newUser,
+        //     userHash,
+        //     emailConfirmation: {
+        //         confirmationCode: uuidv4(),
+        //         expirationTime: add(new Date(), {
+        //             hours: 0,
+        //             minutes: 3,
+        //         }),
+        //         isConfirmed: false,
+        //     }
+        // }
         await usersRepoDb.createNewUserEmail(newUserWithHashMail)
         try {
             await emailManager.transportEmailManager(email, newUserWithHashMail)
@@ -40,25 +60,32 @@ export const createUserService = {
             await usersRepoDb.deleteUserById(newUserWithHashMail.id)
         }
         return newUser;
-    },
+    }
 
     async authUserWithEmailService(loginOrEmail: string,
                                    password: string,
                                    ip: string,
                                    title: string | undefined): Promise<(string)[] | null> {
         const deviceId = v4()
-        const user: TUsersWithHashEmailDb | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
+        const user: CreateUsersWithConfirmationCode | null = await usersRepoDb.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return null;
         //if (!user.emailConfirmation.isConfirmed) return null
         const checkUserHash: boolean = await bcrypt.compare(password, user.userHash)
         if (checkUserHash) {
-            const refreshTokenMeta = {
-                userId: user.id,
+            const refreshTokenMeta = new TypeRefreshTokenMeta(
+                user.id,
                 deviceId,
                 ip,
-                lastActiveDate: new Date(),
+                new Date(),
                 title,
-            }
+            )
+            // const refreshTokenMeta = {
+            //     userId: user.id,
+            //     deviceId,
+            //     ip,
+            //     lastActiveDate: new Date(),
+            //     title,
+            // }
 
             const accessToken = await jwtService.createAccessToken(deviceId, user.id)
             const refreshToken = await jwtService.createRefreshToken(deviceId,
@@ -69,20 +96,27 @@ export const createUserService = {
         } else {
             return null;
         }
-    },
+    }
 
     async passwordRecoveryService(email: string): Promise<boolean | null> {
         const user = await usersRepoDb.findUserByEmail(email)
-        let documentWithRecoveryCode;
         if (user) {
-            documentWithRecoveryCode = {
-                userId: user.id,
-                recoveryCode: uuidv4(),
-                expirationTime: add(new Date(), {
-                    hours: 0,
-                    minutes: 3,
-                })
-            }
+            const documentWithRecoveryCode = new TypeRecoveryCode(
+                user.id,
+                uuidv4(),
+                add(new Date(), {
+                            hours: 0,
+                            minutes: 3,
+                        })
+            )
+            // documentWithRecoveryCode = {
+            //     userId: user.id,
+            //     recoveryCode: uuidv4(),
+            //     expirationTime: add(new Date(), {
+            //         hours: 0,
+            //         minutes: 3,
+            //     })
+            // }
             try {
                 await emailManager.transportEmailManagerPasswordRecovery(email, documentWithRecoveryCode)
                 await usersRepoDb.createDocumentWithRecoveryCode(documentWithRecoveryCode)
@@ -95,7 +129,7 @@ export const createUserService = {
 
         } else return true
 
-    },
+    }
 
     async changePasswordOfUser(newPassword: string, recoveryCode: string): Promise<boolean> {
         const recoveryCodeObject = await usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
@@ -107,7 +141,7 @@ export const createUserService = {
             return true
         } else return false
 
-    },
+    }
 
     async refreshingTokensService(refreshToken: string): Promise<string[] | null> {
         if (!refreshToken) return null;
@@ -128,11 +162,11 @@ export const createUserService = {
                 return [newAccessToken, newRefreshToken]
             } else return null
         } else return null
-    },
+    }
 
     async confirmationCodeService(code: string): Promise<boolean | null> {
         return await usersRepoDb.changeIsConfirmed(code);
-    },
+    }
 
     async resendingEmailService(email: string): Promise<boolean | null> {
         const previouslyRegisteredUserWithMail = await usersRepoDb.findUserByEmail(email)
@@ -147,16 +181,16 @@ export const createUserService = {
             await emailManager.transportEmailManager(email, updatedUser)
             return true
         } else return null
-    },
+    }
 
     async logoutService(refreshToken: string): Promise<boolean> {
         if (!refreshToken) return false;
         const payloadRefreshToken = await jwtService.getPayloadRefreshToken(refreshToken)
         if (!payloadRefreshToken) return false;
         return await securityDevicesRepo.deleteDeviceByDeviceId(payloadRefreshToken[0]);
-    },
+    }
 
-    async findUserByIdWithMailService(userId: string): Promise<TUsersDb | null> {
+    async findUserByIdWithMailService(userId: string): Promise<CreateObjectOfUserForClient | null> {
         const user = await usersRepoDb.findUserByUserId(userId)
         if (user) {
             return {
@@ -168,22 +202,26 @@ export const createUserService = {
         } else {
             return null;
         }
-    },
+    }
 
     /*---------------------------------creating a super admin user---------------------------------------*/
 
-    async createUserSuperAdminService(login: string, password: string, email: string): Promise<TUsersDb> {
+    async createUserSuperAdminService(login: string, password: string, email: string): Promise<CreateObjectOfUserForClient> {
         const userHash = await bcrypt.hash(password, 10)
-        const newUser: TUsersDb = {
-            id: randomUUID(),
+        const newUser = new CreateObjectOfUserForClient(
+            randomUUID(),
             login,
             email,
-            createdAt: new Date().toISOString(),
-        }
-        const newUserWithHash: TUsersWithHashEmailDb = {
-            ...newUser,
+            new Date().toISOString(),
+        )
+
+        const newUserWithHashMail = new CreateUsersWithConfirmationCode(
+            newUser.id,
+            newUser.login,
+            newUser.email,
+            newUser.createdAt,
             userHash,
-            emailConfirmation: {
+            {
                 confirmationCode: uuidv4(),
                 expirationTime: add(new Date(), {
                     hours: 0,
@@ -191,13 +229,13 @@ export const createUserService = {
                 }),
                 isConfirmed: false,
             }
-        }
-        await usersRepoDb.createNewUser(newUserWithHash)
+        )
+
+        await usersRepoDb.createNewUser(newUserWithHashMail)
         return newUser;
-    },
+    }
     async deleteUserById(id: string): Promise<boolean> {
         return await usersRepoDb.deleteUserById(id)
-    },
-
-
+    }
 }
+export const createUserService = new CreateUserService()

@@ -22,7 +22,7 @@ import {urlAuth} from "../../test_constanse/auth.constans";
 import {CreateUserWithMailModel, CreateDocumentWithRecoveryCodeModel, mongoURI} from "../../src/mongoDB/db";
 import mongoose from "mongoose";
 import add from "date-fns/add";
-import {TUsersWithHashEmailDb, TypeRecoveryCode} from "../../src/types/types";
+import {CreateUsersWithConfirmationCode, TypeRecoveryCode} from "../../src/types/types";
 
 describe('auth', () => {
     let tokens: any;
@@ -95,7 +95,7 @@ describe('auth', () => {
     /*----------------------------- confirmation code -----------------------------*/
 
     it("confirmation code success, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
         if (user) {
             await request(app)
                 .post(urlConfirmationCode)
@@ -111,7 +111,7 @@ describe('auth', () => {
                 minutes: 0,
             }),
         })
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
         if (user) {
             await request(app)
                 .post(urlConfirmationCode)
@@ -174,7 +174,7 @@ describe('auth', () => {
             .expect(400)
     })
     it("resending email with expired confirmation code, should return 400", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
         if (user) {
             await request(app)
                 .post(urlResendingEmail)
@@ -257,7 +257,7 @@ describe('auth', () => {
     /*-----------------------------new pass for existing user------------------------*/
 
     it("new password for an existing user, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
         const documentWithRecoveryCode: TypeRecoveryCode | null = await CreateDocumentWithRecoveryCodeModel.findOne({userId: user?.id})
         await request(app)
             .post(urlNewPassword)
@@ -306,7 +306,7 @@ describe('auth', () => {
 
 
     it("new password for an existing user, expired recovery code, should return 400", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({emailUser})
         const updateExpirationTime = await CreateDocumentWithRecoveryCodeModel.updateOne({userId: user?.id}, {
             expirationTime: add(new Date(), {
                 hours: 0,

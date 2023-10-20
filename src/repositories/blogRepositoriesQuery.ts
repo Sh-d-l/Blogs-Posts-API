@@ -2,7 +2,7 @@ import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/typ
 import {CreateNewBlogModel, CreatePostModel} from "../mongoDB/db";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
-export const blogsRepoQuery = {
+class BlogsRepoQuery {
     async getBlogsRepoQuery(searchNameTerm: string | null,
                             sortBy: string,
                             sortDirection: SortDirection,
@@ -27,7 +27,7 @@ export const blogsRepoQuery = {
             totalCount: countBlogs,
             items: getBlogsDB,
         }
-    },
+    }
 
     async getAllPostsByBlogId(id: string,
                               sortBy: string,
@@ -57,6 +57,7 @@ export const blogsRepoQuery = {
         }
 
 
-    },
+    }
 
 }
+export const blogsRepoQuery = new BlogsRepoQuery()

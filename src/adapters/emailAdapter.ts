@@ -1,8 +1,8 @@
 import nodemailer from "nodemailer"
-import {TUsersWithHashEmailDb, TypeRecoveryCode} from "../types/types";
+import {CreateUsersWithConfirmationCode, TypeRecoveryCode} from "../types/types";
 
 export const emailAdapter = {
-    async transportEmailAdapter(email: string, user: TUsersWithHashEmailDb): Promise<boolean> {
+    async transportEmailAdapter(email: string, user:CreateUsersWithConfirmationCode): Promise<boolean> {
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 465,

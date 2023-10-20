@@ -2,7 +2,7 @@ import {securityDevicesRepo} from "../repositories/securityDevicesRepo";
 import {jwtService} from "../application/jwt-service";
 import {TypeRefreshTokenMeta} from "../types/types";
 
-export const securityDevicesService = {
+class SecurityDevicesService {
 
     async getAllDevicesByUserId(refreshToken:string):Promise<TypeRefreshTokenMeta[] | null> {
         if (!refreshToken) return null;
@@ -15,7 +15,7 @@ export const securityDevicesService = {
             return await securityDevicesRepo.getAllRefreshTokenMeta(payloadArray[2])
         }
         else return null
-    },
+    }
 
     async deleteAllDevicesExcludeCurrentService(refreshToken:string):Promise<boolean> {
         if (!refreshToken) return false;
@@ -27,7 +27,7 @@ export const securityDevicesService = {
             return await securityDevicesRepo.deleteAllDevicesExcludeCurrent(payloadArray[0])
         }
         else return false
-    },
+    }
 
     async deleteDeviceByIdService(deviceId:string, refreshToken:string): Promise<number> {
         if (!refreshToken) return 401;
@@ -42,4 +42,5 @@ export const securityDevicesService = {
 
     }
 }
+export const securityDevicesService = new SecurityDevicesService()
 

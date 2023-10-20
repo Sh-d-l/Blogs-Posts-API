@@ -1,9 +1,9 @@
 import {IPagination} from "../types/types";
-import {TUsersDb, TypeGetUsersWithCount} from "../types/types";
+import {CreateObjectOfUserForClient, TypeGetUsersWithCount} from "../types/types";
 import {CreateUserWithMailModel} from "../mongoDB/db";
 //import {usersCollection} from "../mongoDB/db";
 
-export const usersQueryRepo = {
+class UsersQueryRepo {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
         const filter = {
             $or: [{
@@ -15,7 +15,7 @@ export const usersQueryRepo = {
         }
         const usersCount: number = await CreateUserWithMailModel.countDocuments(filter)
         const pagesCount: number = Math.ceil(usersCount / pagination.pageSize);
-        const getUsersDbByLoginEmail: TUsersDb[] = await CreateUserWithMailModel
+        const getUsersDbByLoginEmail: CreateObjectOfUserForClient[] = await CreateUserWithMailModel
             .find(filter, {projection: {_id: false, userHash: false}})
             .sort({[pagination.sortBy]: pagination.sortDirection})
             //.sort({field:pagination.sortDirection})    /*pagination.sortBy, pagination.sortDirection*/)
@@ -32,6 +32,5 @@ export const usersQueryRepo = {
         }
         return resArrUsers;
     }
-
-
 }
+export const usersQueryRepo = new UsersQueryRepo()

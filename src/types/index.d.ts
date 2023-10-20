@@ -1,4 +1,4 @@
-import {TUsersDb} from "../types/types";
+import {CreateObjectOfUserForClient} from "../types/types";
 
 
 declare global {
@@ -6,7 +6,7 @@ declare global {
         export interface Request {
            // blog: BlogType | null
             userId: string | null
-            user:TUsersDb | null
+            user:CreateObjectOfUserForClient | null
         }
     }
 }

@@ -5,7 +5,7 @@ import {
     TypeRefreshTokenMeta
 } from "../types/types";
 import {PostType} from "../types/types";
-import {TUsersWithHashEmailDb} from "../types/types";
+import {CreateUsersWithConfirmationCode} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
 import mongoose, {Schema, Types} from "mongoose"
 import {Request, Response} from "express";
@@ -36,7 +36,7 @@ export async function runDB() {
 console.log(mongoURI)
 
 
-export const CreateUserWithMailSchema = new Schema<TUsersWithHashEmailDb>(
+export const CreateUserWithMailSchema = new Schema<CreateUsersWithConfirmationCode>(
     {
         id: {type: String, required: true},
         login: {type: String, required: true, maxLength: 10, minLength: 3, match: /^[a-zA-Z0-9_-]*$/},

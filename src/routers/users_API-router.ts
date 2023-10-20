@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
 import {usersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
-import {TUsersDb} from "../types/types";
+import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
 import {createUserService} from "../service/userService";
 
@@ -35,7 +35,7 @@ usersRouter.post("/",
     basicAuth,
     //...createNewUserSuperAdminValidation,
     async (req: Request, res: Response) => {
-        const addUser: TUsersDb = await createUserService
+        const addUser: CreateObjectOfUserForClient = await createUserService
             .createUserSuperAdminService(req.body.login,
                 req.body.password,
                 req.body.email)
