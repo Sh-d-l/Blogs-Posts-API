@@ -2,7 +2,8 @@ import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
 import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
 import {CreateUsersWithConfirmationCode} from "../../types/types";
-import {usersRepoDb} from "../../repositories/users_API-repositories-db";
+import {UsersRepoDb} from "../../repositories/users_API-repositories-db";
+//import {usersRepoDb} from "../../repositories/users_API-repositories-db";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
@@ -52,64 +53,71 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     }
     return true;
 })
-const registeredUserEmailValidation = body("email").custom(async (email) => {
-    const user = await usersRepoDb.findUserByLoginOrEmail(email)
-    if(user) {
-        throw new Error("User already registered")
-    }
-    return true
-})
-const registeredUserLoginValidation = body("login").custom(async (login) => {
-    const user = await usersRepoDb.findUserByLoginOrEmail(login)
-    if(user) {
-        throw new Error("User already registered")
-    }
-    return true
-})
 
-const registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
-    const user:CreateUsersWithConfirmationCode | null  = await usersRepoDb.findUserByCode(code)
-    if(user && user.emailConfirmation.isConfirmed) {
-        throw new Error("User already registered")
-    }
-    return true
-})
-const expirationTimeValidation = body("code").custom(async (code) => {
-    const user = await usersRepoDb.findUserByCode(code)
-    if (user && user.emailConfirmation.expirationTime < new Date()) {
-        throw new Error("Code expired")
-    }
-    return true
-})
-const resendingMailValidation = body("email").custom(async (email) => {
-    const user:CreateUsersWithConfirmationCode | null  = await usersRepoDb.findUserByEmail(email)
-    if(!user ) {
-        throw new Error("User not found")
-    }
-    return true
-})
+    const registeredUserEmailValidation = body("email").custom(async (email) => {
+        const user = await this.usersRepoValidator.findUserByLoginOrEmail(email)
+        if (user) {
+            throw new Error("User already registered")
+        }
+        return true
+    })
+    const registeredUserLoginValidation = body("login").custom(async (login) => {
+        const user = await this.usersRepo.findUserByLoginOrEmail(login)
+        if (user) {
+            throw new Error("User already registered")
+        }
+        return true
+    })
 
-const registeredUserIsConfirmedResendingMailValidation = body("email").custom(async (email) => {
-    const user:CreateUsersWithConfirmationCode | null  = await usersRepoDb.findUserByEmail(email)
-    if(user && user.emailConfirmation.isConfirmed) {
-        throw new Error("User already registered")
-    }
-    return true
-})
-const expirationTimeResendingEmailValidation = body("email").custom(async (email) => {
-    const user = await usersRepoDb.findUserByEmail(email)
-    if (user && user.emailConfirmation.expirationTime < new Date()) {
-        throw new Error("Code expired")
-    }
-    return true
-})
-const recoveryCodeForNewPasswordValidation = body("recoveryCode").custom(async (recoveryCode) => {
-    const recoveryCodeObject = await usersRepoDb.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
-    if(!recoveryCodeObject) {
-        throw new Error("incorrect recoveryCode")
-    }
-    return true
-})
+    const
+    registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
+        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByCode(code)
+        if (user && user.emailConfirmation.isConfirmed) {
+            throw new Error("User already registered")
+        }
+        return true
+    })
+    const
+    expirationTimeValidation = body("code").custom(async (code) => {
+        const user = await this.usersRepo.findUserByCode(code)
+        if (user && user.emailConfirmation.expirationTime < new Date()) {
+            throw new Error("Code expired")
+        }
+        return true
+    })
+    const
+    resendingMailValidation = body("email").custom(async (email) => {
+        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByEmail(email)
+        if (!user) {
+            throw new Error("User not found")
+        }
+        return true
+    })
+
+    const
+    registeredUserIsConfirmedResendingMailValidation = body("email").custom(async (email) => {
+        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByEmail(email)
+        if (user && user.emailConfirmation.isConfirmed) {
+            throw new Error("User already registered")
+        }
+        return true
+    })
+    const
+    expirationTimeResendingEmailValidation = body("email").custom(async (email) => {
+        const user = await this.usersRepo.findUserByEmail(email)
+        if (user && user.emailConfirmation.expirationTime < new Date()) {
+            throw new Error("Code expired")
+        }
+        return true
+    })
+    const
+    recoveryCodeForNewPasswordValidation = body("recoveryCode").custom(async (recoveryCode) => {
+        const recoveryCodeObject = await this.usersRepo.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
+        if (!recoveryCodeObject) {
+            throw new Error("incorrect recoveryCode")
+        }
+        return true
+    })
 
 const loginValidation = body("login")
     .exists()

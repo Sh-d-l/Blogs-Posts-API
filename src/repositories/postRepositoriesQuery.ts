@@ -4,7 +4,7 @@ import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
 import {CommentType} from "../types/types";
 
-class PostsRepoQuery {
+export class PostsRepoQuery {
     async getPostsRepoQuery(sortBy: string,
                             sortDirection: SortDirection,
                             pageNumber: number,
@@ -57,4 +57,3 @@ class PostsRepoQuery {
     }
 }
 
-export const postsRepoQuery = new PostsRepoQuery()

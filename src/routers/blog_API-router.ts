@@ -4,20 +4,25 @@ import {TBlogDb} from "../types/types";
 import {
     createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
 } from "../middlewares/validators/validations";
-import {blogsService} from "../service/blog_API-service";
 import {TypeGetBlogsWithCount} from "../types/types";
-import {blogsRepoQuery} from "../repositories/blogRepositoriesQuery";
+import {BlogsRepoQuery} from "../repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
-import {authMiddleware} from "../middlewares/authMiddleware";
 import {basicAuth} from "../auth/basic_auth";
+import {BlogsService} from "../service/blog_API-service";
 
 export const blogRouter = Router({});
 
 class BlogsController {
+    blogsService:BlogsService;
+    blogsRepoQuery:BlogsRepoQuery;
+    constructor() {
+        this.blogsService = new BlogsService()
+        this.blogsRepoQuery = new BlogsRepoQuery()
+    }
     async getAllBlogs(req: Request, res: Response){
-        const getBlogs: TypeGetBlogsWithCount = await blogsRepoQuery
+        const getBlogs: TypeGetBlogsWithCount = await this.blogsRepoQuery
             .getBlogsRepoQuery(
                 req.query.searchNameTerm ? String(req.query.searchNameTerm) : null,
                 req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -28,14 +33,14 @@ class BlogsController {
         res.status(200).send(getBlogs)
     }
     async createBlog(req:Request, res:Response){
-        const postBlog: TBlogDb = await blogsService
+        const postBlog: TBlogDb = await this.blogsService
             .createBlogService(req.body.name,
                 req.body.description,
                 req.body.websiteUrl)
         res.status(201).send(postBlog)
     }
     async createPostByBlogId(req:Request, res:Response){
-        const addPostByBlogId: PostType | null = await blogsService
+        const addPostByBlogId: PostType | null = await this.blogsService
             .createPostByBlogId(req.params.blogId, req.body.title,
                 req.body.shortDescription,
                 req.body.content);
@@ -46,7 +51,7 @@ class BlogsController {
         }
     }
     async getBlogById(req:Request, res:Response){
-        const getBlogId: TBlogDb | null = await blogsService
+        const getBlogId: TBlogDb | null = await this.blogsService
             .getBlogIDService(req.params.id)
         if (getBlogId) {
             res.status(200).send(getBlogId)
@@ -55,7 +60,7 @@ class BlogsController {
         }
     }
     async getPostsByBlogId(req:Request, res:Response){
-        const getPostsByBlogID: TypeGetPostsByBlogId | null = await blogsRepoQuery
+        const getPostsByBlogID: TypeGetPostsByBlogId | null = await this.blogsRepoQuery
             .getAllPostsByBlogId(
                 req.params.blogId,
                 req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -70,7 +75,7 @@ class BlogsController {
         }
     }
     async updateBlog(req:Request, res:Response){
-        const putBlog: boolean = await blogsService.updateBlogService(
+        const putBlog: boolean = await this.blogsService.updateBlogService(
             req.params.id,
             req.body.name,
             req.body.description,

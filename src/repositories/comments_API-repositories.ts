@@ -1,7 +1,7 @@
 import {CommentType} from "../types/types";
 import {CreateCommentByPostIDModel} from "../mongoDB/db";
 
-class CommentsDB {
+export class CommentsRepo {
     async getCommentById(id: string): Promise<CommentType | null> {
         return CreateCommentByPostIDModel.findOne({id}, {projection: {_id: 0, postId:false}})
     }
@@ -14,4 +14,3 @@ class CommentsDB {
         return !!delCommentDB
     }
 }
-export const commentsRepo = new CommentsDB()

@@ -6,18 +6,25 @@ import {
     createPostValidation,
     updatePostValidation
 } from "../middlewares/validators/validations";
-import {authMiddleware} from "../middlewares/authMiddleware";
-import {postService} from "../service/post_API-service";
-import {postsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId} from "../types/types";
 import {basicAuth} from "../auth/basic_auth";
+import {PostService} from "../service/post_API-service";
+import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
 
 export const postRouter = Router({});
 
 class PostsController{
+    postService:PostService;
+    postsRepoQuery:PostsRepoQuery;
+    constructor() {
+        this.postsRepoQuery = new PostsRepoQuery()
+        this.postService = new PostService()
+    }
+
+
     async getAllPosts(req: Request, res: Response){
-        const getPosts = await postsRepoQuery.getPostsRepoQuery(
+        const getPosts = await this.postsRepoQuery.getPostsRepoQuery(
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,
@@ -26,7 +33,7 @@ class PostsController{
     }
 
     async createPost(req: Request, res: Response){
-        const postPost: PostType | null = await postService.createPostService(
+        const postPost: PostType | null = await this.postService.createPostService(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -36,10 +43,10 @@ class PostsController{
         }
     }
     async createCommentByPostId(req: Request, res: Response){
-        const getPostId: PostType | null = await postService
+        const getPostId: PostType | null = await this.postService
             .getPostIDService(req.params.postId)
         if (getPostId) {
-            const newComment: CommentType = await postService
+            const newComment: CommentType = await this.postService
                 .createCommentService(req.body.content,req.params.postId, req.user!)
             res.status(201).send(newComment)
         } else {
@@ -47,7 +54,7 @@ class PostsController{
         }
     }
     async getCommentsByPostId(req: Request, res: Response){
-        const getCommentsByPostId: TypeGetCommentsByPostId | null = await postsRepoQuery.getCommentsRepoQuery(
+        const getCommentsByPostId: TypeGetCommentsByPostId | null = await this.postsRepoQuery.getCommentsRepoQuery(
             req.params.postId,
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
@@ -60,7 +67,7 @@ class PostsController{
         }
     }
     async updateComment(req: Request, res: Response){
-        const putPost: boolean = await postService.updatePostService(
+        const putPost: boolean = await this.postService.updatePostService(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
@@ -73,7 +80,7 @@ class PostsController{
         }
     }
     async deletePostById(req: Request, res: Response){
-        const delPostID: boolean = await postService.deleteIDService(req.params.id)
+        const delPostID: boolean = await this.postService.deleteIDService(req.params.id)
         if (delPostID) {
             res.sendStatus(204)
         } else {

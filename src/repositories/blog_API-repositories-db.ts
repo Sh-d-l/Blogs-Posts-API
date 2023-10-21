@@ -2,7 +2,7 @@ import {CreateNewBlogModel} from "../mongoDB/db";
 import {TBlogDb} from "../types/types";
 //import {blogs_repositories} from "./blog_API-repositories-memory";
 
-class BlogsRepo {
+export class BlogsRepo {
     async getBlogs(): Promise<TBlogDb[]> {
         return CreateNewBlogModel.find({}, {projection: {_id: 0}}).lean();
     }
@@ -24,5 +24,5 @@ class BlogsRepo {
     }
 
 }
-export const blogs_repositories = new BlogsRepo()
+
 

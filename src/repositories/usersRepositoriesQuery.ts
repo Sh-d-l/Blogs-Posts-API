@@ -3,7 +3,7 @@ import {CreateObjectOfUserForClient, TypeGetUsersWithCount} from "../types/types
 import {CreateUserWithMailModel} from "../mongoDB/db";
 //import {usersCollection} from "../mongoDB/db";
 
-class UsersQueryRepo {
+export class UsersQueryRepo {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
         const filter = {
             $or: [{
@@ -33,4 +33,3 @@ class UsersQueryRepo {
         return resArrUsers;
     }
 }
-export const usersQueryRepo = new UsersQueryRepo()

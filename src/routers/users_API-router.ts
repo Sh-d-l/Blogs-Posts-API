@@ -1,21 +1,28 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../auth/basic_auth"
-import {usersQueryRepo} from "../repositories/usersRepositoriesQuery";
+import {UsersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
-import {createUserService} from "../service/userService";
+import {CreateUserService} from "../service/userService";
+
 
 export const usersRouter = Router({});
 
-class SuperAdminUserController{
+export class SuperAdminUserController{
+    createUserService:CreateUserService;
+    usersQueryRepo:UsersQueryRepo;
+    constructor() {
+        this.usersQueryRepo = new UsersQueryRepo()
+        this.createUserService = new CreateUserService()
+    }
     async getAllUser(req: Request, res: Response){
         const pagination = getPaginationFromQuery(req.query)
-        const getUsers: TypeGetUsersWithCount = await usersQueryRepo.getUsersRepoQuery(pagination)
+        const getUsers: TypeGetUsersWithCount = await this.usersQueryRepo.getUsersRepoQuery(pagination)
         res.status(200).send(getUsers)
     }
     async createSuperAdminUser(req: Request, res: Response){
-        const addUser: CreateObjectOfUserForClient = await createUserService
+        const addUser: CreateObjectOfUserForClient = await this.createUserService
             .createUserSuperAdminService(req.body.login,
                 req.body.password,
                 req.body.email)
@@ -23,7 +30,7 @@ class SuperAdminUserController{
     }
     async deleteUser(req: Request, res: Response){
         const deleteUser: boolean =
-            await createUserService.deleteUserById(req.params._id)
+            await this.createUserService.deleteUserById(req.params._id)
         if (deleteUser) {
             res.sendStatus(204)
         } else {

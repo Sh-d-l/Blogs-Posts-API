@@ -38,4 +38,3 @@ export class PostsRepo {
         return !!foundBlogByID
     }
 }
-export const posts_repositories = new PostsRepo()

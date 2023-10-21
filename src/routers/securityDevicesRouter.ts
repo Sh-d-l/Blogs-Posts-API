@@ -1,11 +1,15 @@
 import {Request, Response, Router} from "express";
-import {securityDevicesService} from "../service/securityDevicesService";
+import {SecurityDevicesService} from "../service/securityDevicesService";
 
 export const securityDevicesRouter = Router({})
 
 class SecurityDevicesController{
+    securityDevicesService:SecurityDevicesService;
+    constructor() {
+        this.securityDevicesService = new SecurityDevicesService()
+    }
     async getAllDevices(req:Request, res:Response){
-        const arrayRefreshTokenMeta = await securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
+        const arrayRefreshTokenMeta = await this.securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
         if(arrayRefreshTokenMeta) {
             res.status(200).send(arrayRefreshTokenMeta)
         }
@@ -14,7 +18,7 @@ class SecurityDevicesController{
         }
     }
     async deleteAllDevicesExcludeCurrent(req:Request, res:Response){
-        const deleteAllExcludeCurrent = await securityDevicesService.deleteAllDevicesExcludeCurrentService(req.cookies.refreshToken)
+        const deleteAllExcludeCurrent = await this.securityDevicesService.deleteAllDevicesExcludeCurrentService(req.cookies.refreshToken)
         if (deleteAllExcludeCurrent) {
             res.sendStatus(204)
         }
@@ -23,7 +27,7 @@ class SecurityDevicesController{
         }
     }
     async deleteDeviceById(req:Request, res:Response) {
-        const deleteSuccess = await securityDevicesService.deleteDeviceByIdService(req.params.deviceId, req.cookies.refreshToken)
+        const deleteSuccess = await this.securityDevicesService.deleteDeviceByIdService(req.params.deviceId, req.cookies.refreshToken)
         if (deleteSuccess === 204) {
             res.sendStatus(204)
             return

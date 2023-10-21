@@ -6,7 +6,7 @@ import {
     CreateUserWithMailModel
 } from "../mongoDB/db";
 
-class UsersRepoDb  {
+export class UsersRepoDb  {
 
 /*------------------------create user super admin------------------------------*/
 
@@ -59,6 +59,6 @@ class UsersRepoDb  {
         return !!deleteResult;
     }
 }
-export const usersRepoDb = new UsersRepoDb()
+//export const usersRepoDb = new UsersRepoDb()
 
 

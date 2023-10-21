@@ -1,7 +1,7 @@
 import {RefreshTokenMetaModel} from "../mongoDB/db";
 import {TypeRefreshTokenMeta} from "../types/types";
 
-class SecurityDevicesRepo {
+export class SecurityDevicesRepo {
     async addRefreshTokenMeta(object: TypeRefreshTokenMeta) {
         await RefreshTokenMetaModel.create(object)
     }
@@ -23,4 +23,4 @@ class SecurityDevicesRepo {
         return !! result
     }
 }
-export const securityDevicesRepo = new SecurityDevicesRepo()
+

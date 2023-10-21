@@ -1,13 +1,18 @@
 import {Response, Request, Router} from "express";
 import {authMiddleware} from "../middlewares/authMiddleware";
-import {commentsService} from "../service/comments_API-service";
 import {createCommentValidation} from "../middlewares/validators/validations";
-import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
+import {CheckUserIdMiddleware, checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
+import {CommentsService} from "../service/comments_API-service";
 
 export const commentsRouter = Router({})
 class CommentsController{
+    commentsService:CommentsService;
+    constructor() {
+        this.commentsService = new CommentsService()
+    }
+
     async getCommentById(req: Request, res: Response){
-        const getCommentById = await commentsService.getCommentById(req.params.id)
+        const getCommentById = await this.commentsService.getCommentById(req.params.id)
         if (getCommentById) {
             res.status(200).send(getCommentById)
         } else {
@@ -15,7 +20,7 @@ class CommentsController{
         }
     }
     async updateComment(req: Request, res: Response){
-        const commentUpdate: boolean = await commentsService.commentUpdate(req.params.commentId, req.body.content)
+        const commentUpdate: boolean = await this.commentsService.commentUpdate(req.params.commentId, req.body.content)
         if (commentUpdate) {
             res.sendStatus(204)
         }
@@ -24,7 +29,7 @@ class CommentsController{
         }
     }
     async deleteCommentById(req: Request, res: Response){
-        const delComment: boolean = await commentsService.commentDelete(req.params.commentId)
+        const delComment: boolean = await this.commentsService.commentDelete(req.params.commentId)
         if (delComment) {
             res.sendStatus(204)
         } else {
@@ -34,6 +39,7 @@ class CommentsController{
 }
 
 export const commentsController = new CommentsController()
+
 
 commentsRouter.get("/:id", commentsController.getCommentById  )
 

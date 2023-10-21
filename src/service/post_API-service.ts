@@ -2,16 +2,24 @@ import {TBlogDb} from "../types/types";
 import {CommentType, CommentTypeWithPostId} from "../types/types";
 import {randomUUID} from "crypto";
 import {PostType} from "../types/types";
-import {posts_repositories} from "../repositories/post_API-repositories-db";
+import {PostsRepo} from "../repositories/post_API-repositories-db";
 import {CreateObjectOfUserForClient} from "../types/types";
-import {blogs_repositories} from "../repositories/blog_API-repositories-db";
+import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
+import {BlogsRepo} from "../repositories/blog_API-repositories-db";
 
-class PostService {
+
+export class PostService {
+    postsRepo:PostsRepo;
+    blogsRepo:BlogsRepo;
+    constructor() {
+        this.postsRepo = new PostsRepo()
+        this.blogsRepo = new BlogsRepo()
+    }
     async createPostService(title: string,
                             shortDescription: string,
                             content: string,
                             blogId: string): Promise<PostType | null> {
-        const blog: TBlogDb | null = await blogs_repositories.getBlogID(blogId)
+        const blog: TBlogDb | null = await this.blogsRepo.getBlogID(blogId)
         if (!blog) return null
         const newPost = new PostType(
             randomUUID(),
@@ -31,7 +39,7 @@ class PostService {
         //     blogName: blog.name,
         //     createdAt: new Date().toISOString(),
         // }
-        await posts_repositories.createPost(newPost);
+        await this.postsRepo.createPost(newPost);
         return newPost;
     }
 
@@ -70,14 +78,14 @@ class PostService {
         //     postId,
         //     ...newComment,
         // }
-        await posts_repositories.createCommentByPostId(newCommentWithPostId)
+        await this.postsRepo.createCommentByPostId(newCommentWithPostId)
         return newComment;
     }
 
     /*------------------------------------------------------------*/
 
     async getPostIDService(id: string): Promise<PostType | null> {
-        return await posts_repositories.getPostID(id);
+        return await this.postsRepo.getPostID(id);
     }
 
     async updatePostService(id: string,
@@ -85,12 +93,12 @@ class PostService {
                      shortDescription: string,
                      content: string,
                      blogId: string,): Promise<boolean> {
-        return await posts_repositories.updatePost(id,title,shortDescription,content,blogId)
+        return await this.postsRepo.updatePost(id,title,shortDescription,content,blogId)
     }
 
     async deleteIDService(id: string): Promise<boolean> {
-        return await posts_repositories.deleteID(id)
+        return await this.postsRepo.deleteID(id)
     }
 }
-export const postService = new PostService
+
 

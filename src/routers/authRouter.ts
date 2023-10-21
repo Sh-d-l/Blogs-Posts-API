@@ -5,13 +5,17 @@ import {
     confirmCodeValidation, createNewUserValidation, mailValidation, newPasswordValidationArray,
     resendingEmailValidation,
 } from "../middlewares/validators/validations";
-import {createUserService} from "../service/userService";
+import {CreateUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
 export const authRouter = Router({})
 
-class AuthController {
+export class AuthController {
+    userService:CreateUserService;
+    constructor() {
+        this.userService = new CreateUserService()
+    }
     async login (req: Request, res: Response) {
-        const authUser = await createUserService
+        const authUser = await this.userService
             .authUserWithEmailService(req.body.loginOrEmail, req.body.password,req.ip,req.headers["user-agent"])
         if (authUser) {
             res.cookie('refreshToken', authUser[1], {httpOnly: true, secure: true,})
@@ -22,19 +26,19 @@ class AuthController {
         }
     }
     async passwordRecovery(req: Request, res: Response){
-        const passwordRecoveryBoolean = await createUserService.passwordRecoveryService(req.body.email)
+        const passwordRecoveryBoolean = await this.userService.passwordRecoveryService(req.body.email)
         if (passwordRecoveryBoolean) {
             res.sendStatus(204)
             return
         }
     }
     async newPassword(req: Request, res: Response){
-        const passwordChanged = await  createUserService.changePasswordOfUser(req.body.newPassword, req.body.recoveryCode)
+        const passwordChanged = await  this.userService.changePasswordOfUser(req.body.newPassword, req.body.recoveryCode)
         if(passwordChanged)  res.sendStatus(204)
         else res.sendStatus(400)
     }
     async refreshToken(req: Request, res: Response){
-        const tokensArray = await createUserService.refreshingTokensService(req.cookies.refreshToken)
+        const tokensArray = await this.userService.refreshingTokensService(req.cookies.refreshToken)
         if (tokensArray) {
             res.status(200)
                 .cookie('refreshToken', tokensArray[1], {httpOnly: true, secure: true,})
@@ -44,7 +48,7 @@ class AuthController {
         }
     }
     async createUserWithConfirmationCode(req: Request, res: Response){
-        const userRegWithMail: CreateObjectOfUserForClient | null = await createUserService
+        const userRegWithMail: CreateObjectOfUserForClient | null = await this.userService
             .createUserWithEmailService(req.body.login,
                 req.body.password,
                 req.body.email)
@@ -56,21 +60,21 @@ class AuthController {
         }
     }
     async registrationConfirmation(req: Request, res: Response){
-        const updateIsConfirmed = await createUserService.confirmationCodeService(req.body.code)
+        const updateIsConfirmed = await this.userService.confirmationCodeService(req.body.code)
         if (updateIsConfirmed) {
             res.sendStatus(204)
             return
         }
     }
     async resendingEmailWithConfirmationCode(req: Request, res: Response){
-        const resendingEmail = await createUserService.resendingEmailService(req.body.email)
+        const resendingEmail = await this.userService.resendingEmailService(req.body.email)
         if (resendingEmail) {
             res.sendStatus(204)
             return
         }
     }
     async logout (req: Request, res: Response) {
-        const correctRefreshToken: boolean = await createUserService.logoutService(req.cookies.refreshToken)
+        const correctRefreshToken: boolean = await this.userService.logoutService(req.cookies.refreshToken)
         if(correctRefreshToken) {
             res.cookie(req.cookies.refreshToken, "", {maxAge: 0}).status(204).send()
         }
@@ -97,7 +101,7 @@ authRouter.post("/password-recovery",
 authRouter.post("/new-password",
     customRateLimitMiddleware,
     ...newPasswordValidationArray,
-   authController.newPassword)
+    authController.newPassword)
 
 authRouter.post("/refresh-token",
     authController.refreshToken)
