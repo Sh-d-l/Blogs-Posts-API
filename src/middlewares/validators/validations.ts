@@ -46,6 +46,10 @@ const contentValidation = body('content')
     .trim()
     .isLength({max: 1000})
     .notEmpty()
+const likeStatusValidation = body("likeStatus")
+    .isString()
+    .trim()
+    .notEmpty()
 const blogIdBodyValidation = body('blogId').custom(async (val) => {
     const blog = await blogs_repositories.getBlogID(val)
     if (!blog) {
@@ -253,6 +257,10 @@ export const newPasswordValidationArray = [
     newPasswordValidation,
     recoveryCodeTypeValidation,
     recoveryCodeForNewPasswordValidation,
+    inputValidator
+]
+export const likeStatusValidationArray = [
+    likeStatusValidation,
     inputValidator
 ]
 

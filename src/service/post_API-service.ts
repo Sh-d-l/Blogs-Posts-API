@@ -4,9 +4,7 @@ import {randomUUID} from "crypto";
 import {PostType} from "../types/types";
 import {PostsRepo} from "../repositories/post_API-repositories-db";
 import {CreateObjectOfUserForClient} from "../types/types";
-import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {BlogsRepo} from "../repositories/blog_API-repositories-db";
-
 
 export class PostService {
     postsRepo:PostsRepo;
@@ -54,6 +52,11 @@ export class PostService {
                 userLogin: user.login,
             },
             new Date().toISOString(),
+             {
+                likesCount: 0,
+                 dislikesCount: 0,
+                 myStatus: "None",
+        }
         )
         // const newComment:CommentType = {
         //     id: randomUUID(),
@@ -73,6 +76,12 @@ export class PostService {
                 userLogin: user.login,
             },
             new Date().toISOString(),
+            {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+            }
+
         )
         // const newCommentWithPostId: CommentTypeWithPostId = {
         //     postId,

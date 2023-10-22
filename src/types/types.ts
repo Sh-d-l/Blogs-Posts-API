@@ -119,7 +119,12 @@ export class CommentType{
                     userId: string,
                     userLogin: string
                 },
-                public createdAt: string
+                public createdAt: string,
+                public likesInfo:{
+                    likesCount: number,
+                    dislikesCount: number,
+                    myStatus: string,
+                }
     ) {}
 }
 // export type CommentType = {
@@ -139,7 +144,13 @@ export class CommentTypeWithPostId{
                     userId: string,
                     userLogin: string
                 },
-                public createdAt: string) {
+                public createdAt: string,
+                public likesInfo:{
+                    likesCount: number,
+                    dislikesCount: number,
+                    myStatus: string,
+                }
+                ) {
     }
 }
 // export type CommentTypeWithPostId = {

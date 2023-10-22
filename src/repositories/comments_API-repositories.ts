@@ -2,6 +2,10 @@ import {CommentType} from "../types/types";
 import {CreateCommentByPostIDModel} from "../mongoDB/db";
 
 export class CommentsRepo {
+    async updateLikesInfo (id:string, likesInfo:string): Promise<boolean> {
+        return
+    }
+
     async getCommentById(id: string): Promise<CommentType | null> {
         return CreateCommentByPostIDModel.findOne({id}, {projection: {_id: 0, postId:false}})
     }
