@@ -7,12 +7,12 @@ import {
 } from "../middlewares/validators/validations";
 import {CreateUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
+import {userService} from "../composition-root";
+import {authController} from "../composition-root";
 export const authRouter = Router({})
 
 export class AuthController {
-    userService:CreateUserService;
-    constructor() {
-        this.userService = new CreateUserService()
+    constructor(protected userService:CreateUserService) {
     }
     async login (req: Request, res: Response) {
         const authUser = await this.userService
@@ -87,43 +87,43 @@ export class AuthController {
     }
 }
 
-export const authController = new AuthController()
+
 
 authRouter.post("/login",
     customRateLimitMiddleware,
-    authController.login)
+    authController.login.bind(authController))
 
 authRouter.post("/password-recovery",
     customRateLimitMiddleware,
     ...mailValidation,
-    authController.passwordRecovery)
+    authController.passwordRecovery.bind(authController))
 
 authRouter.post("/new-password",
     customRateLimitMiddleware,
     ...newPasswordValidationArray,
-    authController.newPassword)
+    authController.newPassword.bind(authController))
 
 authRouter.post("/refresh-token",
-    authController.refreshToken)
+    authController.refreshToken.bind(authController))
 
 authRouter.post("/registration",
     customRateLimitMiddleware,
     ...createNewUserValidation,
-    authController.createUserWithConfirmationCode)
+    authController.createUserWithConfirmationCode.bind(authController))
 
 authRouter.post("/registration-confirmation",
     customRateLimitMiddleware,
     ...confirmCodeValidation,
-    authController.registrationConfirmation
+    authController.registrationConfirmation.bind(authController)
 )
 authRouter.post("/registration-email-resending",
     customRateLimitMiddleware,
     ...resendingEmailValidation,
-    authController.resendingEmailWithConfirmationCode
+    authController.resendingEmailWithConfirmationCode.bind(authController)
 )
 authRouter.post("/logout",
-    authController.logout
+    authController.logout.bind(authController)
 )
 authRouter.get("/me",
     authMiddleware,
-    authController.getInformationAboutCurrentUser)
+    authController.getInformationAboutCurrentUser.bind(authController))

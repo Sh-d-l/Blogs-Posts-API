@@ -11,6 +11,7 @@ import {TypeGetCommentsByPostId} from "../types/types";
 import {basicAuth} from "../auth/basic_auth";
 import {PostService} from "../service/post_API-service";
 import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
+import {commentsController} from "./comments_API-router";
 
 export const postRouter = Router({});
 
@@ -90,13 +91,13 @@ class PostsController{
 }
 export const postsController = new PostsController()
 
-postRouter.get('/', postsController.getAllPosts )
+postRouter.get('/', postsController.getAllPosts.bind(postsController) )
 
 postRouter.post('/',
     //authMiddleware,
     basicAuth,
     ...createPostValidation,
-    postsController.createPost )
+    postsController.createPost.bind(postsController) )
 
 /*-------------------------create comment by postId------------------------*/
 
@@ -104,25 +105,25 @@ postRouter.post('/:postId/comments',
     basicAuth,
     //authMiddleware,
     ...createCommentValidation,
-    postsController.createCommentByPostId
+    postsController.createCommentByPostId.bind(postsController)
 )
 
 /*------------------------get comments by PostID---------------------------*/
 
-postRouter.get('/:postId/comments', postsController.getCommentsByPostId )
+postRouter.get('/:postId/comments', postsController.getCommentsByPostId.bind(postsController) )
 
 /*-------------------------------------------------------------------------*/
 
-postRouter.get('/:id', postsController.getCommentsByPostId)
+postRouter.get('/:id', postsController.getCommentsByPostId.bind(postsController))
 
 postRouter.put('/:id',
     //authMiddleware,
     basicAuth,
     ...updatePostValidation,
-    postsController.updateComment )
+    postsController.updateComment.bind(postsController) )
 
 postRouter.delete('/:id',
     //authMiddleware,
     basicAuth,
-    postsController.deletePostById)
+    postsController.deletePostById.bind(postsController))
 

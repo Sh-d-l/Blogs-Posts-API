@@ -52,12 +52,12 @@ class SecurityDevicesController{
 export const securityDevicesController = new SecurityDevicesController()
 
 securityDevicesRouter.get("/devices",
-    securityDevicesController.getAllDevices )
+    securityDevicesController.getAllDevices.bind(securityDevicesController) )
 
 securityDevicesRouter.delete("/devices",
-    securityDevicesController.deleteAllDevicesExcludeCurrent )
+    securityDevicesController.deleteAllDevicesExcludeCurrent.bind(securityDevicesController) )
 
 securityDevicesRouter.delete("/devices/:deviceId",
-    securityDevicesController.deleteDeviceById
+    securityDevicesController.deleteDeviceById.bind(securityDevicesController)
 
 )

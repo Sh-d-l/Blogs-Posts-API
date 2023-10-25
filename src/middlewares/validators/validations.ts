@@ -1,6 +1,6 @@
 import {body} from "express-validator";
 import {inputValidator} from "./input-validation.middleware";
-import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
+//import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
 import {CreateUsersWithConfirmationCode} from "../../types/types";
 import {UsersRepoDb} from "../../repositories/users_API-repositories-db";
 //import {usersRepoDb} from "../../repositories/users_API-repositories-db";

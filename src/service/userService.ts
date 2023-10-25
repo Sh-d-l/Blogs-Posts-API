@@ -13,14 +13,9 @@ import {SecurityDevicesRepo} from "../repositories/securityDevicesRepo";
 
 
 export class CreateUserService {
-    usersRepo:UsersRepoDb;
-    securityDevicesRepo:SecurityDevicesRepo;
-    constructor() {
-        this.usersRepo = new UsersRepoDb()
-        this.securityDevicesRepo = new SecurityDevicesRepo()
+    constructor( protected usersRepo:UsersRepoDb,
+    protected securityDevicesRepo:SecurityDevicesRepo) {
     }
-
-
     async createUserWithEmailService(login: string,
                                      password: string,
                                      email: string): Promise<CreateObjectOfUserForClient | null> {
@@ -194,37 +189,4 @@ export class CreateUserService {
         }
     }
 
-    /*---------------------------------creating a super admin user---------------------------------------*/
-
-    async createUserSuperAdminService(login: string, password: string, email: string): Promise<CreateObjectOfUserForClient> {
-        const userHash = await bcrypt.hash(password, 10)
-        const newUser = new CreateObjectOfUserForClient(
-            randomUUID(),
-            login,
-            email,
-            new Date().toISOString(),
-        )
-
-        const newUserWithHashMail = new CreateUsersWithConfirmationCode(
-            newUser.id,
-            newUser.login,
-            newUser.email,
-            newUser.createdAt,
-            userHash,
-            {
-                confirmationCode: uuidv4(),
-                expirationTime: add(new Date(), {
-                    hours: 0,
-                    minutes: 3,
-                }),
-                isConfirmed: false,
-            }
-        )
-
-        await this.usersRepo.createNewUser(newUserWithHashMail)
-        return newUser;
-    }
-    async deleteUserById(id: string): Promise<boolean> {
-        return await this.usersRepo.deleteUserById(id)
-    }
 }

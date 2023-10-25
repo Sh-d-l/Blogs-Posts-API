@@ -8,17 +8,24 @@ export class CommentsService {
     }
     async makeLikeService(id:string, likeStatus: string):Promise<boolean> {
         const commentById = await this.commentsRepo.getCommentById(id)
-        if
-        let likesCount = 0;
-        let dislikesCount = 0;
-        if (likeStatus === "like") {
-            likesCount += 1;
+        if(!commentById) return  false
+        if (likeStatus === "None" && commentById?.likesInfo.myStatus === "Like") {
+            await this.commentsRepo.updateLikesInfoIfNoneAfterLike(id, likeStatus)
+            return true
         }
-        if (likeStatus === "Dislike") {
-            dislikesCount += 1;
+        if (likeStatus === "None" && commentById?.likesInfo.myStatus === "Dislike") {
+            await this.commentsRepo.updateLikesInfoIfNoneAfterDislike(id, likeStatus)
+            return true
         }
-
-        return await this.commentsRepo.updateLikesInfo(id,likeStatus)
+        if (likeStatus === "like" && commentById?.likesInfo.myStatus === "Dislike") {
+            await this.commentsRepo.updateLikesInfoIfLikeAfterDislike(id, likeStatus)
+            return true
+        }
+        if (likeStatus === "Dislike" && commentById?.likesInfo.myStatus === "Like") {
+            await this.commentsRepo.updateLikesInfoIfDislikeAfterLike(id, likeStatus)
+            return true
+        }
+        else return false
     }
 
     async getCommentById(id:string):Promise<CommentType | null> {

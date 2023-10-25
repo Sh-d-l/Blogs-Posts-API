@@ -91,29 +91,29 @@ class BlogsController {
 }
 export const blogsController = new BlogsController()
 
-blogRouter.get('/', blogsController.getAllBlogs)
+blogRouter.get('/', blogsController.getAllBlogs.bind(blogsController))
 
 blogRouter.post("/",
     //authMiddleware,
     basicAuth,
     ...createBlogValidation,
-    blogsController.createBlog)
+    blogsController.createBlog.bind(blogsController))
 
 blogRouter.post("/:blogId/posts",
     //authMiddleware,
     basicAuth,
     ...createPostByBlogIDValidation,
-    blogsController.createPostByBlogId)
+    blogsController.createPostByBlogId.bind(blogsController))
 
-blogRouter.get('/:id', blogsController.getBlogById)
+blogRouter.get('/:id', blogsController.getBlogById.bind(blogsController))
 
-blogRouter.get('/:blogId/posts', blogsController.getPostsByBlogId)
+blogRouter.get('/:blogId/posts', blogsController.getPostsByBlogId.bind(blogsController))
 
 blogRouter.put('/:id',
     //authMiddleware,
     basicAuth,
     ...updateBlogValidation,
-    blogsController.updateBlog
+    blogsController.updateBlog.bind(blogsController)
    )
 
 

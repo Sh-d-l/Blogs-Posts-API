@@ -4,17 +4,14 @@ import {UsersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
-import {CreateUserService} from "../service/userService";
-
+import {superAdminUserController, superAdminUserService} from "../composition-root";
+import {SuperAdminUserService} from "../service/superAdminUserService";
 
 export const usersRouter = Router({});
 
 export class SuperAdminUserController{
-    createUserService:CreateUserService;
-    usersQueryRepo:UsersQueryRepo;
-    constructor() {
-        this.usersQueryRepo = new UsersQueryRepo()
-        this.createUserService = new CreateUserService()
+    constructor(protected superAdminUserService:SuperAdminUserService,
+    protected usersQueryRepo:UsersQueryRepo) {
     }
     async getAllUser(req: Request, res: Response){
         const pagination = getPaginationFromQuery(req.query)
@@ -22,7 +19,7 @@ export class SuperAdminUserController{
         res.status(200).send(getUsers)
     }
     async createSuperAdminUser(req: Request, res: Response){
-        const addUser: CreateObjectOfUserForClient = await this.createUserService
+        const addUser: CreateObjectOfUserForClient = await this.superAdminUserService
             .createUserSuperAdminService(req.body.login,
                 req.body.password,
                 req.body.email)
@@ -30,7 +27,7 @@ export class SuperAdminUserController{
     }
     async deleteUser(req: Request, res: Response){
         const deleteUser: boolean =
-            await this.createUserService.deleteUserById(req.params._id)
+            await this.superAdminUserService.deleteUserById(req.params._id)
         if (deleteUser) {
             res.sendStatus(204)
         } else {
@@ -38,7 +35,7 @@ export class SuperAdminUserController{
         }
     }
 }
-export const superAdminUserController = new SuperAdminUserController()
+
 
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
@@ -57,14 +54,14 @@ export const getPaginationFromQuery = (query: any): IPagination => {
 
 usersRouter.get('/',
     basicAuth,
-    superAdminUserController.getAllUser )
+    superAdminUserController.getAllUser.bind(superAdminUserController) )
 
 usersRouter.post("/",
     basicAuth,
     //...createNewUserSuperAdminValidation,
-    superAdminUserController.createSuperAdminUser )
+    superAdminUserController.createSuperAdminUser.bind(superAdminUserController) )
 
 usersRouter.delete("/:id",
     basicAuth,
-    superAdminUserController.deleteUser
+    superAdminUserController.deleteUser.bind(superAdminUserController)
 )
