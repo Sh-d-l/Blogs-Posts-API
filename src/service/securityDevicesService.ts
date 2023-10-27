@@ -2,11 +2,11 @@
 import {jwtService} from "../application/jwt-service";
 import {TypeRefreshTokenMeta} from "../types/types";
 import {SecurityDevicesRepo} from "../repositories/securityDevicesRepo";
+import {securityDevicesRepo} from "../composition-root";
+
 
 export class SecurityDevicesService {
-    securityDevicesRepo:SecurityDevicesRepo;
-    constructor() {
-        this.securityDevicesRepo = new SecurityDevicesRepo()
+    constructor(protected securityDevicesRepo:SecurityDevicesRepo) {
     }
     async getAllDevicesByUserId(refreshToken:string):Promise<TypeRefreshTokenMeta[] | null> {
         if (!refreshToken) return null;

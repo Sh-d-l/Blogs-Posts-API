@@ -11,19 +11,15 @@ import {TypeGetCommentsByPostId} from "../types/types";
 import {basicAuth} from "../auth/basic_auth";
 import {PostService} from "../service/post_API-service";
 import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
-import {commentsController} from "./comments_API-router";
+import {postsController} from "../composition-root";
+//import {commentsController} from "./comments_API-router";
 
 export const postRouter = Router({});
 
-class PostsController{
-    postService:PostService;
-    postsRepoQuery:PostsRepoQuery;
-    constructor() {
-        this.postsRepoQuery = new PostsRepoQuery()
-        this.postService = new PostService()
+export class PostsController{
+    constructor(protected postService:PostService,
+    protected postsRepoQuery:PostsRepoQuery) {
     }
-
-
     async getAllPosts(req: Request, res: Response){
         const getPosts = await this.postsRepoQuery.getPostsRepoQuery(
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -89,7 +85,7 @@ class PostsController{
         }
     }
 }
-export const postsController = new PostsController()
+
 
 postRouter.get('/', postsController.getAllPosts.bind(postsController) )
 

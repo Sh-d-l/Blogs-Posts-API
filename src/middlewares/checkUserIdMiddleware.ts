@@ -2,14 +2,13 @@ import {Request, Response, NextFunction} from "express";
 import {jwtService} from "../application/jwt-service";
 import {CommentType} from "../types/types";
 import {CommentsService} from "../service/comments_API-service";
+import {commentsService} from "../composition-root";
 
-export class CheckUserIdMiddleware {
-    commentsService:CommentsService;
-    constructor() {
-        this.commentsService = new CommentsService()
-    }
+export const checkUserIdMiddleware = {
+
+
     async async(req: Request, res: Response, next: NextFunction) {
-        const getCommentById: CommentType | null = await this.commentsService.getCommentById(req.params.commentId)
+        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
         if (!getCommentById) {
             res.sendStatus(404)
             return

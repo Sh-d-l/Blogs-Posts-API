@@ -36,7 +36,6 @@ export class SuperAdminUserController{
     }
 }
 
-
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
     const pageSize = Number(query.pageSize)

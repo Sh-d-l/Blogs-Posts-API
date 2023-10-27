@@ -1,12 +1,11 @@
 import {Request, Response, Router} from "express";
 import {SecurityDevicesService} from "../service/securityDevicesService";
+import {securityDevicesController} from "../composition-root";
 
 export const securityDevicesRouter = Router({})
 
-class SecurityDevicesController{
-    securityDevicesService:SecurityDevicesService;
-    constructor() {
-        this.securityDevicesService = new SecurityDevicesService()
+export class SecurityDevicesController{
+    constructor(protected securityDevicesService:SecurityDevicesService) {
     }
     async getAllDevices(req:Request, res:Response){
         const arrayRefreshTokenMeta = await this.securityDevicesService.getAllDevicesByUserId(req.cookies.refreshToken)
@@ -45,11 +44,7 @@ class SecurityDevicesController{
             return
         }
     }
-
-
 }
-
-export const securityDevicesController = new SecurityDevicesController()
 
 securityDevicesRouter.get("/devices",
     securityDevicesController.getAllDevices.bind(securityDevicesController) )

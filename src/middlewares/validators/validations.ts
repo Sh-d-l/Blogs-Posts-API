@@ -3,6 +3,7 @@ import {inputValidator} from "./input-validation.middleware";
 //import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
 import {CreateUsersWithConfirmationCode} from "../../types/types";
 import {UsersRepoDb} from "../../repositories/users_API-repositories-db";
+import {blogsRepo, usersRepo} from "../../composition-root";
 //import {usersRepoDb} from "../../repositories/users_API-repositories-db";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
@@ -51,7 +52,7 @@ const likeStatusValidation = body("likeStatus")
     .trim()
     .notEmpty()
 const blogIdBodyValidation = body('blogId').custom(async (val) => {
-    const blog = await blogs_repositories.getBlogID(val)
+    const blog = await blogsRepo.getBlogID(val)
     if (!blog) {
         throw new Error("BlogId not exist")
     }
@@ -59,14 +60,14 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
 })
 
     const registeredUserEmailValidation = body("email").custom(async (email) => {
-        const user = await this.usersRepoValidator.findUserByLoginOrEmail(email)
+        const user = await usersRepo.findUserByLoginOrEmail(email)
         if (user) {
             throw new Error("User already registered")
         }
         return true
     })
     const registeredUserLoginValidation = body("login").custom(async (login) => {
-        const user = await this.usersRepo.findUserByLoginOrEmail(login)
+        const user = await usersRepo.findUserByLoginOrEmail(login)
         if (user) {
             throw new Error("User already registered")
         }
@@ -75,7 +76,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
 
     const
     registeredUserIsConfirmedValidation = body("code").custom(async (code) => {
-        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByCode(code)
+        const user: CreateUsersWithConfirmationCode | null = await usersRepo.findUserByCode(code)
         if (user && user.emailConfirmation.isConfirmed) {
             throw new Error("User already registered")
         }
@@ -83,7 +84,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     })
     const
     expirationTimeValidation = body("code").custom(async (code) => {
-        const user = await this.usersRepo.findUserByCode(code)
+        const user = await usersRepo.findUserByCode(code)
         if (user && user.emailConfirmation.expirationTime < new Date()) {
             throw new Error("Code expired")
         }
@@ -91,7 +92,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     })
     const
     resendingMailValidation = body("email").custom(async (email) => {
-        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByEmail(email)
+        const user: CreateUsersWithConfirmationCode | null = await usersRepo.findUserByEmail(email)
         if (!user) {
             throw new Error("User not found")
         }
@@ -100,7 +101,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
 
     const
     registeredUserIsConfirmedResendingMailValidation = body("email").custom(async (email) => {
-        const user: CreateUsersWithConfirmationCode | null = await this.usersRepo.findUserByEmail(email)
+        const user: CreateUsersWithConfirmationCode | null = await usersRepo.findUserByEmail(email)
         if (user && user.emailConfirmation.isConfirmed) {
             throw new Error("User already registered")
         }
@@ -108,7 +109,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     })
     const
     expirationTimeResendingEmailValidation = body("email").custom(async (email) => {
-        const user = await this.usersRepo.findUserByEmail(email)
+        const user = await usersRepo.findUserByEmail(email)
         if (user && user.emailConfirmation.expirationTime < new Date()) {
             throw new Error("Code expired")
         }
@@ -116,7 +117,7 @@ const blogIdBodyValidation = body('blogId').custom(async (val) => {
     })
     const
     recoveryCodeForNewPasswordValidation = body("recoveryCode").custom(async (recoveryCode) => {
-        const recoveryCodeObject = await this.usersRepo.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
+        const recoveryCodeObject = await usersRepo.findRecoveryCodeObjectByRecoveryCode(recoveryCode)
         if (!recoveryCodeObject) {
             throw new Error("incorrect recoveryCode")
         }

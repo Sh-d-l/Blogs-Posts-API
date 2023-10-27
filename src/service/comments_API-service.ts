@@ -2,9 +2,7 @@ import {CommentType} from "../types/types";
 import {CommentsRepo} from "../repositories/comments_API-repositories";
 
 export class CommentsService {
-    commentsRepo:CommentsRepo;
-    constructor() {
-        this.commentsRepo = new CommentsRepo()
+    constructor(protected  commentsRepo:CommentsRepo) {
     }
     async makeLikeService(id:string, likeStatus: string):Promise<boolean> {
         const commentById = await this.commentsRepo.getCommentById(id)

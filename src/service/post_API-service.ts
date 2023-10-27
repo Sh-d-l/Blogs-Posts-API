@@ -7,11 +7,8 @@ import {CreateObjectOfUserForClient} from "../types/types";
 import {BlogsRepo} from "../repositories/blog_API-repositories-db";
 
 export class PostService {
-    postsRepo:PostsRepo;
-    blogsRepo:BlogsRepo;
-    constructor() {
-        this.postsRepo = new PostsRepo()
-        this.blogsRepo = new BlogsRepo()
+    constructor( protected blogsRepo:BlogsRepo,
+                 protected postsRepo:PostsRepo) {
     }
     async createPostService(title: string,
                             shortDescription: string,

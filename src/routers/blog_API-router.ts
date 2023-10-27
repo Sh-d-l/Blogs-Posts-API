@@ -11,15 +11,13 @@ import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 import {basicAuth} from "../auth/basic_auth";
 import {BlogsService} from "../service/blog_API-service";
+import {blogsService, blogsRepoQuery, blogsController} from "../composition-root";
 
 export const blogRouter = Router({});
 
-class BlogsController {
-    blogsService:BlogsService;
-    blogsRepoQuery:BlogsRepoQuery;
-    constructor() {
-        this.blogsService = new BlogsService()
-        this.blogsRepoQuery = new BlogsRepoQuery()
+export class BlogsController {
+    constructor(protected  blogsService:BlogsService,
+    protected  blogsRepoQuery:BlogsRepoQuery) {
     }
     async getAllBlogs(req: Request, res: Response){
         const getBlogs: TypeGetBlogsWithCount = await this.blogsRepoQuery
@@ -89,7 +87,6 @@ class BlogsController {
     }
 
 }
-export const blogsController = new BlogsController()
 
 blogRouter.get('/', blogsController.getAllBlogs.bind(blogsController))
 

@@ -1,14 +1,14 @@
 import {Response, Request, Router} from "express";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {createCommentValidation, likeStatusValidationArray} from "../middlewares/validators/validations";
-import {CheckUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
+import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 import {CommentsService} from "../service/comments_API-service";
+import { commentsController, commentsService} from "../composition-root";
 
 export const commentsRouter = Router({})
-class CommentsController{
-    commentsService:CommentsService;
-    constructor() {
-        this.commentsService = new CommentsService()
+
+export class CommentsController {
+    constructor(protected commentsService:CommentsService) {
     }
     async makeLike(req:Request,res:Response) {
         const makeLikeOfComment = await  this.commentsService.makeLikeService(req.params.id, req.body.likeStatus)
@@ -47,7 +47,7 @@ class CommentsController{
     }
 }
 
-export const commentsController = new CommentsController()
+
 
 commentsRouter.put("/:commentId/like-status",
     authMiddleware,
@@ -58,11 +58,11 @@ commentsRouter.get("/:id", commentsController.getCommentById.bind(commentsContro
 
 commentsRouter.put("/:commentId",
     authMiddleware,
-    checkUserIdMiddleware,
+    //checkUserIdMiddleware,
     ...createCommentValidation,
    commentsController.updateComment.bind(commentsController))
 
 commentsRouter.delete("/:commentId",
     authMiddleware,
-    checkUserIdMiddleware,
+    //checkUserIdMiddleware,
     commentsController.deleteCommentById.bind(commentsController) )

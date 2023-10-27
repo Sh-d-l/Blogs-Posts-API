@@ -6,11 +6,9 @@ import {BlogsRepo} from "../repositories/blog_API-repositories-db";
 import {PostsRepo} from "../repositories/post_API-repositories-db";
 
 export class BlogsService {
-    blogsRepo:BlogsRepo;
-    postsRepo:PostsRepo;
-    constructor() {
-        this.blogsRepo = new BlogsRepo()
-        this.postsRepo = new PostsRepo()
+
+    constructor(protected blogsRepo:BlogsRepo,
+                protected postsRepo:PostsRepo) {
     }
     async createBlogService(name: string,
                             description: string,
