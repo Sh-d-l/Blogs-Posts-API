@@ -4,12 +4,27 @@ import {UsersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
-import {superAdminUserController, superAdminUserService} from "../composition-root";
+import {superAdminUserController} from "../composition-root";
 import {SuperAdminUserService} from "../service/superAdminUserService";
+import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 
 export const usersRouter = Router({});
+export const getPaginationFromQuery = (query: any): IPagination => {
+    const pageNumber = Number(query.pageNumber)
+    const pageSize = Number(query.pageSize)
+    return {
+        searchLoginTerm: query.searchLoginTerm ?? '',
+        searchEmailTerm: query.searchEmailTerm ?? '',
+        searchNameTerm: query.searchNameTerm ?? '',
+        sortBy: query.sortBy ?? "createdAt",
+        sortDirection: query.sortDirection === 'asc' ? 'asc' : "desc",
+        pageNumber: pageNumber > 0 ? pageNumber : 1 || 1,
+        pageSize: pageSize > 0 ? pageSize : 10 || 10,
+        skip: (pageNumber - 1) * pageSize
+    }
+}
 
-export class SuperAdminUserController{
+export class SuperAdminUserController {
     constructor(protected superAdminUserService:SuperAdminUserService,
     protected usersQueryRepo:UsersQueryRepo) {
     }
@@ -36,28 +51,13 @@ export class SuperAdminUserController{
     }
 }
 
-export const getPaginationFromQuery = (query: any): IPagination => {
-    const pageNumber = Number(query.pageNumber)
-    const pageSize = Number(query.pageSize)
-    return {
-        searchLoginTerm: query.searchLoginTerm ?? '',
-        searchEmailTerm: query.searchEmailTerm ?? '',
-        searchNameTerm: query.searchNameTerm ?? '',
-        sortBy: query.sortBy ?? "createdAt",
-        sortDirection: query.sortDirection === 'asc' ? 'asc' : "desc",
-        pageNumber: pageNumber > 0 ? pageNumber : 1 || 1,
-        pageSize: pageSize > 0 ? pageSize : 10 || 10,
-        skip: (pageNumber - 1) * pageSize
-    }
-}
-
 usersRouter.get('/',
     basicAuth,
     superAdminUserController.getAllUser.bind(superAdminUserController) )
 
 usersRouter.post("/",
     basicAuth,
-    //...createNewUserSuperAdminValidation,
+    ...createNewUserSuperAdminValidation,
     superAdminUserController.createSuperAdminUser.bind(superAdminUserController) )
 
 usersRouter.delete("/:id",

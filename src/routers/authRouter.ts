@@ -7,7 +7,6 @@ import {
 } from "../middlewares/validators/validations";
 import {CreateUserService} from "../service/userService";
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
-import {userService} from "../composition-root";
 import {authController} from "../composition-root";
 export const authRouter = Router({})
 
