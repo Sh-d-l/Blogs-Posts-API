@@ -13,7 +13,6 @@ import {PostService} from "../service/post_API-service";
 import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
 import {postsController} from "../composition-root";
 //import {commentsController} from "./comments_API-router";
-
 export const postRouter = Router({});
 
 export class PostsController{
@@ -87,39 +86,5 @@ export class PostsController{
 }
 
 
-postRouter.get('/', postsController.getAllPosts.bind(postsController) )
 
-postRouter.post('/',
-    //authMiddleware,
-    basicAuth,
-    ...createPostValidation,
-    postsController.createPost.bind(postsController) )
-
-/*-------------------------create comment by postId------------------------*/
-
-postRouter.post('/:postId/comments',
-    basicAuth,
-    //authMiddleware,
-    ...createCommentValidation,
-    postsController.createCommentByPostId.bind(postsController)
-)
-
-/*------------------------get comments by PostID---------------------------*/
-
-postRouter.get('/:postId/comments', postsController.getCommentsByPostId.bind(postsController) )
-
-/*-------------------------------------------------------------------------*/
-
-postRouter.get('/:id', postsController.getCommentsByPostId.bind(postsController))
-
-postRouter.put('/:id',
-    //authMiddleware,
-    basicAuth,
-    ...updatePostValidation,
-    postsController.updateComment.bind(postsController) )
-
-postRouter.delete('/:id',
-    //authMiddleware,
-    basicAuth,
-    postsController.deletePostById.bind(postsController))
 

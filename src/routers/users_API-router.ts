@@ -9,6 +9,7 @@ import {SuperAdminUserService} from "../service/superAdminUserService";
 import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 
 export const usersRouter = Router({});
+
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
     const pageSize = Number(query.pageSize)
@@ -24,9 +25,10 @@ export const getPaginationFromQuery = (query: any): IPagination => {
     }
 }
 
+
 export class SuperAdminUserController {
     constructor(protected superAdminUserService:SuperAdminUserService,
-    protected usersQueryRepo:UsersQueryRepo) {
+                protected usersQueryRepo:UsersQueryRepo) {
     }
     async getAllUser(req: Request, res: Response){
         const pagination = getPaginationFromQuery(req.query)
@@ -51,16 +53,6 @@ export class SuperAdminUserController {
     }
 }
 
-usersRouter.get('/',
-    basicAuth,
-    superAdminUserController.getAllUser.bind(superAdminUserController) )
 
-usersRouter.post("/",
-    basicAuth,
-    ...createNewUserSuperAdminValidation,
-    superAdminUserController.createSuperAdminUser.bind(superAdminUserController) )
 
-usersRouter.delete("/:id",
-    basicAuth,
-    superAdminUserController.deleteUser.bind(superAdminUserController)
-)
+

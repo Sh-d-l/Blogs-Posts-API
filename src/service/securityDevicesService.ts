@@ -3,6 +3,7 @@ import {jwtService} from "../application/jwt-service";
 import {TypeRefreshTokenMeta} from "../types/types";
 import {SecurityDevicesRepo} from "../repositories/securityDevicesRepo";
 import {securityDevicesRepo} from "../composition-root";
+import {Router} from "express";
 
 
 export class SecurityDevicesService {

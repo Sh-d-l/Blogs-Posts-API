@@ -46,13 +46,3 @@ export class SecurityDevicesController{
     }
 }
 
-securityDevicesRouter.get("/devices",
-    securityDevicesController.getAllDevices.bind(securityDevicesController) )
-
-securityDevicesRouter.delete("/devices",
-    securityDevicesController.deleteAllDevicesExcludeCurrent.bind(securityDevicesController) )
-
-securityDevicesRouter.delete("/devices/:deviceId",
-    securityDevicesController.deleteDeviceById.bind(securityDevicesController)
-
-)

@@ -1,12 +1,6 @@
 import {Response, Request, Router} from "express";
-import {authMiddleware} from "../middlewares/authMiddleware";
-import {createCommentValidation, likeStatusValidationArray} from "../middlewares/validators/validations";
-import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 import {CommentsService} from "../service/comments_API-service";
-import { commentsController, commentsService} from "../composition-root";
-
 export const commentsRouter = Router({})
-
 export class CommentsController {
     constructor(protected commentsService:CommentsService) {
     }
@@ -49,20 +43,3 @@ export class CommentsController {
 
 
 
-commentsRouter.put("/:commentId/like-status",
-    authMiddleware,
-    ...likeStatusValidationArray,
-    commentsController.makeLike.bind(commentsController))
-
-commentsRouter.get("/:id", commentsController.getCommentById.bind(commentsController)  )
-
-commentsRouter.put("/:commentId",
-    authMiddleware,
-    checkUserIdMiddleware,
-    ...createCommentValidation,
-   commentsController.updateComment.bind(commentsController))
-
-commentsRouter.delete("/:commentId",
-    authMiddleware,
-    checkUserIdMiddleware,
-    commentsController.deleteCommentById.bind(commentsController) )
