@@ -2,7 +2,7 @@ import {basicAuth} from "../auth/basic_auth";
 import {superAdminUserController} from "../composition-root";
 import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 import {Router} from "express";
-import {usersRouter} from "../routers/users_API-router";
+export const usersRouter = Router({});
 
 usersRouter.get('/',
     basicAuth,

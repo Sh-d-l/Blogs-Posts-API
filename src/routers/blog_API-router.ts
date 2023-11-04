@@ -1,19 +1,11 @@
-import {Request, Response, Router} from "express";
+import {Request, Response } from "express";
 import {TBlogDb} from "../types/types";
-
-import {
-    createBlogValidation, createPostByBlogIDValidation, updateBlogValidation,
-} from "../middlewares/validators/validations";
 import {TypeGetBlogsWithCount} from "../types/types";
 import {BlogsRepoQuery} from "../repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
-import {basicAuth} from "../auth/basic_auth";
 import {BlogsService} from "../service/blog_API-service";
-import {blogsService, blogsRepoQuery, blogsController} from "../composition-root";
-
-export const blogRouter = Router({});
 
 export class BlogsController {
     constructor(protected  blogsService:BlogsService,

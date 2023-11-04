@@ -1,19 +1,10 @@
 import {Request, Response, Router} from "express";
 import {PostType} from "../types/types";
 import {CommentType} from "../types/types";
-import {
-    createCommentValidation,
-    createPostValidation,
-    updatePostValidation
-} from "../middlewares/validators/validations";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId} from "../types/types";
-import {basicAuth} from "../auth/basic_auth";
 import {PostService} from "../service/post_API-service";
 import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
-import {postsController} from "../composition-root";
-//import {commentsController} from "./comments_API-router";
-export const postRouter = Router({});
 
 export class PostsController{
     constructor(protected postService:PostService,

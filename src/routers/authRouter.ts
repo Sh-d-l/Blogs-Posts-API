@@ -1,14 +1,6 @@
 import {Request, Response, Router} from "express";
 import {CreateObjectOfUserForClient} from "../types/types";
-import {authMiddleware} from "../middlewares/authMiddleware";
-import {
-    confirmCodeValidation, createNewUserValidation, mailValidation, newPasswordValidationArray,
-    resendingEmailValidation,
-} from "../middlewares/validators/validations";
 import {CreateUserService} from "../service/userService";
-import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
-import {authController} from "../composition-root";
-export const authRouter = Router({})
 
 export class AuthController {
     constructor(protected userService:CreateUserService) {

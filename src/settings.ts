@@ -1,13 +1,14 @@
 import express, {Response, Request} from 'express'
-import { authRouter} from "./routers/authRouter";
-import {blogRouter} from "./routers/blog_API-router";
-import {postRouter} from "./routers/post_API-router";
-import {usersRouter} from "./routers/users_API-router";
-import {commentsRouter} from "./routers/comments_API-router";
-import {securityDevicesRouter} from "./routers/securityDevicesRouter";
-import {collections} from "./mongoDB/db";
 import cookieParser from "cookie-parser";
+import {collections} from "./mongoDB/db";
+import {authRouter} from "./controllers/authController";
+import {blogRouter} from "./controllers/blogsController";
+import {commentsRouter} from "./controllers/commentsController";
+import {securityDevicesRouter} from "./controllers/securityDevicesController";
+import {postRouter} from "./controllers/postsController";
+import {usersRouter} from "./controllers/superAdminUserController";
 export const app = express()
+
 app.use(express.json())
 app.use(cookieParser())
 app.set('trust proxy', true)

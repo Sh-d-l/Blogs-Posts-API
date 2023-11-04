@@ -1,14 +1,9 @@
 import {Request, Response, Router} from "express";
-import {basicAuth} from "../auth/basic_auth"
 import {UsersQueryRepo} from "../repositories/usersRepositoriesQuery";
 import {TypeGetUsersWithCount} from "../types/types";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
-import {superAdminUserController} from "../composition-root";
 import {SuperAdminUserService} from "../service/superAdminUserService";
-import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
-
-export const usersRouter = Router({});
 
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)

@@ -6,11 +6,9 @@ import {
     mailValidation,
     newPasswordValidationArray, resendingEmailValidation
 } from "../middlewares/validators/validations";
-import {authMiddleware} from "../middlewares/authMiddleware";
 import {Router} from "express";
-import {authRouter} from "../routers/authRouter";
-
-
+export const authRouter = Router({})
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 authRouter.post("/login",
     customRateLimitMiddleware,

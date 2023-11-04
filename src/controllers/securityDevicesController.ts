@@ -1,8 +1,7 @@
 import {securityDevicesController} from "../composition-root";
 
 import {Router} from "express";
-import {securityDevicesRouter} from "../routers/securityDevicesRouter";
-
+export const securityDevicesRouter = Router({})
 
 securityDevicesRouter.get("/devices",
     securityDevicesController.getAllDevices.bind(securityDevicesController) )

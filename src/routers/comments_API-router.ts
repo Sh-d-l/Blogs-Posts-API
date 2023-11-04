@@ -1,6 +1,6 @@
-import {Response, Request, Router} from "express";
+import {Response, Request} from "express";
 import {CommentsService} from "../service/comments_API-service";
-export const commentsRouter = Router({})
+
 export class CommentsController {
     constructor(protected commentsService:CommentsService) {
     }

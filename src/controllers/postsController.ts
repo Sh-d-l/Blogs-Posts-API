@@ -7,8 +7,7 @@ import {
 } from "../middlewares/validators/validations";
 
 import {Router} from "express";
-import {postRouter} from "../routers/post_API-router";
-
+export const postRouter = Router({});
 
 postRouter.get('/', postsController.getAllPosts.bind(postsController) )
 

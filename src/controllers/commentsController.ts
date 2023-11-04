@@ -3,9 +3,7 @@ import {createCommentValidation, likeStatusValidationArray} from "../middlewares
 import {commentsController} from "../composition-root";
 import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 import {Router} from "express";
-import {commentsRouter} from "../routers/comments_API-router";
-
-
+export const commentsRouter = Router({})
 
 commentsRouter.put("/:commentId/like-status",
     authMiddleware,

@@ -1,8 +1,5 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 import {SecurityDevicesService} from "../service/securityDevicesService";
-import {securityDevicesController} from "../composition-root";
-
-export const securityDevicesRouter = Router({})
 
 export class SecurityDevicesController{
     constructor(protected securityDevicesService:SecurityDevicesService) {

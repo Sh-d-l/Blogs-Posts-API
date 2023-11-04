@@ -6,8 +6,7 @@ import {
     updateBlogValidation
 } from "../middlewares/validators/validations";
 import {Router} from "express";
-import {blogRouter} from "../routers/blog_API-router";
-
+export const blogRouter = Router({});
 
 blogRouter.get('/', blogsController.getAllBlogs.bind(blogsController))
 

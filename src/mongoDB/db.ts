@@ -6,8 +6,7 @@ import {
 import {PostType} from "../types/types";
 import {CreateUsersWithConfirmationCode} from "../types/types";
 import {CommentTypeWithPostId} from "../types/types";
-import mongoose, {Schema, Types} from "mongoose"
-
+import mongoose, {Schema} from "mongoose"
 
 config()
 
@@ -32,7 +31,6 @@ export async function runDB() {
 }
 
 console.log(mongoURI)
-
 
 export const CreateUserWithMailSchema = new Schema<CreateUsersWithConfirmationCode>(
     {
