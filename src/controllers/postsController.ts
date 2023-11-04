@@ -7,6 +7,7 @@ import {
 } from "../middlewares/validators/validations";
 
 import {Router} from "express";
+import {authMiddleware} from "../middlewares/authMiddleware";
 export const postRouter = Router({});
 
 postRouter.get('/', postsController.getAllPosts.bind(postsController) )
@@ -20,8 +21,8 @@ postRouter.post('/',
 /*-------------------------create comment by postId------------------------*/
 
 postRouter.post('/:postId/comments',
-    basicAuth,
-    //authMiddleware,
+    //basicAuth,
+    authMiddleware,
     ...createCommentValidation,
     postsController.createCommentByPostId.bind(postsController)
 )
