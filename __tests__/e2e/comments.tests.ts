@@ -20,7 +20,8 @@ import {content, lessContentLength, moreContentLength, urlComments} from
         "../../test_constanse/comments.constans";
 import mongoose from "mongoose";
 import {CreateUserWithMailModel, mongoURI} from "../../src/mongoDB/db";
-import {TUsersWithHashEmailDb} from "../../src/types/types";
+import {CreateUsersWithConfirmationCode} from "../../src/types/types";
+
 
 
 describe ("comments", () => {
@@ -49,7 +50,7 @@ describe ("comments", () => {
     /*--------------------------confirmation of registration--------------------*/
 
     it("confirmationCode success, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailUser})
 
         if (user) {
             await request(app)
@@ -82,7 +83,7 @@ describe ("comments", () => {
     it("create blog, should return 201 and {}", async () => {
         await request(app)
             .post(urlBlogs)
-            .auth(tokens.body.accessToken, {type: "bearer"})
+            .auth(loginAuth,passAuth)
             .send({
                 name: blogName,
                 description: blogDescription,
@@ -251,7 +252,7 @@ describe ("comments", () => {
     /*--------------------------confirmation of registration another user--------------------*/
 
     it("confirmationCode another user success, should return 204", async () => {
-        const user: TUsersWithHashEmailDb | null = await CreateUserWithMailModel.findOne({email: emailAnotherUser})
+        const user: CreateUsersWithConfirmationCode | null = await CreateUserWithMailModel.findOne({email: emailAnotherUser})
 
         if (user) {
             await request(app)

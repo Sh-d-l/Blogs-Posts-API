@@ -91,6 +91,11 @@ export const CreateCommentByPostIDSchema = new Schema<CommentTypeWithPostId>(
             userLogin: {type: String, required: true},
         },
         createdAt: {type: String, required: true},
+        likesInfo:{
+            likesCount:{type:Number,required:true},
+            dislikesCount:{type:Number,required:true},
+            myStatus:{type: String, required: true}
+        }
     }
 )
 export const CreateRateLimitDocumentSchema = new Schema<TypeCustomRateLimit> (

@@ -41,20 +41,6 @@ export class PostService {
       /*----------------------create comment------------------------*/
 
     async createCommentService(content: string,postId:string, user:CreateObjectOfUserForClient):Promise<CommentType> {
-        const newComment = new CommentType(
-            randomUUID(),
-            content,
-            {
-                userId: user.id,
-                userLogin: user.login,
-            },
-            new Date().toISOString(),
-             {
-                likesCount: 0,
-                 dislikesCount: 0,
-                 myStatus: "None",
-        }
-        )
         // const newComment:CommentType = {
         //     id: randomUUID(),
         //     content,
@@ -78,14 +64,20 @@ export class PostService {
                 dislikesCount: 0,
                 myStatus: "None",
             }
-
         )
         // const newCommentWithPostId: CommentTypeWithPostId = {
         //     postId,
         //     ...newComment,
         // }
         await this.postsRepo.createCommentByPostId(newCommentWithPostId)
-        return newComment;
+       return new CommentType(
+            newCommentWithPostId.id,
+            newCommentWithPostId.content,
+            newCommentWithPostId.commentatorInfo,
+            newCommentWithPostId.createdAt,
+            newCommentWithPostId.likesInfo
+
+        )
     }
 
     /*------------------------------------------------------------*/
