@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express";
+import {Request, Response} from "express";
 import {PostType} from "../types/types";
 import {CommentType} from "../types/types";
 import {SortDirection} from "mongodb";
@@ -65,6 +65,14 @@ export class PostsController{
         } else {
             res.sendStatus(404)
         }
+    }
+    async returnPostById(req: Request, res: Response){
+        const postById:PostType | null = await this.postService.getPostIDService(req.params.id)
+        if(postById) {
+            res.status(200).send(postById)
+        }
+        else res.status(404)
+
     }
     async deletePostById(req: Request, res: Response){
         const delPostID: boolean = await this.postService.deleteIDService(req.params.id)

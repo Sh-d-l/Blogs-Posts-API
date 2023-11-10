@@ -33,7 +33,7 @@ postRouter.get('/:postId/comments', postsController.getCommentsByPostId.bind(pos
 
 /*-------------------------------------------------------------------------*/
 
-postRouter.get('/:id', postsController.getCommentsByPostId.bind(postsController))
+postRouter.get('/:id', postsController.returnPostById.bind(postsController))
 
 postRouter.put('/:id',
     //authMiddleware,

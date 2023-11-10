@@ -83,7 +83,10 @@ export class PostService {
     /*------------------------------------------------------------*/
 
     async getPostIDService(id: string): Promise<PostType | null> {
-        return await this.postsRepo.getPostID(id);
+         return await this.postsRepo.getPostID(id);
+
+
+
     }
 
     async updatePostService(id: string,

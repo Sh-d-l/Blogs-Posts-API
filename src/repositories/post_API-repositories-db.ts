@@ -18,7 +18,7 @@ export class PostsRepo {
          await CreateCommentByPostIDModel.create({...newCommentWithPostId})
     }
     async getPostID(id: string): Promise<PostType | null> {
-        return CreatePostModel.findOne({id}, {projection: {_id: 0}});
+        return CreatePostModel.findOne({id}).select({_id: false, __v: 0});
     }
     async updatePost(id: string,
                      title: string,
