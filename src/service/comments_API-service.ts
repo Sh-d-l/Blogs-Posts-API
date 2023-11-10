@@ -5,8 +5,20 @@ export class CommentsService {
     constructor(protected  commentsRepo:CommentsRepo) {
     }
     async makeLikeService(id:string, likeStatus: string):Promise<boolean> {
-        const commentById = await this.commentsRepo.getCommentById(id)
-        if(!commentById) return  false
+        const commentById:CommentType | null = await this.commentsRepo.getCommentById(id)
+        console.log(commentById, "commentById service")
+        console.log(likeStatus, "likeStatus")
+        console.log(commentById?.likesInfo.myStatus, "commentById.likesInfo.myStatus")
+        if (likeStatus === "like" /*&& commentById?.likesInfo.myStatus == "None"*/) {
+            console.log("1")
+            const likeOk = await this.commentsRepo.updateLikesInfoIfLikeAfterNone(id, likeStatus)
+            console.log(likeOk)
+            return likeOk
+        }
+        if (likeStatus === "Dislike" && commentById?.likesInfo.myStatus === "None") {
+            await this.commentsRepo.updateLikesInfoIfDislikeAfterNone(id, likeStatus)
+            return true
+        }
         if (likeStatus === "None" && commentById?.likesInfo.myStatus === "Like") {
             await this.commentsRepo.updateLikesInfoIfNoneAfterLike(id, likeStatus)
             return true

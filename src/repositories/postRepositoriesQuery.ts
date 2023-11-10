@@ -13,7 +13,7 @@ export class PostsRepoQuery {
         const postSkip: number = (+pageNumber - 1) * +pageSize
         const pagesCount: number = Math.ceil(totalCount / +pageSize)
         const getPostDB: PostType[] = await CreatePostModel
-            .find({}, {projection: {_id: false}})
+            .find({}, {_id: false,__v:0})
             .sort({[sortBy]: sortDirection})
             .skip(postSkip)
             .limit(pageSize)
@@ -36,7 +36,7 @@ export class PostsRepoQuery {
         const commentsSkip: number = (+pageNumber - 1) * +pageSize
         const pagesCount: number = Math.ceil(commentsTotal / +pageSize)
         const getCommentsDB: CommentType[] = await CreateCommentByPostIDModel
-            .find({postId}, {projection: {_id: false, postId:false}})
+            .find({postId}, {_id: 0, postId:0, __v:0})
             .sort({[sortBy]: sortDirection})
             .skip(commentsSkip)
             .limit(pageSize)

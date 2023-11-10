@@ -20,13 +20,13 @@ export class UsersRepoDb  {
         await CreateUserWithMailModel.create({...newUserWithHashEmail})
     }
     async findUserByEmail(email: string): Promise<CreateUsersWithConfirmationCode | null> {
-        return CreateUserWithMailModel.findOne({email}, {projection: {_id: 0}});
+        return CreateUserWithMailModel.findOne({email}, {_id: 0});
     }
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<CreateUsersWithConfirmationCode | null> {
         return CreateUserWithMailModel.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}, {projection: {_id: 0}});
     }
     async findUserByCode(code: string): Promise<CreateUsersWithConfirmationCode | null> {
-        return CreateUserWithMailModel.findOne({"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}});
+        return CreateUserWithMailModel.findOne({"emailConfirmation.confirmationCode": code}, {_id: 0});
     }
     async createDocumentWithRecoveryCode(recoveryCode:TypeRecoveryCode) {
         return CreateDocumentWithRecoveryCodeModel.create({...recoveryCode})
