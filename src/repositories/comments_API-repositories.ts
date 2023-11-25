@@ -3,29 +3,28 @@ import {CreateCommentByPostIDModel} from "../mongoDB/db";
 
 export class CommentsRepo {
     async updateLikesInfoIfLikeAfterNone (id:string, myStatus:string): Promise<boolean>{
-        console.log(id, myStatus, "id, myStatus repo")
         const updateLikesInfoIfLikeAfterNone = CreateCommentByPostIDModel.updateOne({id},{"likesInfo.myStatus":myStatus})
-        console.log(updateLikesInfoIfLikeAfterNone, "updateLikesInfoIfLikeAfterNone")
+        //console.log(updateLikesInfoIfLikeAfterNone,"updateLikesInfoIfLikeAfterNone")
         return !!updateLikesInfoIfLikeAfterNone
     }
     async updateLikesInfoIfDislikeAfterNone (id:string, myStatus:string): Promise<boolean> {
-        const updateLikesInfoIfDislikeAfterNone = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":+1}, "likesInfo:myStatus":myStatus})
+        const updateLikesInfoIfDislikeAfterNone = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":+1}, "likesInfo.myStatus":myStatus})
         return !!updateLikesInfoIfDislikeAfterNone
     }
     async updateLikesInfoIfNoneAfterLike (id:string, myStatus:string): Promise<boolean> {
-        const updateLikesInfoIfNoneAfterLike =  CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:likesCount":-1}, "likesInfo:myStatus":myStatus})
+        const updateLikesInfoIfNoneAfterLike =  CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:likesCount":-1}, "likesInfo.myStatus":myStatus})
         return !!updateLikesInfoIfNoneAfterLike
     }
     async updateLikesInfoIfNoneAfterDislike (id:string, myStatus:string): Promise<boolean> {
-         const updateLikesInfoIfNoneAfterDislike = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":-1}, "likesInfo:myStatus":myStatus})
+         const updateLikesInfoIfNoneAfterDislike = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":-1}, "likesInfo.myStatus":myStatus})
         return !!updateLikesInfoIfNoneAfterDislike
     }
     async updateLikesInfoIfLikeAfterDislike(id:string, myStatus:string): Promise<boolean>{
-         const updateLikesInfoIfLikeAfterDislike =  CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":-1, "likesInfo:likesCount":+1 }, "likesInfo:myStatus":myStatus})
+         const updateLikesInfoIfLikeAfterDislike =  CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":-1, "likesInfo:likesCount":+1 }, "likesInfo.myStatus":myStatus})
         return !!updateLikesInfoIfLikeAfterDislike
     }
     async updateLikesInfoIfDislikeAfterLike(id:string, myStatus:string): Promise<boolean>{
-        const updateLikesInfoIfDislikeAfterLike = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":+1, "likesInfo:likesCount":-1 }, "likesInfo:myStatus":myStatus})
+        const updateLikesInfoIfDislikeAfterLike = CreateCommentByPostIDModel.updateOne({id},{$inc:{"likesInfo:dislikesCount":+1, "likesInfo:likesCount":-1 }, "likesInfo.myStatus":myStatus})
         return !!updateLikesInfoIfDislikeAfterLike
     }
 
