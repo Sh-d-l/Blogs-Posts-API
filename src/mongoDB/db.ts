@@ -124,11 +124,11 @@ export const CreateRateLimitDocumentModel = mongoose.model("CreateRateLimitDocum
 
 export const collections: any[] =
     [
+        CreateCommentByPostIDModel,
         CreateUserWithMailModel,
         CreateDocumentWithRecoveryCodeModel,
         CreateNewBlogModel,
         CreatePostModel,
-        CreateCommentByPostIDModel,
         CreateRateLimitDocumentModel,
         RefreshTokenMetaModel,
     ]

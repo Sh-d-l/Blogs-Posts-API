@@ -5,8 +5,7 @@ export class CommentsController {
     constructor(protected commentsService:CommentsService) {
     }
     async makeLike(req:Request,res:Response) {
-        const makeLikeOfComment = await  this.commentsService.makeLikeService(req.params.commentId, req.body.likeStatus)
-        //console.log(makeLikeOfComment, "comment with like")
+        const makeLikeOfComment = await  this.commentsService.makeLikeService(req.params.commentId, req.body.likeStatus, req.headers.authorization)
         if (makeLikeOfComment) {
             res.sendStatus(204)
         }

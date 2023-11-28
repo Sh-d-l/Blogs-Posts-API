@@ -1,39 +1,22 @@
 import {CommentType} from "../types/types";
 import {CommentsRepo} from "../repositories/comments_API-repositories";
+import {jwtService} from "../application/jwt-service";
 
 export class CommentsService {
     constructor(protected  commentsRepo:CommentsRepo) {
     }
-    async makeLikeService(id:string, likeStatus: string):Promise<boolean> {
+    async makeLikeService(id: string, likeStatus: string, accessToken: string | undefined):Promise<boolean> {
         const commentById:CommentType | null = await this.commentsRepo.getCommentById(id)
-        // console.log(commentById, "commentById service")
-        // console.log(likeStatus, "likeStatus")
-        // console.log(commentById?.likesInfo.myStatus, "commentById.likesInfo.myStatus")
-        if (likeStatus === "like" && commentById?.likesInfo.myStatus == "None") {
-            //console.log("1")
-            const likeOk = await this.commentsRepo.updateLikesInfoIfLikeAfterNone(id, likeStatus)
-            //console.log(likeOk,"likeok")
-            return likeOk
+        if(accessToken) {
+            const [bearer,token] = accessToken.split(" ")
+            const userId = await jwtService.getUserIdByAccessToken(token)
+            console.log(userId)
         }
-        if (likeStatus === "Dislike" && commentById?.likesInfo.myStatus === "None") {
-            await this.commentsRepo.updateLikesInfoIfDislikeAfterNone(id, likeStatus)
-            return true
-        }
-        if (likeStatus === "None" && commentById?.likesInfo.myStatus === "Like") {
-            await this.commentsRepo.updateLikesInfoIfNoneAfterLike(id, likeStatus)
-            return true
-        }
-        if (likeStatus === "None" && commentById?.likesInfo.myStatus === "Dislike") {
-            await this.commentsRepo.updateLikesInfoIfNoneAfterDislike(id, likeStatus)
-            return true
-        }
-        if (likeStatus === "like" && commentById?.likesInfo.myStatus === "Dislike") {
-            await this.commentsRepo.updateLikesInfoIfLikeAfterDislike(id, likeStatus)
-            return true
-        }
-        if (likeStatus === "Dislike" && commentById?.likesInfo.myStatus === "Like") {
-            await this.commentsRepo.updateLikesInfoIfDislikeAfterLike(id, likeStatus)
-            return true
+
+
+        if (commentById) {
+            await this.commentsRepo.updateLikesInfo(id, likeStatus)
+            return  true
         }
         else return false
     }
