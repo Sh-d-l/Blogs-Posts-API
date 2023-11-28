@@ -18,6 +18,7 @@ import {CommentsController} from "./routers/comments_API-router";
 import {PostsController} from "./routers/post_API-router";
 import {SecurityDevicesController} from "./routers/securityDevicesRouter";
 import {SecurityDevicesService} from "./service/securityDevicesService";
+import {LikeStatusRepo} from "./repositories/likeStatusRepo";
 //import {CheckUserIdMiddleware} from "./middlewares/checkUserIdMiddleware";
 
 export const usersRepo = new UsersRepoDb()
@@ -29,11 +30,12 @@ export const usersQueryRepo = new UsersQueryRepo();
 export const superAdminUserController = new SuperAdminUserController(superAdminUserService,usersQueryRepo)
 export const blogsRepo = new BlogsRepo();
 export const postsRepo = new PostsRepo();
+export const likeStatusRepo = new LikeStatusRepo()
 export const blogsRepoQuery = new BlogsRepoQuery();
 export const commentsRepo = new CommentsRepo();
 export const blogsService = new BlogsService(blogsRepo,postsRepo);
 export const blogsController = new BlogsController(blogsService, blogsRepoQuery)
-export const commentsService = new CommentsService(commentsRepo);
+export const commentsService = new CommentsService(commentsRepo,likeStatusRepo);
 export const commentsController = new CommentsController(commentsService)
 export const postService = new  PostService(blogsRepo, postsRepo);
 export const postsRepoQuery = new PostsRepoQuery();

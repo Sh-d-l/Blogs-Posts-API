@@ -209,6 +209,12 @@ export type TypeGetCommentsByPostId = {
     items: CommentType[]
 }
 
+export type TypeLikeStatusOfComment = {
+    commentId: string,
+    userId:string | null,
+    likeStatus:string,
+}
+
 
 
 

@@ -1,7 +1,7 @@
 import {config} from 'dotenv'
 import {
     TBlogDb, TypeCustomRateLimit, TypeRecoveryCode,
-    TypeRefreshTokenMeta
+    TypeRefreshTokenMeta, TypeLikeStatusOfComment
 } from "../types/types";
 import {PostType} from "../types/types";
 import {CreateUsersWithConfirmationCode} from "../types/types";
@@ -114,6 +114,13 @@ export const CreateDocumentWithRecoveryCodeSchema = new Schema<TypeRecoveryCode>
     }
 )
 
+export const LikeStatusOfCommentSchema = new Schema<TypeLikeStatusOfComment>(
+    {
+        commentId:{type:String, required: true},
+        userId:{type:String, required: true},
+        likeStatus:{type:String, required: true},
+    }
+)
 export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel', CreateUserWithMailSchema)
 export const CreateDocumentWithRecoveryCodeModel = mongoose.model("CreateDocumentWithRecoveryCodeModel", CreateDocumentWithRecoveryCodeSchema)
 export const RefreshTokenMetaModel = mongoose.model('RefreshTokenMetaModel', RefreshTokenMetaSchema)
@@ -121,6 +128,7 @@ export const CreateNewBlogModel = mongoose.model('CreateNewBlogModel', CreateNew
 export const CreatePostModel = mongoose.model('CreatePostModel', CreatePostSchema)
 export const CreateCommentByPostIDModel = mongoose.model('CreateCommentByPostIDModel', CreateCommentByPostIDSchema)
 export const CreateRateLimitDocumentModel = mongoose.model("CreateRateLimitDocumentModel", CreateRateLimitDocumentSchema)
+export const LikeStatusOfCommentModel = mongoose.model("LikeStatusOfCommentModel", LikeStatusOfCommentSchema)
 
 export const collections: any[] =
     [
@@ -131,6 +139,7 @@ export const collections: any[] =
         CreatePostModel,
         CreateRateLimitDocumentModel,
         RefreshTokenMetaModel,
+        LikeStatusOfCommentModel
     ]
 
 
