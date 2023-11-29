@@ -10,7 +10,7 @@ export class CommentsRepo {
         return CreateCommentByPostIDModel.findOne({id}, {_id: 0, postId:0 , __v:0})
     }
     async commentUpdateRepo(id: string, content: string): Promise<boolean> {
-        const updateCommentDB = await CreateCommentByPostIDModel.updateOne({id}, {content})
+            const updateCommentDB = await CreateCommentByPostIDModel.updateOne({id}, {content})
         return !!updateCommentDB
     }
     async commentDeleteDB(id: string): Promise<boolean> {
