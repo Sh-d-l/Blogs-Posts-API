@@ -114,11 +114,17 @@ export const CreateDocumentWithRecoveryCodeSchema = new Schema<TypeRecoveryCode>
     }
 )
 
-export const LikeStatusOfCommentSchema = new Schema<TypeLikeStatusOfComment>(
+export const LikeStatusOfCommentSchema = new Schema<TypeLikeStatusOfComment> (
     {
         commentId:{type:String, required: true},
-        userId:{type:String, required: true},
-        likeStatus:{type:String, required: true},
+        likeCount: {type:Number, required: true},
+        dislikeCount: {type:Number, required: true},
+        usersInfo: [
+            {
+                userId:{type:String, required: true},
+                likeStatus:{type:String, required: true},
+            }
+        ]
     }
 )
 export const CreateUserWithMailModel = mongoose.model('CreateUserWithMailModel', CreateUserWithMailSchema)

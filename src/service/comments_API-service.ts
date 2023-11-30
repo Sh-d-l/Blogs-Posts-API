@@ -8,19 +8,48 @@ export class CommentsService {
     }
 
     async makeLikeService(commentId: string, likeStatus: string, accessToken: string | undefined): Promise<boolean> {
-        const commentById: CommentType | null = await this.commentsRepo.getCommentById(commentId)
-        if (!commentById) return false
-        if (accessToken) {
-            const [bearer, token] = accessToken.split(" ")
-            const userId = await jwtService.getUserIdByAccessToken(token)
-            const likeStatusOfCommentObject = {
+        const [bearer, token] = accessToken!.split(" ")
+        const userId = await jwtService.getUserIdByAccessToken(token)
+
+        const object = await this.likeStatusRepo.getObjectWithCountAndInfoUsers(commentId)
+        if(!object && likeStatus === "like") {
+            const object = {
                 commentId,
-                userId: userId,
-                likeStatus
+                likeCount: 1,
+                dislikeCount: 0,
+                usersInfo: [
+                    {
+                        userId,
+                        likeStatus,
+                    }
+                ]
             }
-            await this.likeStatusRepo.addLikeStatusOfCommentObjectToDB(likeStatusOfCommentObject)
+            await this.likeStatusRepo.addLikeStatusOfCommentObjectToDB(object)
             return true
         }
+        if(!object && likeStatus === "Dislike") {
+            const object = {
+                commentId,
+                likeCount: 0,
+                dislikeCount: 1,
+                usersInfo: [
+                    {
+                        userId,
+                        likeStatus,
+                    }
+                ]
+            }
+            await this.likeStatusRepo.addLikeStatusOfCommentObjectToDB(object)
+            return true
+        }
+
+        if(object && likeStatus === "like") {
+
+        }
+
+        const commentById: CommentType | null = await this.commentsRepo.getCommentById(commentId)
+        if (!commentById) return false
+
         else return  false
     }
 
