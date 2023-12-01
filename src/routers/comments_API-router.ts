@@ -15,7 +15,7 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response){
-        const getCommentById = await this.commentsService.getCommentById(req.params.id)
+        const getCommentById = await this.commentsService.getCommentById(req.params.id, req.headers.authorization)
         if (getCommentById) {
             res.status(200).send(getCommentById)
         } else {

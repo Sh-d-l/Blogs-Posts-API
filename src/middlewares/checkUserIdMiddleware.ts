@@ -7,7 +7,7 @@ import {commentsService} from "../composition-root";
 export const checkUserIdMiddleware = {
 
     async async(req: Request, res: Response, next: NextFunction) {
-        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId)
+        const getCommentById: CommentType | null = await commentsService.getCommentById(req.params.commentId,req.headers.authorization)
         if (!getCommentById) {
             res.sendStatus(404)
             return
