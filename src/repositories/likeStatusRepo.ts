@@ -5,8 +5,8 @@ export class LikeStatusRepo {
     async getObjectWithCommentId(commentId:string):Promise<TypeLikeStatusOfComment | null> {
         return LikeStatusOfCommentModel.findOne({commentId},{_id: 0, __v:0})
     }
-    async getObjectWithUsersInfo(userId: string | null):Promise<TypeLikeStatusOfComment | null> {
-        return LikeStatusOfCommentModel.find({}).sort(userId).lean()
+    async getObjectWithUsersInfo(userId: string | null):Promise<boolean> {
+        return LikeStatusOfCommentModel.find({userId})
     }
     async addLikeStatusOfCommentObjectToDB(object:{commentId:string, usersInfo:{userId:string | null, likeStatus:string}[]}) {
         await LikeStatusOfCommentModel.create({...object})
