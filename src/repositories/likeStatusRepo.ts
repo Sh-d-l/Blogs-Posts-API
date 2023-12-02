@@ -6,14 +6,15 @@ export class LikeStatusRepo {
         return LikeStatusOfCommentModel.findOne({commentId},{_id: 0, __v:0})
     }
     async getObjectWithUsersInfo(userId: string | null):Promise<TypeLikeStatusOfComment | null> {
-        return LikeStatusOfCommentModel.findOne({"usersInfo.userId":userId},{_id: 0, __v:0})
+        return LikeStatusOfCommentModel.find({}).sort(userId).lean()
     }
     async addLikeStatusOfCommentObjectToDB(object:{commentId:string, usersInfo:{userId:string | null, likeStatus:string}[]}) {
         await LikeStatusOfCommentModel.create({...object})
     }
     async changeLikeStatusByUserId(userId: string | null, likeStatus: string) {
-        await LikeStatusOfCommentModel.updateOne({"usersInfo.userId":userId}, {usersInfo:[{likeStatus:likeStatus}]} )
-           }
+        const a = await LikeStatusOfCommentModel.updateOne({"usersInfo.userId":userId}, {} )
+        console.log(a,"a")
+    }
     async addUserInfo(commentId: string, object: { likeStatus: string; userId: string | null }) {
          await LikeStatusOfCommentModel.updateOne({commentId},{$push:{usersInfo:object}})
     }

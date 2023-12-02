@@ -10,8 +10,10 @@ export class CommentsService {
     async makeLikeService(commentId: string, likeStatus: string, accessToken: string | undefined): Promise<boolean> {
         const [bearer, token] = accessToken!.split(" ")
         const userId = await jwtService.getUserIdByAccessToken(token)
+
+        const commentById = await this.commentsRepo.getCommentById(commentId)
         const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentId(commentId)
-        if(!resultSearchByCommentId) {
+        if(!resultSearchByCommentId && commentById) {
             const object = {
                 commentId,
                 usersInfo: [
@@ -25,9 +27,8 @@ export class CommentsService {
             return true
         }
         const userIdByUsersInfo = await this.likeStatusRepo.getObjectWithUsersInfo(userId)
-        //console.log(userIdByUsersInfo, "userIdByUsersInfo")
+        console.log(userIdByUsersInfo, "userIdByuserInfo")
         if (resultSearchByCommentId && !userIdByUsersInfo){
-
             const userInfo = {
                 userId,
                 likeStatus
@@ -36,8 +37,6 @@ export class CommentsService {
             return true
         }
         if(resultSearchByCommentId && userIdByUsersInfo) {
-            // console.log(resultSearchByCommentId, "resultSearchByCommentId")
-            // console.log(userIdByUsersInfo, "userIdByUsersInfo")
             await  this.likeStatusRepo.changeLikeStatusByUserId(userId,likeStatus)
             return true
         }
@@ -45,14 +44,15 @@ export class CommentsService {
     }
 
     async getCommentById(id: string, accessToken:string | undefined): Promise<CommentType | null> {
-        const [bearer, token] = accessToken!.split(" ")
-        const userId = await jwtService.getUserIdByAccessToken(token)
+        // const [bearer, token] = accessToken!.split(" ")
+        // const userId = await jwtService.getUserIdByAccessToken(token)
 
         const comment = await this.commentsRepo.getCommentById(id)
-
-        const likeInfoByUser = await this.likeStatusRepo.getObjectWithUsersInfo(userId)
-
-        //const likesCount = await this.likeStatusRepo.
+        const likesInfoObject = await  this.likeStatusRepo.getObjectWithCommentId(id)
+        console.log(likesInfoObject, "likesInfoObject")
+        const filterUsersInfo = likesInfoObject!.usersInfo.filter(elem => {
+            return elem == "likeStatus": Like
+        })
         return comment
 
     }
