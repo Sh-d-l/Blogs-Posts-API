@@ -2,7 +2,6 @@ import {CommentType} from "../types/types";
 import {CommentsRepo} from "../repositories/comments_API-repositories";
 import {jwtService} from "../application/jwt-service";
 import {LikeStatusRepo} from "../repositories/likeStatusRepo";
-import {loginAnotherUser} from "../../test_constanse/user.constans";
 
 export class CommentsService {
     constructor(protected commentsRepo: CommentsRepo, protected likeStatusRepo: LikeStatusRepo) {
@@ -10,7 +9,6 @@ export class CommentsService {
     async makeLikeService(commentId: string, likeStatus: string, accessToken: string | undefined): Promise<boolean> {
         const [bearer, token] = accessToken!.split(" ")
         const userId = await jwtService.getUserIdByAccessToken(token)
-
         const commentById = await this.commentsRepo.getCommentById(commentId)
         const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentId(commentId)
         if(!resultSearchByCommentId && commentById) {
@@ -27,7 +25,6 @@ export class CommentsService {
             return true
         }
         const userIdByUsersInfo = await this.likeStatusRepo.getObjectWithUsersInfo(userId)
-        console.log(userIdByUsersInfo, "userIdByuserInfo")
         if (resultSearchByCommentId && !userIdByUsersInfo){
             const userInfo = {
                 userId,
@@ -43,17 +40,40 @@ export class CommentsService {
         else return  false
     }
 
-    async getCommentById(id: string, accessToken:string | undefined): Promise<CommentType | null> {
-        // const [bearer, token] = accessToken!.split(" ")
-        // const userId = await jwtService.getUserIdByAccessToken(token)
-
+    async getCommentById(id: string, refreshToken:string): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
+        const userIdFromRefreshToken = await  jwtService.getPayloadRefreshToken(refreshToken)
         const comment = await this.commentsRepo.getCommentById(id)
         const likesInfoObject = await  this.likeStatusRepo.getObjectWithCommentId(id)
-        console.log(likesInfoObject, "likesInfoObject")
-        const filterUsersInfo = likesInfoObject!.usersInfo.filter(elem => {
-            return elem == "likeStatus": Like
-        })
-        return comment
+        //console.log(likesInfoObject, "likesInfoObject")
+        const newArrLike = []
+        const newArrDislike = []
+        const thisUserArr = []
+        for (const like of likesInfoObject!.usersInfo) {
+            if(like.likeStatus === "Like") newArrLike.push({like})
+            if(like.likeStatus === "Dislike") newArrDislike.push({like})
+        }
+        for(const objectFromUsersInfoArr of likesInfoObject!.usersInfo) {
+            if(objectFromUsersInfoArr.userId === userIdFromRefreshToken![2]) thisUserArr.push(objectFromUsersInfoArr)
+        }
+        // console.log(newArrLike, "newArrLike")
+        // console.log(newArrDislike, "newArrDislike")
+        //  console.log(thisUserArr, "thisUserArr")
+        // console.log(thisUserArr[0]!.likeStatus, "likeStatus")
+
+         return {
+            id: comment?.id,
+             content: comment?.content,
+             commentatorInfo: {
+                userId: comment?.commentatorInfo.userId,
+                 userLogin: comment?.commentatorInfo.userLogin,
+             },
+             createdAt:comment?.createdAt,
+             likesInfo: {
+                likesCount:newArrLike.length,
+                 dislikesCount:newArrDislike.length,
+                 myStatus: thisUserArr[0].likeStatus
+             }
+         }
 
     }
 
