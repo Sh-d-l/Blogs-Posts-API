@@ -5,7 +5,7 @@ export const jwtService = {
         return jwt.sign({deviceId, userId}, 'secret', {expiresIn: '5m'})
     },
     async createRefreshToken(deviceId:string, lastActiveDate: Date, userId:string) {
-        return jwt.sign({deviceId,lastActiveDate,userId}, 'secret', {expiresIn: '20h'} )
+        return jwt.sign({deviceId,lastActiveDate,userId}, 'secret', {expiresIn: '5m'} )
     },
     async createRefreshTokenForTests(id: string | undefined) {
         return jwt.sign({id}, 'secret', {expiresIn: '0h'} )

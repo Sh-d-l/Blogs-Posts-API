@@ -3,10 +3,6 @@ import {CreateCommentByPostIDModel} from "../mongoDB/db";
 
 export class CommentsRepo {
 
-    async updateLikesInfo (id:string, myStatus:string): Promise<boolean> {
-        const updateLikesInfo = await CreateCommentByPostIDModel.updateOne({id}, {"likesInfo.myStatus": myStatus})
-        return !!updateLikesInfo
-    }
     async getCommentById(id: string): Promise<CommentType | null> {
         return CreateCommentByPostIDModel.findOne({id}, {_id: 0, postId:0 , __v:0})
     }
