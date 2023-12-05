@@ -211,13 +211,9 @@ export type TypeGetCommentsByPostId = {
 
 export type TypeLikeStatusOfComment = {
     commentId:string,
-    usersInfo: [
-        {
-            userId:string | null,
-            likeStatus:string,
-        }
-    ]
-}
+    userId:string | null,
+    likeStatus:string,
+    }
 
 
 
