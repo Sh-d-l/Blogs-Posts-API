@@ -1,7 +1,6 @@
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {createCommentValidation, likeStatusValidationArray} from "../middlewares/validators/validations";
 import {commentsController} from "../composition-root";
-import {checkUserIdMiddleware} from "../middlewares/checkUserIdMiddleware";
 import {Router} from "express";
 export const commentsRouter = Router({})
 
