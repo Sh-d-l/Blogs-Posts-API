@@ -9,7 +9,7 @@ export class CommentsService {
         const [bearer, token] = accessToken!.split(" ")
         const userId = await jwtService.getUserIdByAccessToken(token)
 
-        const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, /*userId*/)
+        const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
         if(!resultSearchByCommentId) {
             const object = {
                 commentId,
@@ -27,10 +27,12 @@ export class CommentsService {
         else return  false
     }
 
-    async getCommentById(commentId: string, /*refreshToken:string*/): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
-        //const arrFromRefreshToken = await  jwtService.getPayloadRefreshToken(refreshToken)
+    async getCommentById(commentId: string, accessToken:string | undefined ): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
+        const [bearer, token] = accessToken!.split(" ")
+        const userId = await jwtService.getUserIdByAccessToken(token)
+
         const comment = await this.commentsRepo.getCommentById(commentId)
-        const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, /*arrFromRefreshToken![2]*/)
+        const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
 
         const likesCount = await  this.likeStatusRepo.likesCount(commentId )
         const dislikesCount = await this.likeStatusRepo.dislikeCount(commentId)
@@ -46,7 +48,7 @@ export class CommentsService {
              likesInfo: {
                 likesCount,
                  dislikesCount,
-                 myStatus: "object!.likeStatus"
+                 myStatus: object!.likeStatus
              }
          }
 

@@ -2,8 +2,8 @@ import {TypeLikeStatusOfComment} from "../types/types";
 import {LikeStatusOfCommentModel} from "../mongoDB/db";
 
 export class LikeStatusRepo {
-    async getObjectWithCommentIdLikeStatusUserId(commentId:string, /*userId: string | null*/):Promise<TypeLikeStatusOfComment | null> {
-        return LikeStatusOfCommentModel.findOne({commentId,/*userId*/})
+    async getObjectWithCommentIdLikeStatusUserId(commentId:string, userId: string | null):Promise<TypeLikeStatusOfComment | null> {
+        return LikeStatusOfCommentModel.findOne({commentId,userId})
     }
     async addLikeStatusOfCommentObjectToDB(object: TypeLikeStatusOfComment) {
         await LikeStatusOfCommentModel.create({...object})
