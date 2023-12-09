@@ -9,7 +9,7 @@ export class CommentsService {
         const [bearer, token] = accessToken!.split(" ")
         const userId = await jwtService.getUserIdByAccessToken(token)
 
-        const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
+        const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, /*userId*/)
         if(!resultSearchByCommentId) {
             const object = {
                 commentId,
@@ -27,7 +27,7 @@ export class CommentsService {
         else return  false
     }
 
-    async getCommentById(commentId: string, refreshToken:string): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
+    async getCommentById(commentId: string, /*refreshToken:string*/): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
         //const arrFromRefreshToken = await  jwtService.getPayloadRefreshToken(refreshToken)
         const comment = await this.commentsRepo.getCommentById(commentId)
         const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, /*arrFromRefreshToken![2]*/)
