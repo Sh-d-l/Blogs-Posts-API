@@ -28,9 +28,9 @@ export class CommentsService {
     }
 
     async getCommentById(commentId: string, refreshToken:string): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
-        const arrFromRefreshToken = await  jwtService.getPayloadRefreshToken(refreshToken)
+        //const arrFromRefreshToken = await  jwtService.getPayloadRefreshToken(refreshToken)
         const comment = await this.commentsRepo.getCommentById(commentId)
-        const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, arrFromRefreshToken![2])
+        const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, /*arrFromRefreshToken![2]*/)
 
         const likesCount = await  this.likeStatusRepo.likesCount(commentId )
         const dislikesCount = await this.likeStatusRepo.dislikeCount(commentId)
@@ -46,7 +46,7 @@ export class CommentsService {
              likesInfo: {
                 likesCount,
                  dislikesCount,
-                 myStatus: object!.likeStatus
+                 myStatus: "object!.likeStatus"
              }
          }
 

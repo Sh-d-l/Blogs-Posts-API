@@ -104,7 +104,7 @@ describe ("comments", () => {
         const blogId = await foundBlogById()
         const post = await request(app)
             .post(urlPosts)
-            .auth(tokens.body.accessToken, {type:"bearer"})
+            .auth(loginAuth,passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
