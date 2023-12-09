@@ -51,7 +51,6 @@ export class CommentsService {
                  myStatus: object!.likeStatus
              }
          }
-
     }
 
     async commentUpdate(id: string, content: string): Promise<boolean> {
