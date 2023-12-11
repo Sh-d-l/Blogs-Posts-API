@@ -29,8 +29,13 @@ export class CommentsService {
     }
 
     async getCommentById(commentId: string, accessToken:string | undefined ): Promise<{ createdAt: string | undefined; commentatorInfo: { userLogin: string | undefined; userId: string | undefined }; id: string | undefined; content: string | undefined; likesInfo: { likesCount: number; dislikesCount: number; myStatus: any } }> {
-        const [bearer, token] = accessToken!.split(" ")
-        const userId = await jwtService.getUserIdByAccessToken(token)
+      let userId: string | null = null;
+       if (accessToken) {
+           const [bearer, token] = accessToken.split(" ")
+           userId = await jwtService.getUserIdByAccessToken(token)
+       }
+       // const [bearer, token] = accessToken!.split(" ")
+
 
         const comment = await this.commentsRepo.getCommentById(commentId)
         const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
