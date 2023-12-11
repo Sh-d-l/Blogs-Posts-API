@@ -16,16 +16,16 @@ import {
     urlConfirmationCode, loginAnotherUser, passAnotherUser, emailAnotherUser
 } from "../../test_constanse/user.constans";
 import {urlAuth} from "../../test_constanse/auth.constans";
-import {content, lessContentLength, moreContentLength, urlComments} from
+import {content, lessContentLength, likeStatus, moreContentLength, urlComments, urlLikeStatus} from
         "../../test_constanse/comments.constans";
 import mongoose from "mongoose";
 import {CreateUserWithMailModel, mongoURI} from "../../src/mongoDB/db";
 import {CreateUsersWithConfirmationCode} from "../../src/types/types";
+import {body} from "express-validator";
 
 
-
-describe ("comments", () => {
-    let  tokens:any;
+describe("comments", () => {
+    let tokens: any;
     beforeAll(async () => {
         /* Connecting to the database. */
         await mongoose.connect(mongoURI)
@@ -77,13 +77,14 @@ describe ("comments", () => {
             accessToken: expect.any(String)
         })
         expect(tokens.headers['set-cookie']).toEqual([expect.any(String)])
+        expect.setState({accessToken: tokens.body.accessToken})
     })
 
     /*----------------------------create blog--------------------------------------*/
     it("create blog, should return 201 and {}", async () => {
         await request(app)
             .post(urlBlogs)
-            .auth(loginAuth,passAuth)
+            .auth(loginAuth, passAuth)
             .send({
                 name: blogName,
                 description: blogDescription,
@@ -97,14 +98,14 @@ describe ("comments", () => {
     it("create post, should return 401 if unauthorized", async () => {
         await request(app)
             .post(urlPosts)
-            .auth(incorrectBasicAuthName, {type: "bearer"})
+            .auth(incorrectBasicAuthName, incorrectBasicAuthPass)
             .expect(401)
     })
     it("create post, should return 201 if success", async () => {
         const blogId = await foundBlogById()
         const post = await request(app)
             .post(urlPosts)
-            .auth(loginAuth,passAuth)
+            .auth(loginAuth, passAuth)
             .send({
                 title: postTitle,
                 shortDescription: postShortDescription,
@@ -159,14 +160,14 @@ describe ("comments", () => {
     //     expect(token.body.accessToken).toEqual(expect.any(String))
     //     expect.setState({token: token.body.accessToken})
     // })
-    it("create comment by postId, should return 201 and object", async ()=> {
+    it("create comment by postId, should return 201 and object", async () => {
         const {post, /*token*/} = expect.getState()
         const postId = post.id
         const url = urlPosts + postId + urlComments
 
         const comment = await request(app)
             .post(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .send({
                 content
             })
@@ -175,16 +176,45 @@ describe ("comments", () => {
             id: expect.any(String),
             content,
             commentatorInfo: {
-            userId: expect.any(String),
-            userLogin: expect.any(String)
-        },
-            createdAt: expect.any(String)
+                userId: expect.any(String),
+                userLogin: expect.any(String)
+            },
+            createdAt: expect.any(String),
+            likesInfo: {
+                likesCount: expect.any(Number),
+                dislikesCount: expect.any(Number),
+                myStatus: expect.any(String)
+            }
         })
 
         expect.setState({comment: comment.body})
     })
+    /*------------------------------like-status----------------------------------------------------*/
+    it("create object with like status, should return 204", async () => {
+        const {comment, accessToken} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId + urlLikeStatus
+        const likeDislikeObject = await request(app)
+            .put(url)
+            .auth(accessToken, {type: "bearer"})
+            .send({likeStatus})
+            .expect(204)
+    })
 
-  /*------------------------------get all comments by postId--------------------------------------*/
+    it("create object with like status, should return 404 if incorrect commentId ", async () => {
+        const {comment, accessToken} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + "qwert" + urlLikeStatus
+
+        await request(app)
+            .put(url)
+            .auth(accessToken, {type: "bearer"})
+            .send({likeStatus})
+            .expect(404)
+    })
+
+
+    /*-----------------------------get all comments by postId--------------------------------------*/
 
     it("get all comments by postId", async () => {
         const {post} = expect.getState()
@@ -196,41 +226,41 @@ describe ("comments", () => {
         expect([comments.body])
     })
 
-  /*-------------------------------put comment with access token auth------------------------------*/
+    /*-------------------------------put comment with access token auth------------------------------*/
 
-    it ('update comment, if the inputModel has incorrect values(more content length)', async () => {
+    it('update comment, if the inputModel has incorrect values(more content length)', async () => {
         const {comment/*,token*/} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
         await request(app)
             .put(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .send({
                 content: moreContentLength
             })
             .expect(400)
     })
 
-    it ('update comment, if the inputModel has incorrect values(less content length)', async () => {
-        const {comment,token} = expect.getState()
+    it('update comment, if the inputModel has incorrect values(less content length)', async () => {
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
         await request(app)
             .put(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .send({
                 content: lessContentLength
             })
             .expect(400)
     })
 
-    it ('update comment, should return 401 if unauthorized)', async () => {
-        const {comment,token} = expect.getState()
+    it('update comment, should return 401 if unauthorized)', async () => {
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
         await request(app)
             .put(url)
-            .auth(incorrectBasicAuthName, { type: 'bearer' })
+            .auth(incorrectBasicAuthName, {type: 'bearer'})
             .send({
                 content
             })
@@ -247,7 +277,7 @@ describe ("comments", () => {
                 }
             )
             .expect(204)
-        expect.setState({accessTokenAnotherUser:{}})
+        expect.setState({accessTokenAnotherUser: {}})
     })
     /*--------------------------confirmation of registration another user--------------------*/
 
@@ -278,20 +308,21 @@ describe ("comments", () => {
             accessToken: expect.any(String)
         })
         expect(tokensAnotherUser.headers['set-cookie']).toEqual([expect.any(String)])
-        expect.setState({tokensAnotherUser:tokensAnotherUser.body.accessToken})
+        expect.setState({tokensAnotherUser: tokensAnotherUser.body.accessToken})
     })
-/*-----------------------------update comment---------------------------*/
+    /*-----------------------------update comment---------------------------*/
 
     it("Update comment, if try edit the comment that is not your own (code 403)", async () => {
-        const {comment,tokensAnotherUser} = expect.getState()
+        const {comment, tokensAnotherUser} = expect.getState()
+        const {accessToken} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
 
         await request(app)
             .put(url)
 
-            .auth(tokensAnotherUser.body.accessToken, { type: 'bearer' })
-            .set({ 'x-access-token': tokens.body.accessToken })
+            .auth(tokensAnotherUser.body.accessToken, {type: 'bearer'})
+            .set({'x-access-token': accessToken})
             .query(commentId)
             .send({
                 content
@@ -300,12 +331,12 @@ describe ("comments", () => {
     })
 
     it("Update comment, should return 404 if comment not found", async () => {
-        const {comment,token} = expect.getState()
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId + "dfdfd"
         await request(app)
             .put(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .send({
                 content
             })
@@ -313,50 +344,50 @@ describe ("comments", () => {
     })
 
     it("update comment success", async () => {
-      const {comment,token} = expect.getState()
-      const commentId = comment.id
-      const url = urlComments + commentId
-      await request(app)
-          .put(url)
-          .auth(tokens.body.accessToken, { type: 'bearer' })
-          .send({
-              content
-          })
-          .expect(204)
-  })
+        const {comment, token} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId
+        await request(app)
+            .put(url)
+            .auth(tokens.body.accessToken, {type: 'bearer'})
+            .send({
+                content
+            })
+            .expect(204)
+    })
 
-/*---------------------------------------delete comment by id-----------------------------------*/
+    /*---------------------------------------delete comment by id-----------------------------------*/
 
-    it ('delete comment, should return 401 if unauthorized)', async () => {
-        const {comment,token} = expect.getState()
+    it('delete comment, should return 401 if unauthorized)', async () => {
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
         await request(app)
             .delete(url)
-            .auth(incorrectBasicAuthName, { type: 'bearer' })
+            .auth(incorrectBasicAuthName, {type: 'bearer'})
             .expect(401)
     })
 
     it("Delete comment, if try edit the comment that is not your own (code 403)", async () => {
-        const {comment,token} = expect.getState()
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId
         await request(app)
             .delete(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .expect(403)
     })
 
     it("Delete comment, should return 404 if comment not found", async () => {
-        const {comment,token} = expect.getState()
+        const {comment, token} = expect.getState()
         const commentId = comment.id
         const url = urlComments + commentId + "dfdfd"
         await request(app)
             .delete(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .expect(404)
     })
-    it("create comment by postId, should return 201 and object", async ()=> {
+    it("create comment by postId, should return 201 and object", async () => {
         const {post, /*token*/} = expect.getState()
         const postId = post.id
         const url = urlPosts + postId + urlComments
@@ -373,14 +404,13 @@ describe ("comments", () => {
     })
 
     it("delete comment success", async () => {
-        const {commentNew,token} = expect.getState()
+        const {commentNew, token} = expect.getState()
         const commentId = commentNew.id
         const url = urlComments + commentId
-        console.log(commentNew, "commentNew")
-        console.log(commentId, "commentId")
+
         await request(app)
             .delete(url)
-            .auth(tokens.body.accessToken, { type: 'bearer' })
+            .auth(tokens.body.accessToken, {type: 'bearer'})
             .expect(204)
     })
     afterAll(async () => {

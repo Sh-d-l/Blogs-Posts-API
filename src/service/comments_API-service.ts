@@ -8,7 +8,8 @@ export class CommentsService {
     async makeLikeService(commentId: string, likeStatus: string, accessToken: string | undefined): Promise<boolean> {
         const [bearer, token] = accessToken!.split(" ")
         const userId = await jwtService.getUserIdByAccessToken(token)
-
+        const comment = await this.commentsRepo.getCommentById(commentId)
+        if (!comment) return false
         const resultSearchByCommentId = await  this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
         if(!resultSearchByCommentId) {
             const object = {

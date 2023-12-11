@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken"
 
 export const jwtService = {
     async createAccessToken(deviceId:string, userId:string) {
-        return jwt.sign({deviceId, userId}, 'secret', {expiresIn: '5m'})
+        return jwt.sign({deviceId, userId}, 'secret', {expiresIn: '10h'})
     },
     async createRefreshToken(deviceId:string, lastActiveDate: Date, userId:string) {
-        return jwt.sign({deviceId,lastActiveDate,userId}, 'secret', {expiresIn: '5m'} )
+        return jwt.sign({deviceId,lastActiveDate,userId}, 'secret', {expiresIn: '10h'} )
     },
     async createRefreshTokenForTests(id: string | undefined) {
         return jwt.sign({id}, 'secret', {expiresIn: '0h'} )
