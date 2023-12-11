@@ -16,7 +16,7 @@ import {
     urlConfirmationCode, loginAnotherUser, passAnotherUser, emailAnotherUser
 } from "../../test_constanse/user.constans";
 import {urlAuth} from "../../test_constanse/auth.constans";
-import {content, lessContentLength, likeStatus, moreContentLength, urlComments, urlLikeStatus} from
+import {content, incorrectLikeStatus, lessContentLength, likeStatus, moreContentLength, urlComments, urlLikeStatus} from
         "../../test_constanse/comments.constans";
 import mongoose from "mongoose";
 import {CreateUserWithMailModel, mongoURI} from "../../src/mongoDB/db";
@@ -200,6 +200,18 @@ describe("comments", () => {
             .send({likeStatus})
             .expect(204)
     })
+
+    it("create object with like status, should return 400 if incorrect likeStatus ", async () => {
+        const {comment, accessToken} = expect.getState()
+        const commentId = comment.id
+        const url = urlComments + commentId + urlLikeStatus
+        const likeDislikeObject = await request(app)
+            .put(url)
+            .auth(accessToken, {type: "bearer"})
+            .send({incorrectLikeStatus})
+            .expect(400)
+    })
+
 
     it("create object with like status, should return 404 if incorrect commentId ", async () => {
         const {comment, accessToken} = expect.getState()

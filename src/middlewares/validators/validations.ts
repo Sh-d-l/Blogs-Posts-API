@@ -51,6 +51,8 @@ const likeStatusValidation = body("likeStatus")
     .isString()
     .trim()
     .notEmpty()
+    .isIn(['Like',  'Dislike', 'None'])
+
 const blogIdBodyValidation = body('blogId').custom(async (val) => {
     const blog = await blogsRepo.getBlogID(val)
     if (!blog) {

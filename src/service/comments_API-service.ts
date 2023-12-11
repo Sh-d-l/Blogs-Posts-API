@@ -49,7 +49,7 @@ export class CommentsService {
              likesInfo: {
                 likesCount,
                  dislikesCount,
-                 myStatus: object!.likeStatus
+                 myStatus: object ? object.likeStatus : 'None'
              }
          }
     }
