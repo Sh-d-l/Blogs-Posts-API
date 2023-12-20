@@ -42,7 +42,7 @@ export class PostsController{
     }
     async getCommentsByPostId(req: Request, res: Response){
         const getCommentsByPostId: TypeGetCommentsByPostId | null = await this.postsRepoQuery.getCommentsRepoQuery(
-            req.params.postId,
+            req.params.postId,req.headers.authorization,
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
             req.query.sortDirection as SortDirection || "desc",
             Number(req.query.pageNumber) || 1,

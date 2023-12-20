@@ -14,11 +14,11 @@ commentsRouter.get("/:id", commentsController.getCommentById.bind(commentsContro
 
 commentsRouter.put("/:commentId",
     authMiddleware,
-    //checkUserIdMiddleware,
+    checkUserIdMiddleware,
     ...createCommentValidation,
     commentsController.updateComment.bind(commentsController))
 
 commentsRouter.delete("/:commentId",
     authMiddleware,
-    //checkUserIdMiddleware,
+    checkUserIdMiddleware,
     commentsController.deleteCommentById.bind(commentsController) )

@@ -34,8 +34,6 @@ export class CommentsService {
            const [bearer, token] = accessToken.split(" ")
            userId = await jwtService.getUserIdByAccessToken(token)
        }
-       // const [bearer, token] = accessToken!.split(" ")
-
 
         const comment = await this.commentsRepo.getCommentById(commentId)
         const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(commentId, userId)
@@ -60,10 +58,20 @@ export class CommentsService {
     }
 
     async commentUpdate(id: string, content: string): Promise<boolean> {
-        return await this.commentsRepo.commentUpdateRepo(id, content)
+        const comment = await this.commentsRepo.getCommentById(id)
+        if(comment) {
+            return await this.commentsRepo.commentUpdateRepo(id, content)
+        }
+        else return false
+
     }
 
     async commentDelete(id: string): Promise<boolean> {
-        return await this.commentsRepo.commentDeleteDB(id)
+        const comment = await this.commentsRepo.getCommentById(id)
+        if(comment) {
+            return await this.commentsRepo.commentDeleteDB(id)
+        }
+        else return false
+
     }
 }
