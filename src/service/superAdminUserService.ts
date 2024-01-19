@@ -4,7 +4,10 @@ import {randomUUID} from "crypto";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {UsersRepoDb} from "../repositories/users_API-repositories-db";
+import "reflect-metadata";
+import {injectable} from "inversify";
 
+@injectable()
 export class SuperAdminUserService {
     constructor(protected usersRepo:UsersRepoDb) {
     }

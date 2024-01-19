@@ -1,7 +1,9 @@
 import {Request, Response, Router} from "express";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {CreateUserService} from "../service/userService";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class AuthController {
     constructor(protected userService:CreateUserService) {
     }

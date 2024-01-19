@@ -1,6 +1,9 @@
 import {CommentsRepo} from "../repositories/comments_API-repositories";
 import {jwtService} from "../application/jwt-service";
 import {LikeStatusRepo} from "../repositories/likeStatusRepo";
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 
 export class CommentsService {
     constructor(protected commentsRepo: CommentsRepo, protected likeStatusRepo: LikeStatusRepo) {

@@ -1,8 +1,10 @@
 import {Request, Response, NextFunction} from "express";
 import {jwtService} from "../application/jwt-service"
-import {userService} from "../composition-root";
-//import {createUserService} from "../service/userService";
+import {container} from "../composition-root";
+import {CreateUserService} from "../service/userService";
 
+//import {createUserService} from "../service/userService";
+const userService = container.resolve(CreateUserService)
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers.authorization
     if (!auth) {

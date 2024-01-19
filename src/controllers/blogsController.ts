@@ -1,4 +1,4 @@
-import {blogsController} from "../composition-root";
+import {container} from "../composition-root";
 import {basicAuth} from "../auth/basic_auth";
 import {
     createBlogValidation,
@@ -6,7 +6,10 @@ import {
     updateBlogValidation
 } from "../middlewares/validators/validations";
 import {Router} from "express";
+import {BlogsController} from "../routers/blog_API-router";
 export const blogRouter = Router({});
+
+const blogsController = container.resolve(BlogsController)
 
 blogRouter.get('/', blogsController.getAllBlogs.bind(blogsController))
 

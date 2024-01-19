@@ -10,7 +10,9 @@ import {emailManager} from "../domain/emailManager";
 import {UsersRepoDb} from "../repositories/users_API-repositories-db";
 import {jwtService} from "../application/jwt-service";
 import {SecurityDevicesRepo} from "../repositories/securityDevicesRepo";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 
 export class CreateUserService {
     constructor( protected usersRepo:UsersRepoDb,

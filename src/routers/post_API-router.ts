@@ -5,7 +5,9 @@ import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId} from "../types/types";
 import {PostService} from "../service/post_API-service";
 import {PostsRepoQuery} from "../repositories/postRepositoriesQuery";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class PostsController{
     constructor(protected postService:PostService,
     protected postsRepoQuery:PostsRepoQuery) {

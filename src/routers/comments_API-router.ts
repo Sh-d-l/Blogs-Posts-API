@@ -1,6 +1,8 @@
 import {Response, Request} from "express";
 import {CommentsService} from "../service/comments_API-service";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class CommentsController {
     constructor(protected commentsService:CommentsService) {
     }

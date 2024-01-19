@@ -1,6 +1,8 @@
 import {TypeLikeStatusOfComment} from "../types/types";
 import {LikeStatusOfCommentModel} from "../mongoDB/db";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class LikeStatusRepo {
     async getObjectWithCommentIdLikeStatusUserId(commentId:string, userId: string | null):Promise<TypeLikeStatusOfComment | null> {
         return LikeStatusOfCommentModel.findOne({commentId,userId})
@@ -17,8 +19,5 @@ export class LikeStatusRepo {
     async dislikeCount(commentId: string):Promise<number> {
         return  LikeStatusOfCommentModel.countDocuments({commentId, likeStatus: 'Dislike'})
     }
-
-
-
 
 }

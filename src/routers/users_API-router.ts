@@ -4,6 +4,8 @@ import {TypeGetUsersWithCount} from "../types/types";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {IPagination} from "../types/types";
 import {SuperAdminUserService} from "../service/superAdminUserService";
+import "reflect-metadata";
+import {injectable} from "inversify";
 
 export const getPaginationFromQuery = (query: any): IPagination => {
     const pageNumber = Number(query.pageNumber)
@@ -20,7 +22,7 @@ export const getPaginationFromQuery = (query: any): IPagination => {
     }
 }
 
-
+@injectable()
 export class SuperAdminUserController {
     constructor(protected superAdminUserService:SuperAdminUserService,
                 protected usersQueryRepo:UsersQueryRepo) {

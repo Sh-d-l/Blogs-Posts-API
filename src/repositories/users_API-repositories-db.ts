@@ -5,7 +5,9 @@ import {
     CreateDocumentWithRecoveryCodeModel,
     CreateUserWithMailModel
 } from "../mongoDB/db";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class UsersRepoDb  {
 
 /*------------------------create user super admin------------------------------*/

@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import {SecurityDevicesService} from "../service/securityDevicesService";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class SecurityDevicesController{
     constructor(protected securityDevicesService:SecurityDevicesService) {
     }

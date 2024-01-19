@@ -4,10 +4,14 @@ import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
 import {CommentType} from "../types/types";
 import {jwtService} from "../application/jwt-service";
-import {likeStatusRepo} from "../composition-root";
+import "reflect-metadata";
+import {injectable} from "inversify";
+import {LikeStatusRepo} from "./likeStatusRepo";
 
-
+@injectable()
 export class PostsRepoQuery {
+    constructor(protected likeStatusRepo:LikeStatusRepo) {
+    }
     async getPostsRepoQuery(sortBy: string,
                             sortDirection: SortDirection,
                             pageNumber: number,
@@ -57,9 +61,9 @@ export class PostsRepoQuery {
 
         const arrCommentsWithCounts = await Promise.all(getCommentsDB.map( async (elem):Promise<CommentType> => {
 
-            const likesCount =  await likeStatusRepo.likesCount(elem.id)
-            const dislikesCount =  await likeStatusRepo.dislikeCount(elem.id)
-            const object = await likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(elem.id, userId)
+            const likesCount =  await this.likeStatusRepo.likesCount(elem.id)
+            const dislikesCount =  await this.likeStatusRepo.dislikeCount(elem.id)
+            const object = await this.likeStatusRepo.getObjectWithCommentIdLikeStatusUserId(elem.id, userId)
             return {
                 id: elem.id,
                 content: elem.content,

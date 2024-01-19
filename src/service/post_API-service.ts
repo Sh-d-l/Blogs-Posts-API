@@ -5,6 +5,9 @@ import {PostType} from "../types/types";
 import {PostsRepo} from "../repositories/post_API-repositories-db";
 import {CreateObjectOfUserForClient} from "../types/types";
 import {BlogsRepo} from "../repositories/blog_API-repositories-db";
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 
 export class PostService {
     constructor( protected blogsRepo:BlogsRepo,

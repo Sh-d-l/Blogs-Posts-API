@@ -1,5 +1,8 @@
 import {RefreshTokenMetaModel} from "../mongoDB/db";
 import {TypeRefreshTokenMeta} from "../types/types";
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 
 export class SecurityDevicesRepo {
     async addRefreshTokenMeta(object: TypeRefreshTokenMeta) {

@@ -1,5 +1,5 @@
 import {customRateLimitMiddleware} from "../middlewares/customRateLimitMiddleware";
-import {authController} from "../composition-root";
+import {container} from "../composition-root";
 import {
     confirmCodeValidation,
     createNewUserValidation,
@@ -9,6 +9,9 @@ import {
 import {Router} from "express";
 export const authRouter = Router({})
 import {authMiddleware} from "../middlewares/authMiddleware";
+import {AuthController} from "../routers/authRouter";
+
+const authController = container.resolve(AuthController)
 
 authRouter.post("/login",
     customRateLimitMiddleware,

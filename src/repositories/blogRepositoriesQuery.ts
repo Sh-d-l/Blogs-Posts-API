@@ -2,6 +2,9 @@ import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/typ
 import {CreateNewBlogModel, CreatePostModel} from "../mongoDB/db";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class BlogsRepoQuery {
     async getBlogsRepoQuery(searchNameTerm: string | null,
                             sortBy: string,

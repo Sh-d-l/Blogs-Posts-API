@@ -3,7 +3,9 @@ import {
     CreateCommentByPostIDModel,
     CreatePostModel
 } from "../mongoDB/db";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class PostsRepo {
     async getPost(): Promise<PostType[]> {
         return CreatePostModel.find({}, {projection: {_id: 0}}).lean();

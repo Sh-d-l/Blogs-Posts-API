@@ -1,9 +1,10 @@
 import {basicAuth} from "../auth/basic_auth";
-import {superAdminUserController} from "../composition-root";
+import {container} from "../composition-root";
 import {createNewUserSuperAdminValidation} from "../middlewares/validators/validations";
 import {Router} from "express";
+import {SuperAdminUserController} from "../routers/users_API-router";
 export const usersRouter = Router({});
-
+const superAdminUserController = container.resolve(SuperAdminUserController)
 usersRouter.get('/',
     basicAuth,
     superAdminUserController.getAllUser.bind(superAdminUserController) )

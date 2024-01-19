@@ -2,7 +2,9 @@ import {IPagination} from "../types/types";
 import {CreateObjectOfUserForClient, TypeGetUsersWithCount} from "../types/types";
 import {CreateUserWithMailModel} from "../mongoDB/db";
 //import {usersCollection} from "../mongoDB/db";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class UsersQueryRepo {
     async getUsersRepoQuery(pagination: IPagination): Promise<TypeGetUsersWithCount> {
         const filter = {

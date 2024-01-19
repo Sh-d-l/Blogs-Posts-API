@@ -1,6 +1,8 @@
 import {CommentType} from "../types/types";
 import {CreateCommentByPostIDModel} from "../mongoDB/db";
-
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 export class CommentsRepo {
 
     async getCommentById(id: string): Promise<CommentType | null> {

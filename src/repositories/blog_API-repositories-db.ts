@@ -1,7 +1,10 @@
 import {CreateNewBlogModel} from "../mongoDB/db";
 import {TBlogDb} from "../types/types";
 //import {blogs_repositories} from "./blog_API-repositories-memory";
+import "reflect-metadata";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsRepo {
     async getBlogs(): Promise<TBlogDb[]> {
         return CreateNewBlogModel.find({}, {projection: {_id: 0}}).lean();

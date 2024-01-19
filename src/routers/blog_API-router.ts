@@ -6,7 +6,9 @@ import {TypeGetPostsByBlogId} from "../types/types";
 import {PostType} from "../types/types";
 import {SortDirection} from "mongodb";
 import {BlogsService} from "../service/blog_API-service";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class BlogsController {
     constructor(protected  blogsService:BlogsService,
     protected  blogsRepoQuery:BlogsRepoQuery) {

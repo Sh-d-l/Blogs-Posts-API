@@ -4,6 +4,9 @@ import {randomUUID} from "crypto";
 import {PostType} from "../types/types";
 import {BlogsRepo} from "../repositories/blog_API-repositories-db";
 import {PostsRepo} from "../repositories/post_API-repositories-db";
+import "reflect-metadata";
+import {injectable} from "inversify";
+@injectable()
 
 export class BlogsService {
 

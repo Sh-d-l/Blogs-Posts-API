@@ -3,13 +3,16 @@ import {inputValidator} from "./input-validation.middleware";
 //import {blogs_repositories} from "../../repositories/blog_API-repositories-db";
 import {CreateUsersWithConfirmationCode} from "../../types/types";
 import {UsersRepoDb} from "../../repositories/users_API-repositories-db";
-import {blogsRepo, usersRepo} from "../../composition-root";
+import { container} from "../../composition-root";
+import {BlogsRepo} from "../../repositories/blog_API-repositories-db";
+import {PostsRepo} from "../../repositories/post_API-repositories-db";
 //import {usersRepoDb} from "../../repositories/users_API-repositories-db";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 export const loginPattern = /^[a-zA-Z0-9_-]*$/;
 export const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-
+const blogsRepo = container.resolve(BlogsRepo)
+const usersRepo = container.resolve(UsersRepoDb)
 const nameValidation = body('name')
     .isString()
     .trim()

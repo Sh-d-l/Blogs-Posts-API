@@ -1,4 +1,4 @@
-import {postsController} from "../composition-root";
+import {container} from "../composition-root";
 import {basicAuth} from "../auth/basic_auth";
 import {
     createCommentValidation,
@@ -8,8 +8,10 @@ import {
 
 import {Router} from "express";
 import {authMiddleware} from "../middlewares/authMiddleware";
+import {PostsController} from "../routers/post_API-router";
 export const postRouter = Router({});
 
+const postsController = container.resolve(PostsController)
 postRouter.get('/', postsController.getAllPosts.bind(postsController) )
 
 postRouter.post('/',

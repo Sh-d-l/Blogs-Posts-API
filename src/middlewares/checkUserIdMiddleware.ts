@@ -1,9 +1,8 @@
 import {Request, Response, NextFunction} from "express";
 import {jwtService} from "../application/jwt-service";
-import {CommentType} from "../types/types";
-import {CommentsService} from "../service/comments_API-service";
-import {commentsRepo, commentsService} from "../composition-root";
-
+import {container} from "../composition-root";
+import {CommentsRepo} from "../repositories/comments_API-repositories";
+const commentsRepo = container.resolve(CommentsRepo)
 export const checkUserIdMiddleware = async(req: Request, res: Response, next: NextFunction)  => {
     const getCommentById = await commentsRepo.getCommentById(req.params.commentId)
     if (!getCommentById) {

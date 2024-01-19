@@ -1,6 +1,9 @@
 import {TypeCustomRateLimit} from "../types/types";
 import {CreateRateLimitDocumentModel} from "../mongoDB/db";
+import "reflect-metadata";
+import {injectable} from "inversify";
 
+@injectable()
 class RateLimitRepo {
     async addLoginAttempt(document:TypeCustomRateLimit) {
         await CreateRateLimitDocumentModel.create(document)
