@@ -1,4 +1,4 @@
-import {CommentTypeWithPostId, PostType} from "../types/types";
+import {CommentTypeWithPostId, PostTypeWithoutLikes} from "../types/types";
 import {
     CreateCommentByPostIDModel,
     CreatePostModel
@@ -7,19 +7,16 @@ import "reflect-metadata";
 import {injectable} from "inversify";
 @injectable()
 export class PostsRepo {
-    async getPost(): Promise<PostType[]> {
-        return CreatePostModel.find({}, {projection: {_id: 0}}).lean();
-    }
-    async createPostForBlog(addPostForBlog: PostType) {
+    async createPostForBlog(addPostForBlog: PostTypeWithoutLikes) {
         return await CreatePostModel.create({...addPostForBlog});
     }
-    async createPost(newPost: PostType) {
+    async createPost(newPost: PostTypeWithoutLikes) {
         return await CreatePostModel.create({...newPost});
     }
     async createCommentByPostId(newCommentWithPostId:CommentTypeWithPostId) {
          await CreateCommentByPostIDModel.create({...newCommentWithPostId})
     }
-    async getPostID(id: string): Promise<PostType | null> {
+    async getPostID(id: string): Promise<PostTypeWithoutLikes | null> {
         return CreatePostModel.findOne({id},{_id: 0, __v:0});
     }
     async updatePost(id: string,

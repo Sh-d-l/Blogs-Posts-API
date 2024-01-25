@@ -53,7 +53,7 @@ export class UsersRepoDb  {
                 }),})
         return !!updateSuccess
     }
-    async findUserByUserId(userId: string): Promise<CreateUsersWithConfirmationCode | null> {
+    async findUserByUserId(userId: string | null): Promise<CreateUsersWithConfirmationCode | null> {
         return CreateUserWithMailModel.findOne({id:userId});
     }
     async deleteUserById(id: string): Promise<boolean> {

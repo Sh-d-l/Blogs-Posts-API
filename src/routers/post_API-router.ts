@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {PostType} from "../types/types";
+import {PostTypeWithoutLikes} from "../types/types";
 import {CommentType} from "../types/types";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId} from "../types/types";
@@ -12,6 +12,16 @@ export class PostsController{
     constructor(protected postService:PostService,
     protected postsRepoQuery:PostsRepoQuery) {
     }
+    async makeLikeOfPost (req: Request, res: Response){
+        const makeLikeOfPost = await  this.postService.likeStatusOfPostService(req.params.postId, req.body.likeStatus, req.headers.authorization)
+        if (makeLikeOfPost) {
+            res.sendStatus(204)
+        }
+        else {
+            res.sendStatus(404)
+        }
+    }
+
     async getAllPosts(req: Request, res: Response){
         const getPosts = await this.postsRepoQuery.getPostsRepoQuery(
             req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -22,17 +32,17 @@ export class PostsController{
     }
 
     async createPost(req: Request, res: Response){
-        const postPost: PostType | null = await this.postService.createPostService(
+        const postPost: PostTypeWithoutLikes | null = await this.postService.createPostService(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.blogId)
-        if (postPost !== null) {
+        if (postPost) {
             res.status(201).send(postPost)
         }
     }
     async createCommentByPostId(req: Request, res: Response){
-        const getPostId: PostType | null = await this.postService
+        const getPostId: PostTypeWithoutLikes | null = await this.postService
             .getPostIDService(req.params.postId)
         if (getPostId) {
             const newComment: CommentType = await this.postService
@@ -69,7 +79,7 @@ export class PostsController{
         }
     }
     async returnPostById(req: Request, res: Response){
-        const postById:PostType | null = await this.postService.getPostIDService(req.params.id)
+        const postById = await this.postService.getPostIDService(req.params.id)
         if(postById) {
             res.status(200).send(postById)
         }

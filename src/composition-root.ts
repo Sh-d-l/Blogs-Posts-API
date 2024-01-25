@@ -2,7 +2,6 @@ import {CreateUserService} from "./service/userService";
 import {UsersRepoDb} from "./repositories/users_API-repositories-db";
 import {SecurityDevicesRepo} from "./repositories/securityDevicesRepo";
 import {AuthController} from "./routers/authRouter";
-import {SuperAdminUserController} from "./routers/users_API-router";
 import {UsersQueryRepo} from "./repositories/usersRepositoriesQuery";
 import {SuperAdminUserService} from "./service/superAdminUserService";
 import {BlogsService} from "./service/blog_API-service";
@@ -20,6 +19,7 @@ import {SecurityDevicesController} from "./routers/securityDevicesRouter";
 import {SecurityDevicesService} from "./service/securityDevicesService";
 import {LikeStatusRepo} from "./repositories/likeStatusRepo";
 import {Container} from "inversify";
+import {LikeStatusOfPostRepo} from "./repositories/likeStatusOfPostRepo";
 //import {CheckUserIdMiddleware} from "./middlewares/checkUserIdMiddleware";
 
 export const container = new Container()
@@ -43,6 +43,7 @@ container.bind(PostsRepo).to(PostsRepo)
 container.bind(BlogsRepoQuery).to(BlogsRepoQuery)
 container.bind(PostsRepoQuery).to(PostsRepoQuery)
 container.bind(UsersQueryRepo).to(UsersQueryRepo)
+container.bind(LikeStatusOfPostRepo).to(LikeStatusOfPostRepo)
 
 // export const usersRepo = new UsersRepoDb()
 // export const securityDevicesRepo = new SecurityDevicesRepo()

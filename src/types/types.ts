@@ -1,3 +1,5 @@
+import {randomUUID} from "crypto";
+
 export class TypeCustomRateLimit{
     constructor(public IP:string,
                 public URL:string,
@@ -93,16 +95,7 @@ export class TBlogDb{
 //     isMembership: boolean
 // }
 
-export class PostType {
-    constructor(public id: string,
-                public title: string,
-                public shortDescription: string,
-                public content: string,
-                public blogId: string,
-                public blogName: string,
-                public createdAt: string) {
-    }
-}
+
 // export type PostType = {
 //     id: string,
 //     title: string,
@@ -112,6 +105,46 @@ export class PostType {
 //     blogName: string
 //     createdAt: string,
 // }
+export type TypePostWithLikes = {
+    // constructor(public id: string,
+    //             public title: string,
+    //             public shortDescription: string,
+    //             public content: string,
+    //             public blogId: string,
+    //             public blogName: string,
+    //             public createdAt: string,
+    //             public extendedLikesInfo: {
+    //                 likesCount: number,
+    //                 dislikesCount: number,
+    //                 myStatus: string,
+    //                 newestLikes: [
+
+                            addedAt: string,
+                            userId: string,
+                            login: string
+
+    //                 ]
+    //             }
+    // ) {}
+}
+
+export class PostTypeWithoutLikes {
+    constructor(public id: string,
+                public title: string,
+                public shortDescription: string,
+                public content: string,
+                public blogId: string,
+                public blogName: string,
+                public createdAt: string,
+                public extendedLikesInfo: {
+                    likesCount: number,
+                    dislikesCount: number,
+                    myStatus: string,
+                    newestLikes: TypePostWithLikes[]
+                }
+    ) {}
+}
+
 export class CommentType{
     constructor(public id: string,
                 public content: string,
@@ -199,7 +232,7 @@ export type TypeGetPostsByBlogId = {
     page: number,
     pageSize: number,
     totalCount: number,
-    items: PostType[]
+    items: TypePostWithLikes[]
 }
 export type TypeGetCommentsByPostId = {
     pagesCount: number,
@@ -209,11 +242,28 @@ export type TypeGetCommentsByPostId = {
     items: CommentType[]
 }
 
-export type TypeLikeStatusOfComment = {
-    commentId:string,
-    userId:string | null,
-    likeStatus:string,
+export class LikeStatusOfComment  {
+    constructor (
+       public commentId:string,
+       public userId:string | null,
+       public likeStatus:string
+                ) {}
+
+
+}
+
+export class LikeStatusOfPost {
+    constructor(
+        public addedAt: string,
+        public userId: string | null,
+        public login:string | undefined,
+        public likeStatus: string,
+        public postId: string) {
     }
+
+}
+
+
 
 
 

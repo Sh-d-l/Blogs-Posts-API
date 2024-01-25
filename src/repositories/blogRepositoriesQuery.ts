@@ -1,6 +1,6 @@
 import {TBlogDb, TypeGetBlogsWithCount, TypeGetPostsByBlogId} from "../types/types";
 import {CreateNewBlogModel, CreatePostModel} from "../mongoDB/db";
-import {PostType} from "../types/types";
+import {TypePostWithLikes} from "../types/types";
 import {SortDirection} from "mongodb";
 import "reflect-metadata";
 import {injectable} from "inversify";
@@ -40,7 +40,7 @@ export class BlogsRepoQuery {
         const skip: number = (+pageNumber - 1) * +pageSize
         const countAllPosts: number = await CreatePostModel.countDocuments({blogId: id})
         const countPages: number = Math.ceil(countAllPosts / +pageSize)
-        const getPosts: PostType[] = await CreatePostModel
+        const getPosts: TypePostWithLikes[] = await CreatePostModel
             .find({blogId: id}, {projection: {_id: false}})
             .sort({[sortBy]: sortDirection})
             .skip(skip)

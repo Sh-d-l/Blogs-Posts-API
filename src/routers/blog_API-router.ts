@@ -3,7 +3,7 @@ import {TBlogDb} from "../types/types";
 import {TypeGetBlogsWithCount} from "../types/types";
 import {BlogsRepoQuery} from "../repositories/blogRepositoriesQuery";
 import {TypeGetPostsByBlogId} from "../types/types";
-import {PostType} from "../types/types";
+import {PostTypeWithoutLikes} from "../types/types";
 import {SortDirection} from "mongodb";
 import {BlogsService} from "../service/blog_API-service";
 import {injectable} from "inversify";
@@ -32,7 +32,7 @@ export class BlogsController {
         res.status(201).send(postBlog)
     }
     async createPostByBlogId(req:Request, res:Response){
-        const addPostByBlogId: PostType | null = await this.blogsService
+        const addPostByBlogId: PostTypeWithoutLikes | null = await this.blogsService
             .createPostByBlogId(req.params.blogId, req.body.title,
                 req.body.shortDescription,
                 req.body.content);

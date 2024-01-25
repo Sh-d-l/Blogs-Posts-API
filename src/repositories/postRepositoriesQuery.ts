@@ -1,4 +1,4 @@
-import {PostType} from "../types/types";
+import {PostTypeWithLikes, PostTypeWithoutLikes, TypePostWithLikes} from "../types/types";
 import {CreateCommentByPostIDModel, CreatePostModel} from "../mongoDB/db";
 import {SortDirection} from "mongodb";
 import {TypeGetCommentsByPostId, TypeGetPostsByBlogId} from "../types/types";
@@ -15,11 +15,11 @@ export class PostsRepoQuery {
     async getPostsRepoQuery(sortBy: string,
                             sortDirection: SortDirection,
                             pageNumber: number,
-                            pageSize: number): Promise<TypeGetPostsByBlogId> {
+                            pageSize: number): Promise<PostTypeWithoutLikes> {
         const totalCount: number = await CreatePostModel.countDocuments({})
         const postSkip: number = (+pageNumber - 1) * +pageSize
         const pagesCount: number = Math.ceil(totalCount / +pageSize)
-        const getPostDB: PostType[] = await CreatePostModel
+        const getPostDB: TypePostWithLikes[] = await CreatePostModel
             .find({}, {_id: false,__v:0})
             .sort({[sortBy]: sortDirection})
             .skip(postSkip)

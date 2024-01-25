@@ -1,13 +1,13 @@
-import {TypeLikeStatusOfComment} from "../types/types";
+import {LikeStatusOfComment} from "../types/types";
 import {LikeStatusOfCommentModel} from "../mongoDB/db";
 import "reflect-metadata";
 import {injectable} from "inversify";
 @injectable()
 export class LikeStatusRepo {
-    async getObjectWithCommentIdLikeStatusUserId(commentId:string, userId: string | null):Promise<TypeLikeStatusOfComment | null> {
+    async getObjectWithCommentIdLikeStatusUserId(commentId:string, userId: string | null):Promise<LikeStatusOfComment | null> {
         return LikeStatusOfCommentModel.findOne({commentId,userId})
     }
-    async addLikeStatusOfCommentObjectToDB(object: TypeLikeStatusOfComment) {
+    async addLikeStatusOfCommentObjectToDB(object: LikeStatusOfComment) {
         await LikeStatusOfCommentModel.create({...object})
     }
     async changeLikeStatusByUserId(commentId:string, userId: string | null, likeStatus: string) {
